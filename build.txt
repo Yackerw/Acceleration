@@ -1,0 +1,3 @@
+displayName = Acceleration
+author = Yacker
+version = 0.1
