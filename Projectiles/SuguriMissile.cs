@@ -62,7 +62,7 @@ namespace Acceleration.Projectiles
 			Terraria.Dust.NewDust(position, 10, 10, 269, -projectile.velocity.X, -projectile.velocity.Y);
 		}
 
-		public override bool OnTileCollide(Vector2 oldVelocity)
+		public override void Kill(int timeLeft)
 		{
 			Vector2 position = projectile.position - new Vector2(15, 15);
 			for (int i = 0; i < 20; ++i)
@@ -70,7 +70,6 @@ namespace Acceleration.Projectiles
 				Dust.NewDust(projectile.position, 20, 20, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 				Dust.NewDust(projectile.position, 20, 20, DustID.Water_BloodMoon, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 			}
-			return true;
 		}
 	}
 }
