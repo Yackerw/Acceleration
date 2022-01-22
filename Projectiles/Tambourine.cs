@@ -59,7 +59,7 @@ namespace Acceleration.Projectiles
                 rotpos[i] = rotpos[i + 1];
             }
             rotations[2] = projectile.rotation;
-            rotpos[2] = projectile.velocity;
+            rotpos[2] = projectile.Center;
         }
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
