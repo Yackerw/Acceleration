@@ -12,9 +12,21 @@ namespace Acceleration
 {
 	class AccelerationHelper
 	{
-		static public void DrawSprite(string texture, Vector2 position, int frame, int spriteHeight, Color color, float rotation, float scale = 1.0f)
+		static public void DrawSprite(string texture, Vector2 position, int frame, int spriteHeight, Color color, float rotation, SpriteBatch batch = null, float scale = 1.0f)
 		{
-			Texture2D tex = Acceleration.thisMod.GetTexture(texture);
+			if (batch == null)
+			{
+				batch = Main.spriteBatch;
+			}
+			Texture2D tex;
+			try
+			{
+				tex = Acceleration.thisMod.GetTexture(texture);
+			} catch (Exception e)
+			{
+				Main.NewText(e);
+				return;
+			}
 			Main.spriteBatch.Draw(tex,
 				position - Main.screenPosition,
 				new Rectangle(0, frame * spriteHeight, 0, spriteHeight),

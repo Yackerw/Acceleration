@@ -193,7 +193,8 @@ namespace Acceleration.Items.Weapons
 
 		public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
 		{
-			//AccelerationHelper.DrawSprite("BeamRifle_Emiss", )
+			Main.NewText("y tho");
+			AccelerationHelper.DrawSprite("Items/Weapons/BeamRifle_Emiss", item.position + new Vector2(10, 10), 0, 48, Color.White, rotation, spriteBatch);
 			base.PostDrawInWorld(spriteBatch, lightColor, alphaColor, rotation, scale, whoAmI);
 		}
 	}
