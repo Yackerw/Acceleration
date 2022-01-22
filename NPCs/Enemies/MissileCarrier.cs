@@ -98,12 +98,12 @@ namespace Acceleration.NPCs.Enemies
 				if (posDiff.X > 0)
 				{
 					npc.spriteDirection = 1;
-					if (posDiff.X > 700)
+					if (posDiff.X > 500)
 					{
-						npc.velocity.X = Math.Min(npc.velocity.X + 0.1f, 10.0f);
-					} else if (posDiff.X < 500)
+						npc.velocity.X = Math.Min(npc.velocity.X + 0.1f, 5.0f);
+					} else if (posDiff.X < 300)
 					{
-						npc.velocity.X = Math.Max(npc.velocity.X - 0.1f, -10.0f);
+						npc.velocity.X = Math.Max(npc.velocity.X - 0.1f, -5.0f);
 					} else
 					{
 						if (npc.velocity.X > 0)
@@ -117,13 +117,13 @@ namespace Acceleration.NPCs.Enemies
 				} else
 				{
 					npc.spriteDirection = -1;
-					if (posDiff.X > -500)
+					if (posDiff.X > -300)
 					{
-						npc.velocity.X = Math.Min(npc.velocity.X + 0.1f, 10.0f);
+						npc.velocity.X = Math.Min(npc.velocity.X + 0.1f, 5.0f);
 					}
-					else if (posDiff.X < -700)
+					else if (posDiff.X < -500)
 					{
-						npc.velocity.X = Math.Max(npc.velocity.X - 0.1f, -10.0f);
+						npc.velocity.X = Math.Max(npc.velocity.X - 0.1f, -5.0f);
 					}
 					else
 					{
