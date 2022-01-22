@@ -31,7 +31,6 @@ namespace Acceleration.NPCs.Enemies
 			npc.HitSound = SoundID.NPCHit4;
 			npc.DeathSound = SoundID.NPCDeath14;
 			npc.noTileCollide = true;
-			npc.ai[0] = 5 * 60;
 		}
 
 		public override void AutoStaticDefaults()
@@ -117,6 +116,7 @@ namespace Acceleration.NPCs.Enemies
 				projectileMom.Y += npc.ai[topOrBottom] == 0 ? -24 : 24;
 				//missile = Projectile.NewProjectile(npc.position + projectileMom, new Vector2(0, 0), mod.ProjectileType("SuguriMissile"), 16, 5);
 				Main.projectile[missile].rotation = initialAngle;
+				Main.PlaySound(Acceleration.MissileLaunchSound);
 			}
 
 			npc.position = mc.npc.position + offset;

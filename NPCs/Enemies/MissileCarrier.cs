@@ -60,83 +60,107 @@ namespace Acceleration.NPCs.Enemies
 			// code for when the launchers are still alive
 			if (npc.ai[launchersAlive] >= 0.1f)
 			{
-				npc.ai[waitTimer] = 2 * 60;
-				Vector2 posDiff = target.position - npc.position;
-				// try to match players height
-				if (posDiff.Y > 500)
+				if (npc.ai[waitTimer] < 250 && npc.ai[waitTimer] > 90)
 				{
-					npc.velocity.Y = Math.Min(npc.velocity.Y + 0.1f, 10f);
-				} else if (posDiff.Y < -500)
-				{
-					npc.velocity.Y = Math.Max(npc.velocity.Y - 0.1f, -10f);
-				} else
-				{
-					if (npc.velocity.Y > 0)
+					Vector2 posDiff = target.position - npc.position;
+					// try to match players height
+					if (posDiff.Y > 500)
 					{
-						npc.velocity.Y = Math.Max(0, npc.velocity.Y - 0.1f);
-					} else
-					{
-						npc.velocity.Y = Math.Min(0, npc.velocity.Y + 0.1f);
+						npc.velocity.Y = Math.Min(npc.velocity.Y + 0.1f, 10f);
 					}
-				}
-
-				// hover up if we're too close to the ground
-				int outUp;
-				int outDown;
-
-				Collision.ExpandVertically((int)npc.position.X / 16, (int)npc.position.Y / 16, out outUp, out outDown, 100, 15);
-				// minor leeway
-				if (outDown < (npc.position.Y / 16) + 13)
-				{
-					npc.position.Y -= 4.0f;
-					if (npc.velocity.Y > 0)
+					else if (posDiff.Y < -500)
 					{
-						npc.velocity.Y = 0;
-					}
-				}
-				// try to stay a certain distance away from target
-				if (posDiff.X > 0)
-				{
-					npc.spriteDirection = 1;
-					if (posDiff.X > 500)
-					{
-						npc.velocity.X = Math.Min(npc.velocity.X + 0.1f, 5.0f);
-					} else if (posDiff.X < 300)
-					{
-						npc.velocity.X = Math.Max(npc.velocity.X - 0.1f, -5.0f);
-					} else
-					{
-						if (npc.velocity.X > 0)
-						{
-							npc.velocity.X = Math.Max(npc.velocity.X - 0.4f, 0f);
-						} else
-						{
-							npc.velocity.X = Math.Min(npc.velocity.X + 0.4f, 0f);
-						}
-					}
-				} else
-				{
-					npc.spriteDirection = -1;
-					if (posDiff.X > -300)
-					{
-						npc.velocity.X = Math.Min(npc.velocity.X + 0.1f, 5.0f);
-					}
-					else if (posDiff.X < -500)
-					{
-						npc.velocity.X = Math.Max(npc.velocity.X - 0.1f, -5.0f);
+						npc.velocity.Y = Math.Max(npc.velocity.Y - 0.1f, -10f);
 					}
 					else
 					{
-						if (npc.velocity.X > 0)
+						if (npc.velocity.Y > 0)
 						{
-							npc.velocity.X = Math.Max(npc.velocity.X - 0.4f, 0f);
+							npc.velocity.Y = Math.Max(0, npc.velocity.Y - 0.1f);
 						}
 						else
 						{
-							npc.velocity.X = Math.Min(npc.velocity.X + 0.4f, 0f);
+							npc.velocity.Y = Math.Min(0, npc.velocity.Y + 0.1f);
 						}
 					}
+
+					// hover up if we're too close to the ground
+					int outUp;
+					int outDown;
+
+					Collision.ExpandVertically((int)npc.position.X / 16, (int)npc.position.Y / 16, out outUp, out outDown, 100, 15);
+					// minor leeway
+					if (outDown < (npc.position.Y / 16) + 13)
+					{
+						npc.position.Y -= 4.0f;
+						if (npc.velocity.Y > 0)
+						{
+							npc.velocity.Y = 0;
+						}
+					}
+					// try to stay a certain distance away from target
+					if (posDiff.X > 0)
+					{
+						npc.spriteDirection = 1;
+						if (posDiff.X > 500)
+						{
+							npc.velocity.X = Math.Min(npc.velocity.X + 0.1f, 5.0f);
+						}
+						else if (posDiff.X < 300)
+						{
+							npc.velocity.X = Math.Max(npc.velocity.X - 0.1f, -5.0f);
+						}
+						else
+						{
+							if (npc.velocity.X > 0)
+							{
+								npc.velocity.X = Math.Max(npc.velocity.X - 0.4f, 0f);
+							}
+							else
+							{
+								npc.velocity.X = Math.Min(npc.velocity.X + 0.4f, 0f);
+							}
+						}
+					}
+					else
+					{
+						npc.spriteDirection = -1;
+						if (posDiff.X > -300)
+						{
+							npc.velocity.X = Math.Min(npc.velocity.X + 0.1f, 5.0f);
+						}
+						else if (posDiff.X < -500)
+						{
+							npc.velocity.X = Math.Max(npc.velocity.X - 0.1f, -5.0f);
+						}
+						else
+						{
+							if (npc.velocity.X > 0)
+							{
+								npc.velocity.X = Math.Max(npc.velocity.X - 0.4f, 0f);
+							}
+							else
+							{
+								npc.velocity.X = Math.Min(npc.velocity.X + 0.4f, 0f);
+							}
+						}
+					}
+				} else
+				{
+					if (npc.velocity.X > 0)
+					{
+						npc.velocity.X = Math.Max(npc.velocity.X - 0.4f, 0f);
+					}
+					else
+					{
+						npc.velocity.X = Math.Min(npc.velocity.X + 0.4f, 0f);
+					}
+					if (npc.ai[waitTimer] <= 0)
+					{
+						npc.ai[waitTimer] = 300;
+					}
 				}
+				npc.ai[waitTimer] -= 1;
 			} else
 			{
 				switch (npc.ai[state])
@@ -173,6 +197,8 @@ namespace Acceleration.NPCs.Enemies
 						// speeeed
 						float speed = Matht.Lerp(0, 6.0f, npc.ai[waitTimer] / 160.0f);
 						npc.velocity = new Vector2(speed, 0).RotatedBy(dir);
+						// spawn particle wahee
+						Terraria.Dust.NewDust(npc.Center + new Vector2(-40, 0).RotatedBy(dir), 10, 10, 269, -npc.velocity.X, -npc.velocity.Y);
 						if (npc.direction == -1)
 						{
 							dir += (float)Math.PI;
@@ -256,12 +282,13 @@ namespace Acceleration.NPCs.Enemies
 			// spawn our GOONS too
 			launcherBit0 = NPC.NewNPC(tileX, tileY, mod.NPCType("MissileCarrierPiece"), 0, 0, 0, 0, retValue);
 			// top front
-			launcherBit1 = NPC.NewNPC(tileX, tileY, mod.NPCType("MissileCarrierPiece"), 0, 0, 0, 1, retValue);
+			launcherBit1 = NPC.NewNPC(tileX, tileY, mod.NPCType("MissileCarrierPiece"), 0, 0, 8, 1, retValue);
 			// bottom back
-			launcherBit2 = NPC.NewNPC(tileX, tileY, mod.NPCType("MissileCarrierPiece"), 0, 1, 0, 0, retValue);
+			launcherBit2 = NPC.NewNPC(tileX, tileY, mod.NPCType("MissileCarrierPiece"), 0, 1, 16, 0, retValue);
 			// bottom front
-			launcherBit3 = NPC.NewNPC(tileX, tileY, mod.NPCType("MissileCarrierPiece"), 0, 1, 0, 1, retValue);
+			launcherBit3 = NPC.NewNPC(tileX, tileY, mod.NPCType("MissileCarrierPiece"), 0, 1, 24, 1, retValue);
 			Main.npc[retValue].ai[launchersAlive] = 4;
+			Main.npc[retValue].ai[waitTimer] = 300;
 			return retValue;
 		}
 	}

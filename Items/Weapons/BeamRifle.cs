@@ -190,11 +190,5 @@ namespace Acceleration.Items.Weapons
 			charging = reader.ReadBoolean();
 			chargeTime = reader.ReadByte();
 		}
-
-		public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
-		{
-			base.PostDrawInWorld(spriteBatch, lightColor, alphaColor, rotation, scale, whoAmI);
-			AccelerationHelper.DrawSprite("Items/Weapons/BeamRifle_Emiss", item.Center - new Vector2(0, 10), 0, 48, Color.White, rotation, spriteBatch);
-		}
 	}
 }

@@ -27,6 +27,7 @@ namespace Acceleration
 		public static LegacySoundStyle BeamRifleSound;
 		public static LegacySoundStyle ChargeInitialSound;
 		public static LegacySoundStyle ChargeShotSound;
+		public static LegacySoundStyle MissileLaunchSound;
 
 		public static Acceleration thisMod;
 
@@ -50,6 +51,7 @@ namespace Acceleration
 				BeamRifleSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/BeamRifle");
 				ChargeInitialSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/Charge");
 				ChargeShotSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/ChargeShot");
+				MissileLaunchSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/Burst00");
 				// load our shaders
 				Ref<Effect> projectileShader = new Ref<Effect>(GetEffect("Effects/RainbowRing"));
 
