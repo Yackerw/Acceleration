@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Acceleration.Items.Weapons
 {
@@ -190,5 +191,10 @@ namespace Acceleration.Items.Weapons
 			chargeTime = reader.ReadByte();
 		}
 
+		public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+		{
+			//AccelerationHelper.DrawSprite("BeamRifle_Emiss", )
+			base.PostDrawInWorld(spriteBatch, lightColor, alphaColor, rotation, scale, whoAmI);
+		}
 	}
 }
