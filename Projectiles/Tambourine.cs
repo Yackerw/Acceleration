@@ -7,13 +7,14 @@ using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.ID; 
 //hydro's stink stain 
 namespace Acceleration.Projectiles
 {
 	class Tambourine : ModProjectile
     {
-        Vector2[] rotpos = new Vector2[3];
-        float[] rotations = new float[3]; 
+        Vector2[] rotpos = new Vector2[8];
+        float[] rotations = new float[8]; 
 
         public override void SetDefaults()
         {
@@ -53,25 +54,34 @@ namespace Acceleration.Projectiles
             {
                 projectile.ai[0] = 1;
             }
-            for (int i = 0; i < 2; i++) //blur shit wooooo also its 2 because + 1 will be 2 at 1 
+            for (int i = 0; i < 7; i++) //blur shit wooooo also its 7 because + 1 will be 8 at 7 
             {
                 rotations[i] = rotations[i + 1];
                 rotpos[i] = rotpos[i + 1];
             }
-            rotations[2] = projectile.rotation;
-            rotpos[2] = projectile.Center;
+            rotations[7] = projectile.rotation;
+            rotpos[7] = projectile.Center;
         }
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             base.PostDraw(spriteBatch, lightColor);
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 8; i++)
             {
-                AccelerationHelper.DrawSprite("Projectiles/Tambourine_Emiss", rotpos[i], 0, 48, Color.White, rotations[i], spriteBatch);
+                AccelerationHelper.DrawSprite("Projectiles/Tambourine_Emiss", rotpos[i], 0, 48, new Color(255 - ((8 - i) * 35), 255 - ((8 - i) * 35), 255 - ((8 - i) * 35)), rotations[i], spriteBatch);
             }
             spriteBatch.End();
             spriteBatch.Begin();
+        }
+        public override void Kill(int timeLeft)
+        {
+            Vector2 position = projectile.position - new Vector2(15, 15);
+            for (int i = 0; i < 20; ++i)
+            {
+                Dust.NewDust(projectile.position, 48, 48, DustID.TopazBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+                Dust.NewDust(projectile.position, 48, 48, DustID.SapphireBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+            }
         }
     }
 } 
