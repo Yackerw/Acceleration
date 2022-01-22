@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Acceleration.Projectiles
 {
 	class Tambourine : ModProjectile
     {
+        Vector2[] rotpos = new Vector2[3];
+        float[] rotations = new float[3]; 
+
         public override void SetDefaults()
         {
             projectile.width = 48;
@@ -43,11 +47,28 @@ namespace Acceleration.Projectiles
             if (projectile.ai[0] == 1) //tambo return 
             {
                 projectile.velocity -= -0.1f * tamspeed;
-                projectile.tileCollide = true; 
+                projectile.tileCollide = true;
             }
             if (Vector2.Dot(projectile.velocity, tamspeed) < 0) //dot product multiplies 
             {
                 projectile.ai[0] = 1;
+            }
+            for (int i = 0; i < 2; i++) //blur shit wooooo 
+            {
+                rotations[i] = rotations[i + 1];
+                rotpos[i] = rotpos[i + 1];
+            }
+            rotations[2] = projectile.rotation;
+            rotpos[2] = projectile.velocity;
+        }
+        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            base.PostDraw(spriteBatch, lightColor);
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            for (int i = 0; i < 3; i++)
+            {
+                AccelerationHelper.DrawSprite("Projectiles/Tambourine_Emiss", rotpos[i], 0, 48, Color.White, rotations[i], spriteBatch);
             }
         }
     }
