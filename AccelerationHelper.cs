@@ -27,9 +27,9 @@ namespace Acceleration
 				Main.NewText(e);
 				return;
 			}
-			Main.spriteBatch.Draw(tex,
+			batch.Draw(tex,
 				position - Main.screenPosition,
-				new Rectangle(0, frame * spriteHeight, 0, spriteHeight),
+				new Rectangle(0, frame * spriteHeight, tex.Width, spriteHeight),
 				color,
 				rotation,
 				new Vector2(tex.Width / 2, spriteHeight / 2),
