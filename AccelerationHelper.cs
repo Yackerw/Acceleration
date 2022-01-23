@@ -19,14 +19,7 @@ namespace Acceleration
 				batch = Main.spriteBatch;
 			}
 			Texture2D tex;
-			try
-			{
-				tex = Acceleration.thisMod.GetTexture(texture);
-			} catch (Exception e)
-			{
-				Main.NewText(e);
-				return;
-			}
+			tex = Acceleration.thisMod.GetTexture(texture);
 			batch.Draw(tex,
 				position - Main.screenPosition,
 				new Rectangle(0, frame * spriteHeight, tex.Width, spriteHeight),

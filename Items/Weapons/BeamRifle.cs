@@ -65,6 +65,8 @@ namespace Acceleration.Items.Weapons
 		public static BeamRifleFireCallback callBack = new BeamRifleFireCallback();
 		bool charging = false;
 		int chargeTime;
+		bool hyper = true;
+		int hyperTimer = 0;
 		public override void SetStaticDefaults() {
 			Tooltip.SetDefault("Fires a laser"
 				+ "\nRight click: charge shot"
@@ -99,7 +101,15 @@ namespace Acceleration.Items.Weapons
 				item.useAnimation = 25;
 				return false;
 			}
-			if (!player.GetModPlayer<AcceleratePlayer>().rightClick || !charging)
+			if (hyper)
+			{
+				if (hyperTimer <= 0)
+				{
+					hyper = false;
+				}
+				return false;
+			}
+			if ((!player.GetModPlayer<AcceleratePlayer>().rightClick || !charging) && hyper == false)
 			{
 				item.useTime = 25;
 				item.useAnimation = 25;
@@ -171,6 +181,30 @@ namespace Acceleration.Items.Weapons
 					item.useAnimation = 26;
 					charging = false;
 					chargeTime = 0;
+				}
+			}
+
+			if (ap.hyperButton && !ap.prevHyperButton && player.reuseDelay <= 0)
+			{
+				hyperTimer = 70;
+				hyper = true;
+				//Projectile.NewProjectile
+				// um, try rendering, i guess
+				ap.hyperDrawTimer = 40;
+				Main.PlaySound(Acceleration.hyperSound, player.position);
+			}
+			if (hyper)
+			{
+				--hyperTimer;
+				player.reuseDelay = 1;
+				player.itemAnimation = 1;
+				player.itemAnimationMax = 1;
+				// actually fire the projectile
+				if (hyperTimer == 25)
+				{
+					Main.PlaySound(Acceleration.beamRifleHyperSound, player.position);
+					float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
+					Projectile.NewProjectile(player.position + new Vector2(40, 0).RotatedBy(shotAngle), new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamHyper>(), (int)(18 * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
 				}
 			}
 

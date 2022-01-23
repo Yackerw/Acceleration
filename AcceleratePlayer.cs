@@ -33,6 +33,9 @@ namespace Acceleration
 		public bool prevJump;
 		public bool rightClick;
 		public bool prevRightClick;
+		public bool hyperButton;
+		public bool prevHyperButton;
+		public int hyperDrawTimer;
 
 		public class PlayerStepCallback : SyncCallback
 		{
@@ -43,6 +46,7 @@ namespace Acceleration
 				ap.heat = reader.ReadUInt16();
 				ap.dashDirection = reader.ReadSingle();
 				ap.dashing = reader.ReadBoolean();
+				ap.hyper = reader.ReadUInt16() / 10000;
 				// sync player stuff to other players
 				if (Main.netMode == NetmodeID.Server)
 				{
@@ -58,6 +62,7 @@ namespace Acceleration
 			ap.heat = heat;
 			ap.dashing = dashing;
 			ap.dashDirection = dashDirection;
+			ap.hyper = hyper;
 		}
 
 		void SyncStep(int fromwho = -1)
@@ -68,6 +73,7 @@ namespace Acceleration
 			pack.Write((UInt16)heat);
 			pack.Write(dashDirection);
 			pack.Write(dashing);
+			pack.Write((ushort)(hyper * 10000));
 			pack.Send(-1, fromwho);
 		}
 
@@ -134,6 +140,8 @@ namespace Acceleration
 
 			prevRightClick = rightClick;
 			rightClick = triggersSet.MouseRight;
+			prevHyperButton = hyperButton;
+			hyperButton = Acceleration.hyperKey.Current;
 		}
 
 		// apply our dash
@@ -242,6 +250,21 @@ namespace Acceleration
 			}
 			damage += (int)(defDamage * (heat * 0.01f));
 			return true;
+		}
+
+		public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+		{
+			base.DrawEffects(drawInfo, ref r, ref g, ref b, ref a, ref fullBright);
+			if (hyperDrawTimer > 0)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, null, ((float)hyperDrawTimer / 40) * 5);
+				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, null, ((1.0f - (float)hyperDrawTimer / 40)) * 6);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin();
+				--hyperDrawTimer;
+			}
 		}
 
 		public override void OnRespawn(Player player)

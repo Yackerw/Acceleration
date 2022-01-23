@@ -28,6 +28,9 @@ namespace Acceleration
 		public static LegacySoundStyle ChargeInitialSound;
 		public static LegacySoundStyle ChargeShotSound;
 		public static LegacySoundStyle MissileLaunchSound;
+		public static LegacySoundStyle hyperSound;
+		public static LegacySoundStyle beamRifleHyperSound;
+		public static ModHotKey hyperKey;
 
 		public static Acceleration thisMod;
 
@@ -41,6 +44,7 @@ namespace Acceleration
 			if (!Main.dedServ)
 			{
 				//dashKey = RegisterHotKey("Dash", "C");
+				hyperKey = RegisterHotKey("Hyper", "V");
 				heat = new HeatUI();
 				heat.Activate();
 				UI = new UserInterface();
@@ -52,6 +56,8 @@ namespace Acceleration
 				ChargeInitialSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/Charge");
 				ChargeShotSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/ChargeShot");
 				MissileLaunchSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/Burst00");
+				hyperSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/HyperUse");
+				beamRifleHyperSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/gun11_r");
 				// load our shaders
 				Ref<Effect> projectileShader = new Ref<Effect>(GetEffect("Effects/RainbowRing"));
 
