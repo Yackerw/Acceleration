@@ -30,5 +30,5 @@ namespace Acceleration.Items.Weapons
 			item.noUseGraphic = true;
 			item.channel = false;
 		}
-    }
+	}
 }

@@ -65,6 +65,12 @@ namespace Acceleration
 			ap.hyper = hyper;
 		}
 
+		public void SetupHyper()
+		{
+			hyperDrawTimer = 40;
+			Main.PlaySound(Acceleration.hyperSound);
+		}
+
 		void SyncStep(int fromwho = -1)
 		{
 			ModPacket pack = mod.GetPacket();

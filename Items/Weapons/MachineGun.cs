@@ -40,8 +40,45 @@ namespace Acceleration.Items.Weapons
 			return Main.rand.NextFloat() >= 0.2f;
 		}
 
+		public bool hyper;
+		public int hyperTimer;
+
+		public override void HoldItem(Player player)
+		{
+			AcceleratePlayer ap = player.GetModPlayer<AcceleratePlayer>();
+			if (!hyper && ap.hyperButton && !ap.prevHyperButton)
+			{
+				hyper = true;
+				hyperTimer = 60;
+				ap.SetupHyper();
+			}
+			if (hyper && hyperTimer > 0)
+			{
+				--hyperTimer;
+				player.reuseDelay = 1;
+				player.itemAnimation = 1;
+				player.itemAnimationMax = 1;
+				// just spawn a whole buncha bullets
+				float bulletAngle = (hyperTimer / 60.0f) * (float)Math.PI * 2;
+				Vector2 spawnPos = new Vector2(50, 0).RotatedBy(bulletAngle);
+				Vector2 spawnVel = new Vector2(8, 0).RotatedBy(bulletAngle);
+				Projectile.NewProjectile(player.position + spawnPos, spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(25 * player.rangedDamageMult), item.knockBack, player.whoAmI, -1);
+				Projectile.NewProjectile(player.position - spawnPos, -spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(25 * player.rangedDamageMult), item.knockBack, player.whoAmI, -1);
+				Main.PlaySound(SoundID.Item11, player.position);
+			}
+		}
+
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+			// no shooty!
+			if (hyper)
+			{
+				if (hyperTimer <= 0)
+				{
+					hyper = false;
+				}
+				return false;
+			}
 			Vector2 sp = new Vector2(speedX, speedY).RotatedByRandom(25.0f * Matht.Deg2Rad);
 
 			int projToFire = 0;

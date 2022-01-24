@@ -190,8 +190,7 @@ namespace Acceleration.Items.Weapons
 				hyper = true;
 				//Projectile.NewProjectile
 				// um, try rendering, i guess
-				ap.hyperDrawTimer = 40;
-				Main.PlaySound(Acceleration.hyperSound, player.position);
+				ap.SetupHyper();
 			}
 			if (hyper)
 			{
