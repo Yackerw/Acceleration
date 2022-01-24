@@ -24,7 +24,7 @@ namespace Acceleration.Items.Weapons.Melee
 			item.knockBack = 0;
 			item.value = Item.sellPrice(silver: 50);
 			item.rare = ItemRarityID.Orange;
-			item.UseSound = Acceleration.BeamRifleSound;
+			item.UseSound = Acceleration.tambourineSound;
 			item.shoot = ModContent.ProjectileType<Projectiles.Tambourine>();
 			item.shootSpeed = 10f;
 			item.noUseGraphic = true;

@@ -33,6 +33,7 @@ namespace Acceleration
 		public static LegacySoundStyle MissileLaunchSound;
 		public static LegacySoundStyle hyperSound;
 		public static LegacySoundStyle beamRifleHyperSound;
+		public static LegacySoundStyle tambourineSound;
 		public ModHotKey hyperKey;
 
 		public static Acceleration thisMod;
@@ -61,6 +62,7 @@ namespace Acceleration
 				MissileLaunchSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/Burst00");
 				hyperSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/HyperUse");
 				beamRifleHyperSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/gun11_r");
+				tambourineSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/Tambourine");
 				// load our shaders
 				Ref<Effect> projectileShader = new Ref<Effect>(GetEffect("Effects/RainbowRing"));
 
