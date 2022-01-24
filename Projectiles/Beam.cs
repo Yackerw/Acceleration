@@ -57,7 +57,7 @@ namespace Acceleration.Projectiles
 		{
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone);
-			AccelerationHelper.DrawSprite("Projectiles/Beam", projectile.Center, 0, 16, Color.White, projectile.rotation, spriteBatch);
+			AccelerationHelper.DrawSprite("Projectiles/Beam", projectile.Center, 0, 16, Color.White, projectile.rotation, new Vector2(1,1), spriteBatch);
 			return false;
 		}
 

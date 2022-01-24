@@ -48,7 +48,7 @@ namespace Acceleration.Projectiles
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-            AccelerationHelper.DrawSprite("Projectiles/BeamSword", projectile.position, 0, 48, Color.White, projectile.rotation, spriteBatch);
+            AccelerationHelper.DrawSprite("Projectiles/BeamSword", projectile.position, 0, 48, Color.White, projectile.rotation, new Vector2(1,1), spriteBatch);
             return false;
 		}
 	}
