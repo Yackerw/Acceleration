@@ -30,7 +30,7 @@ namespace Acceleration
 		public static LegacySoundStyle MissileLaunchSound;
 		public static LegacySoundStyle hyperSound;
 		public static LegacySoundStyle beamRifleHyperSound;
-		public static ModHotKey hyperKey;
+		public ModHotKey hyperKey;
 
 		public static Acceleration thisMod;
 

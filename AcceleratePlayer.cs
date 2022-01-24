@@ -141,12 +141,16 @@ namespace Acceleration
 			prevRightClick = rightClick;
 			rightClick = triggersSet.MouseRight;
 			prevHyperButton = hyperButton;
-			hyperButton = Acceleration.hyperKey.Current;
+			hyperButton = ((Acceleration)mod).hyperKey.Current;
 		}
 
 		// apply our dash
 		public override void PreUpdateMovement()
 		{
+			if (hyperDrawTimer > 0)
+			{
+				--hyperDrawTimer;
+			}
 			if (dashing && accel)
 			{
 				// if we're not local, just hover
@@ -263,7 +267,6 @@ namespace Acceleration
 				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, null, ((1.0f - (float)hyperDrawTimer / 40)) * 6);
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin();
-				--hyperDrawTimer;
 			}
 		}
 

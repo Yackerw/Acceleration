@@ -25,7 +25,7 @@ namespace Acceleration.Projectiles
 		{
 			projectile.width = 38;
 			projectile.height = 12;
-			projectile.alpha = 50;
+			projectile.alpha = 0;
 			projectile.timeLeft = 600;
 			projectile.penetrate = 1;
 			projectile.hostile = false;
@@ -57,7 +57,8 @@ namespace Acceleration.Projectiles
 		{
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone);
-			return true;
+			AccelerationHelper.DrawSprite("Projectiles/Beam", projectile.Center, 0, 16, Color.White, projectile.rotation, spriteBatch);
+			return false;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)

@@ -65,14 +65,29 @@ namespace Acceleration.Projectiles
 						break;
 					}
 					spawnPos += spawnIncrement;
-					Main.projectile[Projectile.NewProjectile(spawnPos, new Vector2(0, 0), projToSpawn, projectile.damage, projectile.knockBack, projectile.owner, 1, projectile.ai[1])].alpha = projectile.alpha;
+					Projectile proj = Main.projectile[Projectile.NewProjectile(spawnPos, new Vector2(0, 0), projToSpawn, projectile.damage, projectile.knockBack, projectile.owner, 2 + ((fluctuationTimer + (i * 2)) % 4 <= 1 ? 1 : 0), projectile.ai[1])];
+					proj.alpha = projectile.alpha;
+					// hack for ordering...
+					if (proj.whoAmI < projectile.whoAmI)
+					{
+						proj.timeLeft = 1;
+					}
 				}
-				Main.projectile[Projectile.NewProjectile(spawnPos, new Vector2(0, 0), projToSpawn, projectile.damage, projectile.knockBack, projectile.owner, 2, fluctuationTimer)].alpha = projectile.alpha;
+				Projectile explodeProj = Main.projectile[Projectile.NewProjectile(spawnPos, new Vector2(0, 0), projToSpawn, projectile.damage, projectile.knockBack, projectile.owner, 4 + ((fluctuationTimer) % 4 <= 1 ? 1 : 0), fluctuationTimer)];
+				if (explodeProj.whoAmI < projectile.whoAmI)
+				{
+					explodeProj.timeLeft = 1;
+				}
+				projectile.frame = (fluctuationTimer % 4) <= 1 ? 0 : 1;
 			} else
 			{
 				if (projectile.timeLeft > 2)
 				{
 					projectile.timeLeft = 2;
+				}
+				if (projectile.ai[0] >= 4)
+				{
+					projectile.alpha = 0;
 				}
 			}
 		}
@@ -84,26 +99,34 @@ namespace Acceleration.Projectiles
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-			if (projectile.ai[0] != 2)
+			if (projectile.ai[0] < 4)
 			{
 				projectile.rotation = projectile.ai[1];
 			}
 			projectile.frame = (int)projectile.ai[0];
-			if (projectile.ai[0] == 2)
+			if (projectile.ai[0] >= 4)
 			{
 				if (projectile.ai[1] < 280)
 				{
-					projectile.scale = 5;
+					projectile.scale = 4.5f;
 				} else
 				{
-					projectile.scale = Matht.Lerp(5, 2, (projectile.ai[1] - 280.0f) / 20.0f);
+					projectile.scale = Matht.Lerp(4.5f, 2, (projectile.ai[1] - 280.0f) / 20.0f);
 				}
 				projectile.scale += (projectile.ai[1] % 5) * 0.05f;
 				projectile.alpha = 0;
 			}
-			return true;
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+			if (projectile.ai[0] < 4)
+			{
+				AccelerationHelper.DrawSprite("Projectiles/BeamHyper", projectile.Center, (int)projectile.ai[0], 40, new Color(0, 128, 255, 255 - projectile.alpha), projectile.rotation, spriteBatch, projectile.scale);
+			} else
+			{
+				AccelerationHelper.DrawSprite("Projectiles/beam_impact", projectile.Center, 0, 64, new Color(0, 128, 255, 255), projectile.rotation, spriteBatch, projectile.scale);
+				AccelerationHelper.DrawSprite("Projectiles/beam_impact", projectile.Center, 0, 64, new Color(0, 128, 128, 255), projectile.rotation, spriteBatch, projectile.scale * 0.75f);
+			}
+			return false;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)

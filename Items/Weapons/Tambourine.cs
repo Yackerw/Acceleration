@@ -27,6 +27,8 @@ namespace Acceleration.Items.Weapons
 			item.UseSound = Acceleration.BeamRifleSound;
 			item.shoot = ModContent.ProjectileType<Projectiles.Tambourine>();
 			item.shootSpeed = 10f;
+			item.noUseGraphic = true;
+			item.channel = false;
 		}
     }
 }
