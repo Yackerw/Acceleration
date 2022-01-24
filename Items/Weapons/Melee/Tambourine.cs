@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
 
-namespace Acceleration.Items.Weapons
+namespace Acceleration.Items.Weapons.Melee
 {
 	class Tambourine : ModItem
 	{

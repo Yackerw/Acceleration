@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Acceleration.Items.Weapons
+namespace Acceleration.Items.Weapons.Magic
 {
 	class BeamRifle : ModItem
 	{
@@ -71,6 +71,23 @@ namespace Acceleration.Items.Weapons
 			Tooltip.SetDefault("Fires a laser"
 				+ "\nRight click: charge shot"
 				+ "\nHYPER: big laser");
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe currRecipe = new ModRecipe(Acceleration.thisMod);
+			currRecipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12);
+			currRecipe.AddIngredient(ItemID.SilverBar, 20);
+			currRecipe.AddTile(TileID.Anvils);
+			currRecipe.SetResult(ModContent.ItemType<BeamRifle>());
+			currRecipe.AddRecipe();
+
+			currRecipe = new ModRecipe(Acceleration.thisMod);
+			currRecipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12);
+			currRecipe.AddIngredient(ItemID.TungstenBar, 20);
+			currRecipe.AddTile(TileID.Anvils);
+			currRecipe.SetResult(ModContent.ItemType<BeamRifle>());
+			currRecipe.AddRecipe();
 		}
 
 		public override void SetDefaults() {
@@ -184,7 +201,7 @@ namespace Acceleration.Items.Weapons
 				}
 			}
 
-			if (ap.hyperButton && !ap.prevHyperButton && player.reuseDelay <= 0)
+			if (ap.hyperButton && !ap.prevHyperButton && player.reuseDelay <= 0 && ap.hyper >= 1.0f)
 			{
 				hyperTimer = 70;
 				hyper = true;

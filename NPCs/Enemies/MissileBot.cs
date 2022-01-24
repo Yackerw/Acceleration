@@ -171,5 +171,21 @@ namespace Acceleration.NPCs.Enemies
 			}
 			return base.CheckDead();
 		}
+
+		public override void NPCLoot()
+		{
+			int choice = Main.rand.Next(0, 10);
+			if (choice < 6)
+			{
+				if (choice < 3)
+				{
+					// drop 2
+					Item.NewItem(npc.getRect(), ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 2);
+				} else
+				{
+					Item.NewItem(npc.getRect(), ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 1);
+				}
+			}
+		}
 	}
 }

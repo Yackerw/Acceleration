@@ -13,6 +13,9 @@ using Terraria.Audio;
 using System.IO;
 using Acceleration.NPCs;
 using Acceleration.Items.Weapons;
+using Acceleration.Items.Weapons.Magic;
+using Acceleration.Items.Weapons.Melee;
+using Acceleration.Items.Weapons.Ranged;
 
 namespace Acceleration
 {

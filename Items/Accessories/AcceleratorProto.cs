@@ -1,15 +1,15 @@
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Acceleration.Items.Accessories
 {
-	public class Accelerator : ModItem
+	public class AcceleratorProto : ModItem
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Accelerator");
-			Tooltip.SetDefault("A legendary weapon said to have the power to stop wars and save the world");
+			DisplayName.SetDefault("Accelerator Prototype");
+			Tooltip.SetDefault("A powerful booster that enhances your abilities to new levels");
 		}
 		public override void SetDefaults()
 		{
@@ -21,7 +21,7 @@ namespace Acceleration.Items.Accessories
 			//item.useAnimation = 20;
 			//item.useStyle = 1;
 			item.knockBack = -1;
-			item.value = 10000;
+			item.value = 250000;
 			item.rare = ItemRarityID.Orange;
 			//item.UseSound = SoundID.Item1;
 			//item.autoReuse = false;
@@ -31,8 +31,9 @@ namespace Acceleration.Items.Accessories
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.DirtBlock, 10);
-			recipe.AddTile(TileID.WorkBenches);
+			recipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 20);
+			recipe.AddIngredient(ItemID.FallenStar, 5);
+			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
@@ -42,7 +43,7 @@ namespace Acceleration.Items.Accessories
 			// tell the player we can dash
 			AcceleratePlayer ap = player.GetModPlayer<AcceleratePlayer>();
 			ap.accel = true;
-			ap.maxAccelTime = 100000000;
+			ap.maxAccelTime = 400;
 			player.noFallDmg = true;
 		}
 	}

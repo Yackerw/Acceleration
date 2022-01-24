@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 using Mathj;
 using System;
 
-namespace Acceleration.Items.Weapons
+namespace Acceleration.Items.Weapons.Ranged
 {
 	class MachineGun : ModItem
 	{
@@ -46,7 +46,7 @@ namespace Acceleration.Items.Weapons
 		public override void HoldItem(Player player)
 		{
 			AcceleratePlayer ap = player.GetModPlayer<AcceleratePlayer>();
-			if (!hyper && ap.hyperButton && !ap.prevHyperButton)
+			if (!hyper && ap.hyperButton && !ap.prevHyperButton && ap.hyper > 1.0f && player.reuseDelay <= 0)
 			{
 				hyper = true;
 				hyperTimer = 60;
@@ -66,6 +66,16 @@ namespace Acceleration.Items.Weapons
 				Projectile.NewProjectile(player.position - spawnPos, -spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(25 * player.rangedDamageMult), item.knockBack, player.whoAmI, -1);
 				Main.PlaySound(SoundID.Item11, player.position);
 			}
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe currRecipe = new ModRecipe(Acceleration.thisMod);
+			currRecipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12);
+			currRecipe.AddIngredient(ItemID.IllegalGunParts, 1);
+			currRecipe.AddTile(TileID.Anvils);
+			currRecipe.SetResult(ModContent.ItemType<MachineGun>());
+			currRecipe.AddRecipe();
 		}
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

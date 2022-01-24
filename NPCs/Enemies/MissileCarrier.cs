@@ -185,8 +185,10 @@ namespace Acceleration.NPCs.Enemies
 					case 1:
 						// launch at the player roughly
 						float dir = npc.rotation;
-						if (npc.direction == -1)
+						if (npc.spriteDirection != 1 || npc.direction != 1)
 						{
+							npc.direction = 1;
+							npc.spriteDirection = 1;
 							dir -= (float)Math.PI;
 						}
 						Vector2 posDiff = target.position - npc.position;
@@ -199,10 +201,10 @@ namespace Acceleration.NPCs.Enemies
 						npc.velocity = new Vector2(speed, 0).RotatedBy(dir);
 						// spawn particle wahee
 						Terraria.Dust.NewDust(npc.Center + new Vector2(-40, 0).RotatedBy(dir), 10, 10, 269, -npc.velocity.X, -npc.velocity.Y);
-						if (npc.direction == -1)
+						/*if (npc.direction == -1)
 						{
 							dir += (float)Math.PI;
-						}
+						}*/
 						npc.rotation = dir;
 						// done being fast
 						if (npc.ai[waitTimer] <= 0)
@@ -290,6 +292,23 @@ namespace Acceleration.NPCs.Enemies
 			Main.npc[retValue].ai[launchersAlive] = 4;
 			Main.npc[retValue].ai[waitTimer] = 300;
 			return retValue;
+		}
+
+		public override void NPCLoot()
+		{
+			int choice = Main.rand.Next(0, 10);
+			if (choice < 6)
+			{
+				if (choice < 3)
+				{
+					// drop 2
+					Item.NewItem(npc.getRect(), ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 2);
+				}
+				else
+				{
+					Item.NewItem(npc.getRect(), ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 1);
+				}
+			}
 		}
 	}
 }

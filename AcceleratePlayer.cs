@@ -36,6 +36,9 @@ namespace Acceleration
 		public bool hyperButton;
 		public bool prevHyperButton;
 		public int hyperDrawTimer;
+		// accelerator values
+		public int maxAccelTime;
+		public int accelTime;
 
 		public class PlayerStepCallback : SyncCallback
 		{
@@ -47,6 +50,7 @@ namespace Acceleration
 				ap.dashDirection = reader.ReadSingle();
 				ap.dashing = reader.ReadBoolean();
 				ap.hyper = reader.ReadUInt16() / 10000;
+				ap.accelTime = reader.ReadUInt16();
 				// sync player stuff to other players
 				if (Main.netMode == NetmodeID.Server)
 				{
@@ -69,6 +73,7 @@ namespace Acceleration
 		{
 			hyperDrawTimer = 40;
 			Main.PlaySound(Acceleration.hyperSound);
+			hyper = Math.Max(0, hyper - 1.0f);
 		}
 
 		void SyncStep(int fromwho = -1)
@@ -80,6 +85,7 @@ namespace Acceleration
 			pack.Write(dashDirection);
 			pack.Write(dashing);
 			pack.Write((ushort)(hyper * 10000));
+			pack.Write((ushort)accelTime);
 			pack.Send(-1, fromwho);
 		}
 
@@ -124,22 +130,31 @@ namespace Acceleration
 			left = triggersSet.Left;
 
 			// enable our dash if at the right time
-			if (jump && !prevJump && player.velocity.Y != 0.0f && !player.sliding)
+			if (jump && !prevJump && player.velocity.Y != 0.0f && !player.sliding && accelTime < maxAccelTime)
 			{
 				dashing = true;
+				// mild punishment for spam
+				accelTime += 20;
 			}
 			else
 			{
 				// only cancel a dash if we're not pressing the button
 				if (dashing)
 				{
-					if (!jump)
+					++accelTime;
+					// end if we've met our acceleration timer
+					if (!jump || accelTime >= maxAccelTime)
 					{
 						dashing = false;
 					}
 				}
 				else
 				{
+					// reset our acceleration timer
+					if (player.velocity.Y == 0)
+					{
+						accelTime = 0;
+					}
 					dashing = false;
 				}
 			}
