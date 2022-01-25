@@ -121,7 +121,7 @@ namespace Acceleration.Items.Weapons.Melee
 				hyperTimer = 25;
 				hyper = true;
 				ModPacket mp = Acceleration.thisMod.GetPacket();
-				mp.Write((int)callback.reference);
+				mp.Write((int)callBack.reference);
 				mp.Write((byte)player.whoAmI);
 
 			}
