@@ -41,6 +41,12 @@ namespace Mathj
 			return (x * (1f - t)) + (y * t);
 		}
 
+		static public float SmootherStep(float edge0, float edge1, float x)
+		{
+			// Evaluate polynomial
+			return Lerp(edge0, edge1, x * x * x * (x * (x * 6f - 15f) + 10f));
+		}
+
 		public static float DotProduct(Vector2 a, Vector2 b)
 		{
 			return (a.X * b.X) + (a.Y * b.Y);

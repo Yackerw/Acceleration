@@ -120,11 +120,11 @@ namespace Acceleration.Projectiles
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
 			if (projectile.ai[0] < 4)
 			{
-				AccelerationHelper.DrawSprite("Projectiles/BeamHyper", projectile.Center, (int)projectile.ai[0], 40, new Color(0, 128, 255, 255 - projectile.alpha), projectile.rotation, spriteBatch, projectile.scale);
+				AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, (int)projectile.ai[0], 40, new Color(0, 128, 255, 255 - projectile.alpha), projectile.rotation, new Vector2(projectile.scale, projectile.scale), spriteBatch);
 			} else
 			{
-				AccelerationHelper.DrawSprite("Projectiles/beam_impact", projectile.Center, 0, 64, new Color(0, 128, 255, 255), projectile.rotation, spriteBatch, projectile.scale);
-				AccelerationHelper.DrawSprite("Projectiles/beam_impact", projectile.Center, 0, 64, new Color(0, 128, 128, 255), projectile.rotation, spriteBatch, projectile.scale * 0.75f);
+				AccelerationHelper.DrawSprite("Projectiles/beam_impact", projectile.Center, 0, 64, new Color(0, 128, 255, 255), projectile.rotation, new Vector2(projectile.scale, projectile.scale), spriteBatch);
+				AccelerationHelper.DrawSprite("Projectiles/beam_impact", projectile.Center, 0, 64, new Color(0, 128, 128, 255), projectile.rotation, new Vector2(projectile.scale, projectile.scale) * 0.75f, spriteBatch);
 			}
 			return false;
 		}

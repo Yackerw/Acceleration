@@ -12,23 +12,33 @@ namespace Acceleration
 {
 	class AccelerationHelper
 	{
-		static public void DrawSprite(string texture, Vector2 position, int frame, int spriteHeight, Color color, float rotation, SpriteBatch batch = null, float scale = 1.0f)
+		static public void DrawSpriteCached(Texture2D texture, Vector2 position, int frame, int spriteHeight, Color color, float rotation, Vector2 scale, SpriteBatch batch = null)
 		{
 			if (batch == null)
 			{
 				batch = Main.spriteBatch;
 			}
-			Texture2D tex;
-			tex = Acceleration.thisMod.GetTexture(texture);
-			batch.Draw(tex,
+			batch.Draw(texture,
 				position - Main.screenPosition,
-				new Rectangle(0, frame * spriteHeight, tex.Width, spriteHeight),
+				new Rectangle(0, frame * spriteHeight, texture.Width, spriteHeight),
 				color,
 				rotation,
-				new Vector2(tex.Width / 2, spriteHeight / 2),
+				new Vector2(texture.Width / 2, spriteHeight / 2),
 				scale,
 				SpriteEffects.None,
 				0);
+		}
+
+		static public void DrawSprite(string texture, Vector2 position, int frame, int spriteHeight, Color color, float rotation, Vector2 scale, SpriteBatch batch = null)
+		{
+			Texture2D tex;
+			tex = Acceleration.thisMod.GetTexture(texture);
+			DrawSpriteCached(tex, position, frame, spriteHeight, color, rotation, scale, batch);
+		}
+
+		static public float GetMouseRotation(Player player)
+		{
+			return (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
 		}
 	}
 }

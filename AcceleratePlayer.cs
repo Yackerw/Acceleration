@@ -284,8 +284,10 @@ namespace Acceleration
 			{
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
-				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, null, ((float)hyperDrawTimer / 40) * 5);
-				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, null, ((1.0f - (float)hyperDrawTimer / 40)) * 6);
+				float drawScale0 = ((float)hyperDrawTimer / 40) * 5;
+				float drawScale1 = ((1.0f - (float)hyperDrawTimer / 40)) * 6;
+				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, new Vector2(drawScale0, drawScale0), null);
+				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, new Vector2(drawScale1, drawScale1), null);
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin();
 			}

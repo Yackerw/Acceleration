@@ -33,8 +33,8 @@ namespace Acceleration.Items.Weapons.Magic
 			{
 				if (player.HeldItem.type == Acceleration.thisMod.ItemType("BeamRifle"))
 				{
-					player.HeldItem.useTime = 26;
-					player.HeldItem.useAnimation = 26;
+					player.HeldItem.useTime = 25;
+					player.HeldItem.useAnimation = 25;
 					BeamRifle br = (BeamRifle)player.HeldItem.modItem;
 					br.charging = false;
 					br.chargeTime = 0;
@@ -65,6 +65,7 @@ namespace Acceleration.Items.Weapons.Magic
 		public static BeamRifleFireCallback callBack = new BeamRifleFireCallback();
 		bool charging = false;
 		int chargeTime;
+		bool chargeFire;
 		bool hyper = true;
 		int hyperTimer = 0;
 		public override void SetStaticDefaults() {
@@ -112,10 +113,9 @@ namespace Acceleration.Items.Weapons.Magic
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			// dirty hack to prevent charge shot firing something
-			if (item.useAnimation == 26)
+			if (chargeFire)
 			{
-				item.useTime = 25;
-				item.useAnimation = 25;
+				chargeFire = false;
 				return false;
 			}
 			if (hyper)
@@ -194,8 +194,9 @@ namespace Acceleration.Items.Weapons.Magic
 					player.itemAnimation = 25;
 					player.itemAnimationMax = 25;
 					player.reuseDelay = 25;
-					item.useTime = 26;
-					item.useAnimation = 26;
+					item.useTime = 25;
+					item.useAnimation = 25;
+					chargeFire = true;
 					charging = false;
 					chargeTime = 0;
 				}
