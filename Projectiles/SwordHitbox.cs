@@ -28,7 +28,17 @@ namespace Acceleration.Projectiles
             projectile.melee = true;
         }
 
-		public override void AI()
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+            ap.hyper += 0.05f;
+            if (ap.hyper > 3.0f)
+            {
+                ap.hyper = 3.0f;
+            }
+        }
+
+        public override void AI()
 		{
             projectile.rotation = projectile.ai[0];
             if (projectile.ai[1] != 0)

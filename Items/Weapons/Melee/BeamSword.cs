@@ -24,6 +24,14 @@ namespace Acceleration.Items.Weapons.Melee
 					bm.hyperTimer = 25;
 					bm.hyper = true;
 				}
+				// send it to everyone else
+				if (Main.netMode == NetmodeID.Server)
+				{
+					ModPacket pack = Acceleration.thisMod.GetPacket();
+					pack.Write(reference);
+					pack.Write((byte)whom);
+					pack.Send(-1, whom);
+				}
 			}
 		}
 		int swingAnim = 0;
@@ -39,7 +47,7 @@ namespace Acceleration.Items.Weapons.Melee
 			item.useAnimation = 25;
 			item.useStyle = ItemUseStyleID.SwingThrow;
 			item.noMelee = true;
-			item.knockBack = 0;
+			item.knockBack = 4;
 			item.value = Item.sellPrice(silver: 50);
 			item.rare = ItemRarityID.Orange;
 			item.shoot = ModContent.ProjectileType<Projectiles.BeamSword>();
@@ -115,14 +123,17 @@ namespace Acceleration.Items.Weapons.Melee
 			}
 			// hyper
 			AcceleratePlayer ap = player.GetModPlayer<AcceleratePlayer>();
-			if (ap.hyperButton && !ap.prevHyperButton && player.reuseDelay <= 0 && ap.hyper >= 1.0f)
+			if (ap.hyperButton && !ap.prevHyperButton && player.reuseDelay <= 0 && ap.hyper >= 1.0f && !hyper)
 			{
 				ap.SetupHyper();
 				hyperTimer = 25;
 				hyper = true;
-				ModPacket mp = Acceleration.thisMod.GetPacket();
-				mp.Write((int)callBack.reference);
-				mp.Write((byte)player.whoAmI);
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					ModPacket mp = Acceleration.thisMod.GetPacket();
+					mp.Write((int)callBack.reference);
+					mp.Write((byte)player.whoAmI);
+				}
 
 			}
 			if (hyper)
