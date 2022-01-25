@@ -65,7 +65,7 @@ namespace Acceleration.Items.Weapons.Magic
 		public static HeatRifleFireCallback callBack = new HeatRifleFireCallback();
 		bool charging = false;
 		int chargeTime;
-		bool hyper = true;
+		bool hyper = false;
 		int hyperTimer = 0;
 		public override void SetStaticDefaults() {
 			Tooltip.SetDefault("Fires 3 lasers"

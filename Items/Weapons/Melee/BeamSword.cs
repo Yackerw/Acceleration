@@ -13,6 +13,12 @@ namespace Acceleration.Items.Weapons.Melee
 {
 	class BeamSword : ModItem
 	{
+		public override void SetStaticDefaults()
+		{
+			Tooltip.SetDefault("3 hit combo" +
+				"\nGives invuln on hit"
+				+ "\nHYPER: Super speed dash attack");
+		}
 		public class BeamSwordCallback : SyncCallback
 		{
 			public override void Callback(BinaryReader reader)

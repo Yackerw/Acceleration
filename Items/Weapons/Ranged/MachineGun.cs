@@ -13,7 +13,7 @@ namespace Acceleration.Items.Weapons.Ranged
 		public override void SetStaticDefaults() {
 			Tooltip.SetDefault("20% chance not to use ammo" +
 				"\nFires rapid fire bullets"
-				+ "\nHYPER: big laser");
+				+ "\nHYPER: Rings of bullets");
 		}
 
 		public override void SetDefaults() {
@@ -89,7 +89,7 @@ namespace Acceleration.Items.Weapons.Ranged
 				}
 				return false;
 			}
-			Vector2 sp = new Vector2(speedX, speedY).RotatedByRandom(25.0f * Matht.Deg2Rad);
+			Vector2 sp = new Vector2(speedX, speedY).RotatedByRandom(15.0f * Matht.Deg2Rad);
 
 			int projToFire = 0;
 			float speed = 8.0f;

@@ -34,16 +34,6 @@ namespace Acceleration.Projectiles
 			projectile.ranged = true;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-		{
-			AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
-			ap.hyper += 0.015f;
-			if (ap.hyper > 3.0f)
-			{
-				ap.hyper = 3.0f;
-			}
-		}
-
 		public override void AI()
 		{
 			base.AI();
@@ -146,6 +136,12 @@ namespace Acceleration.Projectiles
 				case ProjectileID.IchorBullet:
 					target.AddBuff(BuffID.Ichor, 600);
 					break;
+			}
+			AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+			ap.hyper += 0.015f;
+			if (ap.hyper > 3.0f)
+			{
+				ap.hyper = 3.0f;
 			}
 			base.OnHitNPC(target, damage, knockback, crit);
 		}
