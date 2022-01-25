@@ -112,7 +112,7 @@ namespace Acceleration.Items.Weapons.Magic
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			int scaling = (int) (30*(((1.0f * player.GetModPlayer<AcceleratePlayer>().heat))/100));
+			int scaling = (int) (item.damage*(((1.0f * player.GetModPlayer<AcceleratePlayer>().heat))/100));
             // dirty hack to prevent charge shot firing something
             if (item.useAnimation == 31)
 			{
