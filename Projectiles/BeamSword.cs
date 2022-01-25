@@ -33,7 +33,13 @@ namespace Acceleration.Projectiles
             projectile.melee = true;
             projectile.light = 0.3f;
         }
-        public override void AI()
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+            AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+            ap.hyper += 0.05f;
+		}
+		public override void AI()
         {
             // adjust our existence time
             if (projectile.timeLeft == 30)
