@@ -141,9 +141,9 @@ namespace Acceleration.Items.Weapons.Magic
                 item.useAnimation = 30;
                 charging = false;
                 float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
-                Projectile.NewProjectile(player.position, new Vector2(10, 0).RotatedBy(shotAngle + (10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
-				Projectile.NewProjectile(player.position, new Vector2(10, 0).RotatedBy(shotAngle), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
-				Projectile.NewProjectile(player.position, new Vector2(10, 0).RotatedBy(shotAngle + (-10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+                Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+				Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+				Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (-10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
                 return false;
             }
             else
