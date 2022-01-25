@@ -122,6 +122,10 @@ namespace Acceleration.Items.Weapons.Melee
 					swingAnim = 0;
 				}
 			}
+			if (swingInvulnDelay > 0)
+			{
+				--swingInvulnDelay;
+			}
 			// hyper
 			AcceleratePlayer ap = player.GetModPlayer<AcceleratePlayer>();
 			if (ap.hyperButton && !ap.prevHyperButton && player.reuseDelay <= 0 && ap.hyper >= 1.0f && !hyper)
