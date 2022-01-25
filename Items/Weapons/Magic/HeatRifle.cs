@@ -92,7 +92,7 @@ namespace Acceleration.Items.Weapons.Magic
 		}
 
 		public override void SetDefaults() {
-			item.damage = 30;
+			item.damage = 35;
 			item.magic = true;
 			item.mana = 10;
 			item.width = 26;
@@ -113,13 +113,6 @@ namespace Acceleration.Items.Weapons.Magic
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			int scaling = (int) (30*(((1.0f * player.GetModPlayer<AcceleratePlayer>().heat))/100));
-			if (player.GetModPlayer<AcceleratePlayer>().heat <= 100) //this is so we dont accidentally do 0 damage 
-            {
-				item.damage = 30;
-			} else
-            {
-				item.damage = scaling; //this prevents an item description glitch!! must be after 30 alone. this is because it reads whatever is first!
-            }
             // dirty hack to prevent charge shot firing something
             if (item.useAnimation == 31)
 			{
@@ -141,9 +134,20 @@ namespace Acceleration.Items.Weapons.Magic
                 item.useAnimation = 30;
                 charging = false;
                 float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
-                Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
-				Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
-				Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (-10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+				if (player.GetModPlayer<AcceleratePlayer>().heat <= 100) //this is so we dont accidentally do 0 damage 
+				{
+					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(35 * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(35 * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (-10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(35 * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					return false;
+				}
+                else
+                {
+					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(scaling * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(scaling * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (-10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(scaling * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					return false;
+				}
                 return false;
             }
             else
