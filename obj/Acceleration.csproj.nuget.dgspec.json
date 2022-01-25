@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yacke\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\Acceleration.csproj": {}
+    "C:\\Users\\Jamis\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\Acceleration.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yacke\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\Acceleration.csproj": {
+    "C:\\Users\\Jamis\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\Acceleration.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yacke\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\Acceleration.csproj",
+        "projectUniqueName": "C:\\Users\\Jamis\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\Acceleration.csproj",
         "projectName": "Acceleration",
-        "projectPath": "C:\\Users\\yacke\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\Acceleration.csproj",
-        "packagesPath": "C:\\Users\\yacke\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yacke\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\obj\\",
+        "projectPath": "C:\\Users\\Jamis\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\Acceleration.csproj",
+        "packagesPath": "C:\\Users\\Jamis\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Jamis\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\yacke\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Jamis\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -45,7 +45,7 @@
               "version": "[0.1.*, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
         }
       }
     }
