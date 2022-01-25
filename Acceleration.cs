@@ -78,6 +78,7 @@ namespace Acceleration
 			RegisterNetFunc(AcceleratePlayer.pstepCallback);
 			RegisterNetFunc(RainbowRing.rrc);
 			RegisterNetFunc(BeamRifle.callBack);
+			RegisterNetFunc(BeamSword.callBack);
 		}
 
 		public override void UpdateUI(GameTime gameTime)
