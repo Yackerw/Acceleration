@@ -36,6 +36,22 @@ namespace Acceleration.Projectiles
             {
                 ap.hyper = 3.0f;
             }
+            // grant some invuln frames
+            if (ap.player.HeldItem.type == ModContent.ItemType<Items.Weapons.Melee.BeamSword>())
+			{
+                Items.Weapons.Melee.BeamSword bm = (Items.Weapons.Melee.BeamSword)ap.player.HeldItem.modItem;
+                if (bm.swingInvulnDelay <= 0)
+                {
+                    ap.player.immune = true;
+                    ap.player.immuneTime = 90;
+                    for (int i = 0; i < ap.player.hurtCooldowns.Length; ++i)
+                    {
+                        ap.player.hurtCooldowns[i] = 90;
+                    }
+                    // put a delay
+                    bm.swingInvulnDelay = 300;
+                }
+            }
         }
 
         public override void AI()

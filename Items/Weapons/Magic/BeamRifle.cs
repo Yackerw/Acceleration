@@ -29,16 +29,13 @@ namespace Acceleration.Items.Weapons.Magic
 			{
 				return;
 			}
-			if (player != Main.LocalPlayer)
+			BeamRifle br = null; ;
+			if (player.HeldItem.type == Acceleration.thisMod.ItemType("BeamRifle"))
+				br = (BeamRifle)player.HeldItem.modItem;
+			// err checking
+			if (br == null)
 			{
-				if (player.HeldItem.type == Acceleration.thisMod.ItemType("BeamRifle"))
-				{
-					player.HeldItem.useTime = 25;
-					player.HeldItem.useAnimation = 25;
-					BeamRifle br = (BeamRifle)player.HeldItem.modItem;
-					br.charging = false;
-					br.chargeTime = 0;
-				}
+				return;
 			}
 			int projectile;
 			float damage;
@@ -46,13 +43,13 @@ namespace Acceleration.Items.Weapons.Magic
 			if (!charged)
 			{
 				projectile = Acceleration.thisMod.ProjectileType("Beam");
-				damage = 27;
+				damage = br.item.damage;
 				Main.PlaySound(Acceleration.BeamRifleSound, player.position);
 				shootSpeed = new Vector2((float)Math.Cos(angle) * 10.0f, (float)Math.Sin(angle) * 10.0f);
 			} else
 			{
 				projectile = Acceleration.thisMod.ProjectileType("ChargeBeam");
-				damage = 55;
+				damage = br.item.damage * 2.1f;
 				Main.PlaySound(Acceleration.ChargeShotSound, player.position);
 				shootSpeed = new Vector2((float)Math.Cos(angle) * 13.0f, (float)Math.Sin(angle) * 13.0f);
 			}
@@ -221,7 +218,7 @@ namespace Acceleration.Items.Weapons.Magic
 				{
 					Main.PlaySound(Acceleration.beamRifleHyperSound, player.position);
 					float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
-					Projectile.NewProjectile(player.position + new Vector2(40, 0).RotatedBy(shotAngle), new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamHyper>(), (int)(18 * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					Projectile.NewProjectile(player.position + new Vector2(40, 0).RotatedBy(shotAngle), new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamHyper>(), (int)(item.damage * 0.666f * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
 				}
 			}
 

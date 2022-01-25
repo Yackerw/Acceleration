@@ -62,8 +62,8 @@ namespace Acceleration.Items.Weapons.Ranged
 				float bulletAngle = (hyperTimer / 60.0f) * (float)Math.PI * 2;
 				Vector2 spawnPos = new Vector2(50, 0).RotatedBy(bulletAngle);
 				Vector2 spawnVel = new Vector2(8, 0).RotatedBy(bulletAngle);
-				Projectile.NewProjectile(player.position + spawnPos, spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(25 * player.rangedDamageMult), item.knockBack, player.whoAmI, -1);
-				Projectile.NewProjectile(player.position - spawnPos, -spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(25 * player.rangedDamageMult), item.knockBack, player.whoAmI, -1);
+				Projectile.NewProjectile(player.position + spawnPos, spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(item.damage * 2.75f * player.rangedDamageMult), item.knockBack, player.whoAmI, -1);
+				Projectile.NewProjectile(player.position - spawnPos, -spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(item.damage * 2.75f * player.rangedDamageMult), item.knockBack, player.whoAmI, -1);
 				Main.PlaySound(SoundID.Item11, player.position);
 			}
 		}

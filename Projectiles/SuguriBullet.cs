@@ -34,6 +34,16 @@ namespace Acceleration.Projectiles
 			projectile.ranged = true;
 		}
 
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+			ap.hyper += 0.015f;
+			if (ap.hyper > 3.0f)
+			{
+				ap.hyper = 3.0f;
+			}
+		}
+
 		public override void AI()
 		{
 			base.AI();

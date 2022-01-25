@@ -58,6 +58,7 @@ namespace Acceleration.Items.Weapons.Melee
 
 		int hyperTimer = 0;
 		bool hyper;
+		public int swingInvulnDelay;
 
 		public override void AddRecipes()
 		{
@@ -84,10 +85,10 @@ namespace Acceleration.Items.Weapons.Melee
 				return false;
 			}
 			float mouseDir = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
-			int dmg = item.damage;
+			float dmg = item.damage;
 			if (swingAnim == 2)
 			{
-				dmg = 40;
+				dmg *= 1.333f;
 			}
 			Terraria.Audio.LegacySoundStyle soundToPlay;
 			switch (swingAnim)
@@ -127,6 +128,7 @@ namespace Acceleration.Items.Weapons.Melee
 			{
 				ap.SetupHyper();
 				hyperTimer = 25;
+				player.reuseDelay = 25;
 				hyper = true;
 				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
@@ -181,7 +183,7 @@ namespace Acceleration.Items.Weapons.Melee
 						particlePos += player.velocity / 5.0f;
 					}
 					// spawn the hurty
-					Projectile.NewProjectile(player.position + player.velocity / 2, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.SwordHitbox>(), (int)(120 * player.meleeDamageMult), item.knockBack, player.whoAmI, 0, 4);
+					Projectile.NewProjectile(player.position + player.velocity / 2, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.SwordHitbox>(), (int)(item.damage * 4 * player.meleeDamageMult), item.knockBack, player.whoAmI, 0, 4);
 				}
 
 			}
