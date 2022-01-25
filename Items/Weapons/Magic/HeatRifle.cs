@@ -92,7 +92,7 @@ namespace Acceleration.Items.Weapons.Magic
 		}
 
 		public override void SetDefaults() {
-			item.damage = 35;
+			item.damage = 45;
 			item.magic = true;
 			item.mana = 10;
 			item.width = 26;
@@ -136,9 +136,9 @@ namespace Acceleration.Items.Weapons.Magic
                 float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
 				if (player.GetModPlayer<AcceleratePlayer>().heat <= 100) //this is so we dont accidentally do 0 damage 
 				{
-					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(35 * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
-					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(35 * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
-					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (-10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(35 * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					Projectile.NewProjectile(player.position, new Vector2(15, 0).RotatedBy(shotAngle + (-10f * Mathj.Matht.Deg2Rad)), ModContent.ProjectileType<Projectiles.HeatBeam>(), (int)(item.damage * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
 					return false;
 				}
                 else
