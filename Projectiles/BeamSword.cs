@@ -116,7 +116,7 @@ namespace Acceleration.Projectiles
             float hitRot = projectile.rotation + (projectile.spriteDirection == -1 ? -(float)Math.PI / 4 : (float)Math.PI / 4);
             for (int i = 0; i < 5; ++i)
 			{
-                Projectile.NewProjectile(spawnPos, new Vector2(0, 0), ModContent.ProjectileType<SwordHitbox>(), projectile.damage, projectile.knockBack, projectile.owner, hitRot);
+                Projectile.NewProjectile(spawnPos, new Vector2(2f * projectile.spriteDirection, 0), ModContent.ProjectileType<SwordHitbox>(), projectile.damage, projectile.knockBack, projectile.owner, hitRot);
                 spawnPos += spawnNorm;
 			}
         }
