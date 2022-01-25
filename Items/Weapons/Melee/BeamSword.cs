@@ -92,7 +92,7 @@ namespace Acceleration.Items.Weapons.Melee
 					break;
 			}
 			Main.PlaySound(soundToPlay, player.position);
-			Projectile.NewProjectile(player.position, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamSword>(), (int)(dmg * player.meleeDamageMult), item.knockBack, player.whoAmI, swingAnim + (item.useTime << 2), mouseDir);
+			Projectile.NewProjectile(player.position, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamSword>(), (int)(dmg * player.meleeDamageMult), item.knockBack, player.whoAmI, swingAnim + ((int)(item.useTime * player.meleeSpeed) << 2), mouseDir);
 			++swingAnim;
 			if (swingAnim == 3)
 			{
