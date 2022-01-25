@@ -23,7 +23,7 @@ namespace Acceleration.NPCs.Enemies
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			return 1.0f;
+			return 0;
 		}
 
 		public override void SetDefaults()
