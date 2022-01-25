@@ -35,5 +35,10 @@ namespace Acceleration
 			tex = Acceleration.thisMod.GetTexture(texture);
 			DrawSpriteCached(tex, position, frame, spriteHeight, color, rotation, scale, batch);
 		}
+
+		static public float GetMouseRotation(Player player)
+		{
+			return (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
+		}
 	}
 }
