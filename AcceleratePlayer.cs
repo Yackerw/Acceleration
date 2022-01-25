@@ -11,6 +11,7 @@ using Terraria.ModLoader.IO;
 using Terraria.GameInput;
 using Mathj;
 using Acceleration.NPCs;
+using Acceleration.Misc;
 
 
 namespace Acceleration

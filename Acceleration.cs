@@ -16,6 +16,7 @@ using Acceleration.Items.Weapons;
 using Acceleration.Items.Weapons.Magic;
 using Acceleration.Items.Weapons.Melee;
 using Acceleration.Items.Weapons.Ranged;
+using Acceleration.Misc;
 
 namespace Acceleration
 {
