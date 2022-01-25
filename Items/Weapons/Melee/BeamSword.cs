@@ -28,7 +28,7 @@ namespace Acceleration.Items.Weapons.Melee
 		}
 		int swingAnim = 0;
 		int swingTimer = 0;
-		static public BeamSwordCallback callBack;
+		static public BeamSwordCallback callBack = new BeamSwordCallback();
 		public override void SetDefaults()
 		{
 			item.damage = 30;
