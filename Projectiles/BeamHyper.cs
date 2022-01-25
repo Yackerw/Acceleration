@@ -123,8 +123,8 @@ namespace Acceleration.Projectiles
 				AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, (int)projectile.ai[0], 40, new Color(0, 128, 255, 255 - projectile.alpha), projectile.rotation, new Vector2(projectile.scale, projectile.scale), spriteBatch);
 			} else
 			{
-				AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, 0, 64, new Color(0, 128, 255, 255), projectile.rotation, new Vector2(projectile.scale, projectile.scale), spriteBatch);
-				AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, 0, 64, new Color(0, 128, 128, 255), projectile.rotation, new Vector2(projectile.scale, projectile.scale) * 0.75f, spriteBatch);
+				AccelerationHelper.DrawSprite("Projectiles/beam_impact", projectile.Center, 0, 64, new Color(0, 128, 255, 255), projectile.rotation, new Vector2(projectile.scale, projectile.scale), spriteBatch);
+				AccelerationHelper.DrawSprite("Projectiles/beam_impact", projectile.Center, 0, 64, new Color(0, 128, 128, 255), projectile.rotation, new Vector2(projectile.scale, projectile.scale) * 0.75f, spriteBatch);
 			}
 			return false;
 		}

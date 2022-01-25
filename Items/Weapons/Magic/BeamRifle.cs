@@ -202,7 +202,7 @@ namespace Acceleration.Items.Weapons.Magic
 				}
 			}
 
-			if (ap.hyperButton && !ap.prevHyperButton && player.reuseDelay <= 0 && ap.hyper >= 1.0f)
+			if (ap.hyperButton && !ap.prevHyperButton && player.reuseDelay <= 0)
 			{
 				hyperTimer = 70;
 				hyper = true;
