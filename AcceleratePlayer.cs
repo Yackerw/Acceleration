@@ -136,6 +136,10 @@ namespace Acceleration
 				dashing = true;
 				// mild punishment for spam
 				accelTime += 20;
+				accelTime -= (int)player.wingTime;
+				accelTime -= player.rocketTime;
+				player.wingTime = 0;
+				player.rocketTime = 0;
 			}
 			else
 			{
@@ -240,10 +244,8 @@ namespace Acceleration
 						mp.Write(RainbowRing.rrc.reference);
 						mp.Write((byte)player.whoAmI);
 						mp.Send(-1, player.whoAmI);
-					} else
-					{
-						RainbowRing.Spawn(player.whoAmI);
 					}
+					RainbowRing.Spawn(player.whoAmI);
 					//ring.projectile.rotation = dashDirection;
 					ringSpawn = 0;
 				}

@@ -29,12 +29,14 @@ namespace Acceleration
 		}
 		public override void PreUpdate()
 		{
-			RainbowRing.Update();
-			Charge.Update();
+
 		}
 
 		public override void PostDrawTiles()
 		{
+			// yes these have to go here for multiplayer
+			RainbowRing.Update();
+			Charge.Update();
 			RainbowRing.UpdateDraw();
 			Charge.UpdateDraw();
 		}

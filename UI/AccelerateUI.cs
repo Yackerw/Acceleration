@@ -45,13 +45,6 @@ namespace Acceleration.UI
 			hyperBar.Height.Set(20f, 0f);
 			Append(hyperBar);
 
-			hyperBar1 = new UIElement();
-			hyperBar1.Left.Set(4, 0f);
-			hyperBar1.Top.Set(4, 0f);
-			hyperBar1.Width.Set(40f, 0f);
-			hyperBar1.Height.Set(8f, 0f);
-			hyperBar.Append(hyperBar1);
-
 			hyperBarHolder = new UIImage(ModContent.GetTexture("Acceleration/UI/HyperBar"));
 			hyperBarHolder.Left.Set(0, 0f);
 			hyperBarHolder.Top.Set(0, 0f);
@@ -68,12 +61,12 @@ namespace Acceleration.UI
 			heatText.TextColor = new Color(1, Matht.Lerp(1, 0, ap.heat / 300.0f), Matht.Lerp(1, 0, ap.heat / 300.0f));
 			if (!Main.playerInventory)
 			{
-				heatText.Top.Set(80f, 0f);
-				hyperBar.Top.Set(110f, 0f);
+				heatText.Top.Set(110f, 0f);
+				hyperBar.Top.Set(140f, 0f);
 			} else
 			{
-				heatText.Top.Set(260f, 0f);
-				hyperBar.Top.Set(290f, 0f);
+				heatText.Top.Set(290f, 0f);
+				hyperBar.Top.Set(320f, 0f);
 			}
 		}
 

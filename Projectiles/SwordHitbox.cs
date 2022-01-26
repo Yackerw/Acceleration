@@ -60,8 +60,8 @@ namespace Acceleration.Projectiles
             if (projectile.ai[1] != 0)
 			{
                 projectile.scale = projectile.ai[1];
-                projectile.width *= (int)projectile.scale;
-                projectile.height *= (int)projectile.scale;
+                projectile.width = 11 * (int)projectile.scale;
+                projectile.height = 11 * (int)projectile.scale;
 			}
 		}
 	}

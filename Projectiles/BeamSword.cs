@@ -21,8 +21,8 @@ namespace Acceleration.Projectiles
 
         public override void SetDefaults()
         {
-            //projectile.width = 48;
-            //projectile.height = 10;
+            projectile.width = 0;
+            projectile.height = 0;
             projectile.alpha = 0;
             projectile.timeLeft = 30;
             projectile.penetrate = -1;
@@ -116,7 +116,7 @@ namespace Acceleration.Projectiles
             float hitRot = projectile.rotation + (projectile.spriteDirection == -1 ? -(float)Math.PI / 4 : (float)Math.PI / 4);
             for (int i = 0; i < 5; ++i)
 			{
-                Projectile.NewProjectile(spawnPos, new Vector2(2f * projectile.spriteDirection, 0), ModContent.ProjectileType<SwordHitbox>(), projectile.damage, projectile.knockBack, projectile.owner, hitRot);
+                Projectile.NewProjectile(spawnPos, new Vector2(2f * projectile.spriteDirection, 0), ModContent.ProjectileType<SwordHitbox>(), projectile.damage, projectile.knockBack, projectile.owner, hitRot, 1);
                 spawnPos += spawnNorm;
 			}
         }

@@ -218,7 +218,35 @@ namespace Acceleration.Items.Weapons.Magic
 				{
 					Main.PlaySound(Acceleration.beamRifleHyperSound, player.position);
 					float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
-					Projectile.NewProjectile(player.position + new Vector2(40, 0).RotatedBy(shotAngle), new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamHyper>(), (int)(item.damage * 0.666f * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle);
+					Projectile projectile = Main.projectile[Projectile.NewProjectile(player.position + new Vector2(40, 0).RotatedBy(shotAngle), new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamHyper>(), (int)(item.damage * 0.666f * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle)];
+					// spawn the rest of them...
+					// draw a good number of projectiles
+					Vector2 spawnPos = projectile.Center;
+					int projToSpawn = ModContent.ProjectileType<Projectiles.BeamHyper>();
+					Vector2 normal = new Vector2(1, 0).RotatedBy(shotAngle);
+					Vector2 spawnIncrement = normal * 40;
+					for (int i = 0; i < 40; ++i)
+					{
+						Vector2 moveAmnt = Collision.TileCollision(spawnPos, spawnIncrement, 40, 40, false, false, 0);
+						if (moveAmnt.X != spawnIncrement.X || moveAmnt.Y != spawnIncrement.Y)
+						{
+							spawnPos += moveAmnt;
+							break;
+						}
+						spawnPos += spawnIncrement;
+						Projectile proj = Main.projectile[Projectile.NewProjectile(spawnPos, new Vector2(0, 0), projToSpawn, projectile.damage, projectile.knockBack, projectile.owner, 2 + ((i * 2) % 4 <= 1 ? 1 : 0), projectile.ai[1])];
+						proj.alpha = projectile.alpha;
+						// hack for ordering...
+						if (proj.whoAmI < projectile.whoAmI)
+						{
+							proj.timeLeft -= 1;
+						}
+					}
+					Projectile explodeProj = Main.projectile[Projectile.NewProjectile(spawnPos, new Vector2(0, 0), projToSpawn, projectile.damage, projectile.knockBack, projectile.owner, 4, 0)];
+					if (explodeProj.whoAmI < projectile.whoAmI)
+					{
+						explodeProj.timeLeft -= 1;
+					}
 				}
 			}
 

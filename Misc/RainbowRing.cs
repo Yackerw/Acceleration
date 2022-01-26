@@ -58,6 +58,14 @@ namespace Acceleration.Misc
 			{
 				int owner = reader.ReadByte();
 				RainbowRing.Spawn(owner);
+				// re-send callback
+				if (Main.netMode == NetmodeID.Server)
+				{
+					ModPacket mp = Acceleration.thisMod.GetPacket();
+					mp.Write(reference);
+					mp.Write((byte)owner);
+					mp.Send(-1, owner);
+				}
 			}
 		}
 
