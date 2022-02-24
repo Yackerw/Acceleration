@@ -23,6 +23,10 @@ namespace Acceleration.NPCs.Enemies
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
+			if (Main.invasionType == (int)AccelerateWorld.Invasions.Saki)
+			{
+				return 1.0f;
+			}
 			return 0;
 		}
 
@@ -57,12 +61,20 @@ namespace Acceleration.NPCs.Enemies
 				target = Main.player[npc.target];
 			}
 
+			Vector2 posDiff = target.position - npc.position;
+
+			if (Matht.Magnitude(posDiff) > 2400)
+			{
+				// despawn when off screen
+				npc.active = false;
+				return;
+			}
+
 			// code for when the launchers are still alive
 			if (npc.ai[launchersAlive] >= 0.1f)
 			{
 				if (npc.ai[waitTimer] < 250 && npc.ai[waitTimer] > 90)
 				{
-					Vector2 posDiff = target.position - npc.position;
 					// try to match players height
 					if (posDiff.Y > 500)
 					{
@@ -191,7 +203,6 @@ namespace Acceleration.NPCs.Enemies
 							npc.spriteDirection = 1;
 							dir -= (float)Math.PI;
 						}
-						Vector2 posDiff = target.position - npc.position;
 						float angBetween = (float)Math.Atan2(posDiff.Y, posDiff.X);
 						angBetween = Matht.AngleBetween(dir * Matht.Rad2Deg, angBetween * Matht.Rad2Deg) * Matht.Deg2Rad;
 						angBetween = MathHelper.Clamp(angBetween, -3 * Matht.Deg2Rad, 3 * Matht.Deg2Rad);

@@ -15,6 +15,10 @@ namespace Acceleration.NPCs.Enemies
 		float spinValue = 0;
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
+			if (Main.invasionType == (int)AccelerateWorld.Invasions.Saki)
+			{
+				return 1.0f;
+			}
 			return SpawnCondition.Overworld.Chance * 0.1f;
 		}
 
@@ -57,26 +61,13 @@ namespace Acceleration.NPCs.Enemies
 			// wander away if all players dead...so, do nothing.
 			// wander towards player if found
 			npc.velocity.Y = 0;
-			// hover up if we're too close to the ground
-			int outUp;
-			int outDown;
-			Collision.ExpandVertically((int)npc.position.X / 16, (int)npc.position.Y / 16, out outUp, out outDown, 100, 10);
-			// didn't reach max capacity?
-			/*if (outDown < (int)((npc.position.X / 16) + 10))
+			Vector2 targDiff = target.position - npc.position;
+			// despawn if too far away
+			if (Matht.Magnitude(targDiff) > 2400)
 			{
-				outDown *= 16;
-				float floorDiff = npc.position.Y - outDown;
-				float targetPosition = -90.0f + (float)Math.Sin((float)npc.ai[1] / 27.0f) * 15;
-				if (floorDiff < targetPosition)
-				{
-					npc.velocity.Y = Math.Min(targetPosition - floorDiff, 0.5f);
-				}
-				else
-				{
-					npc.velocity.Y = Math.Max(targetPosition - floorDiff, -0.5f);
-				}
+				npc.active = false;
+				return;
 			}
-			npc.ai[1] += 1;*/
 			npc.ai[0] -= 1;
 			// speen
 			float spinAdd = 0.15f;
@@ -95,7 +86,6 @@ namespace Acceleration.NPCs.Enemies
 					npc.ai[0] = 2 * 60;
 					// choose a target position
 					// first, how close are we to target? do we need to get closer, or further away?
-					Vector2 targDiff = target.position - npc.position;
 					float xAmnt = Main.rand.NextFloat(0.1f, 0.9f);
 					float yAmnt = 1.0f - xAmnt;
 					xAmnt *= 7.0f;

@@ -22,6 +22,8 @@ namespace Acceleration
 {
 	class AccelerateWorld : ModWorld
 	{
+
+		public enum Invasions { Saki = -56 };
 		public override void Initialize()
 		{
 			RainbowRing.firstRing = null;

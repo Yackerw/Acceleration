@@ -45,7 +45,7 @@ namespace Acceleration.Items.Weapons.Melee
 		static public BeamSwordCallback callBack = new BeamSwordCallback();
 		public override void SetDefaults()
 		{
-			item.damage = 30;
+			item.damage = 35;
 			item.melee = true;
 			item.width = 48;
 			item.height = 48;

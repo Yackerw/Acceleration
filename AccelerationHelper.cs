@@ -36,6 +36,23 @@ namespace Acceleration
 			DrawSpriteCached(tex, position, frame, spriteHeight, color, rotation, scale, batch);
 		}
 
+		static public void DrawSpriteRect(Texture2D texture, Vector2 position, Rectangle rect, Color color, float rotation, Vector2 scale, SpriteBatch batch = null, SpriteEffects spriteEffects = SpriteEffects.None)
+		{
+			if (batch == null)
+			{
+				batch = Main.spriteBatch;
+			}
+			batch.Draw(texture,
+				position - Main.screenPosition,
+				rect,
+				color,
+				rotation,
+				new Vector2(rect.Width / 2, rect.Height / 2),
+				scale,
+				spriteEffects,
+				0);
+		}
+
 		static public float GetMouseRotation(Player player)
 		{
 			return (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);

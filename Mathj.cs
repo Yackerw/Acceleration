@@ -52,6 +52,11 @@ namespace Mathj
 			return (a.X * b.X) + (a.Y * b.Y);
 		}
 
+		public static float Magnitude(Vector2 v)
+		{
+			return (float)Math.Sqrt((v.X * v.X) + (v.Y * v.Y));
+		}
+
 		public static bool HasSeparateAxis(Vector2[] points1, Vector2[]points2)
 		{
 			for (int i = 0; i < points1.Length; ++i)

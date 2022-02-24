@@ -15,6 +15,10 @@ namespace Acceleration.NPCs.Enemies
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
+			if (Main.invasionType == (int)AccelerateWorld.Invasions.Saki)
+			{
+				return 1.0f;
+			}
 			return SpawnCondition.Overworld.Chance * 0.1f;
 		}
 		public override void SetDefaults()
@@ -54,6 +58,12 @@ namespace Acceleration.NPCs.Enemies
 			{
 				npc.spriteDirection = Math.Sign(target.position.X - npc.position.X);
 				npc.velocity.X = 1.5f * (float)npc.spriteDirection;
+			}
+			// despawn
+			if (Matht.Magnitude(npc.position - target.position) > 2400)
+			{
+				npc.active = false;
+				return;
 			}
 			npc.velocity.Y = 0;
 			// hover up if we're too close to the ground

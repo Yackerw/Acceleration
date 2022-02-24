@@ -16,6 +16,7 @@ using Acceleration.Items.Weapons;
 using Acceleration.Items.Weapons.Magic;
 using Acceleration.Items.Weapons.Melee;
 using Acceleration.Items.Weapons.Ranged;
+using Acceleration.NPCs.Bosses;
 using Acceleration.Misc;
 
 namespace Acceleration
@@ -123,6 +124,16 @@ namespace Acceleration
 			base.Unload();
 			// kill our reference to ourself?
 			thisMod = null;
+		}
+
+		public override void UpdateMusic(ref int music, ref MusicPriority priority)
+		{
+			if (Main.invasionType == (int)AccelerateWorld.Invasions.Saki)
+			{
+				music = GetSoundSlot(Terraria.ModLoader.SoundType.Music, "Sounds/Music/GreenBird");
+				priority = MusicPriority.Event;
+				return;
+			}
 		}
 	}
 }

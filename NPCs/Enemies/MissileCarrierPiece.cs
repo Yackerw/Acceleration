@@ -59,6 +59,12 @@ namespace Acceleration.NPCs.Enemies
 				target = Main.player[npc.target];
 			}
 
+			if (!Main.npc[(int)npc.ai[creator]].active)
+			{
+				npc.active = false;
+				return;
+			}
+
 			MissileCarrier mc = (MissileCarrier)Main.npc[(int)npc.ai[creator]].modNPC;
 			Vector2 offset = new Vector2();
 

@@ -19,7 +19,7 @@ namespace Acceleration.Projectiles
 	{
 		public override void SetStaticDefaults()
 		{
-			Main.projFrames[projectile.type] = 2;
+			Main.projFrames[projectile.type] = 20;
 		}
 		public override void SetDefaults()
 		{
@@ -43,60 +43,80 @@ namespace Acceleration.Projectiles
 			Color drawColor = GetColorDraw();
 			Vector2 dustSpeed = projectile.velocity - new Vector2(10, 0).RotatedBy(projectile.rotation);
 			Vector2 randomPositioning = new Vector2(Main.rand.NextFloat(-2.999f, 2.999f), Main.rand.NextFloat(-2.999f, 2.999f));
-			if (projectile.frame == 1)
-			{
-				Dust.NewDustPerfect(projectile.position - (0.5f * projectile.velocity), mod.DustType("Bullet_Trail_White"), dustSpeed, 0, drawColor);
-			} else
-			{
-				Dust.NewDustPerfect(projectile.position - (0.5f * projectile.velocity), mod.DustType("Bullet_Trail_White"), dustSpeed, 0, Color.Yellow);
-			}
+			Dust.NewDustPerfect(projectile.position - (0.5f * projectile.velocity), mod.DustType("Bullet_Trail_White"), dustSpeed, 0, drawColor);
 		}
 
 		Color GetColorDraw()
 		{
 			Color drawColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-			projectile.frame = 1;
 			switch (projectile.ai[0])
 			{
 
 				case ProjectileID.MeteorShot:
-					drawColor = new Color(125, 75, 75);
+					drawColor = new Color(0xF0, 0, 0x38);
+					projectile.frame = 1;
 					break;
 
 				case ProjectileID.CrystalBullet:
-					drawColor = new Color(133, 140, 178);
+					drawColor = new Color(0, 0xA0, 0xE0);
+					projectile.frame = 3;
 					break;
 
 				case ProjectileID.CursedBullet:
-					drawColor = new Color(180, 252, 0);
+					drawColor = new Color(0xC0, 255, 0);
+					projectile.frame = 4;
 					break;
 
 				case ProjectileID.ChlorophyteBullet:
-					drawColor = new Color(148, 196, 67);
+					drawColor = new Color(0x40, 0xA0, 0);
+					projectile.frame = 5;
+					break;
+
+				case ProjectileID.BulletHighVelocity:
+					drawColor = new Color(0xFF, 0xE0, 0x40);
+					projectile.frame = 6;
 					break;
 
 				case ProjectileID.IchorBullet:
-					drawColor = new Color(254, 203, 79);
+					drawColor = new Color(255, 255, 0x80);
+					projectile.frame = 7;
 					break;
 
 				case ProjectileID.VenomBullet:
-					drawColor = new Color(186, 129, 194);
+					drawColor = new Color(0xB8, 0x80, 0xC0);
+					projectile.frame = 8;
+					break;
+
+				case ProjectileID.PartyBullet:
+					drawColor = new Color(0xFF, 0x80, 0xFF);
+					projectile.frame = 9;
 					break;
 
 				case ProjectileID.NanoBullet:
 					drawColor = new Color(0, 255, 255);
+					projectile.frame = 10;
+					break;
+
+				case ProjectileID.ExplosiveBullet:
+					drawColor = new Color(0xFF, 0, 0);
+					projectile.frame = 11;
 					break;
 
 				case ProjectileID.GoldenBullet:
-					drawColor = new Color(234, 208, 138);
+					drawColor = new Color(0xD0, 0xA0, 00);
+					projectile.frame = 12;
 					break;
 
 				case ProjectileID.MoonlordBullet:
-					drawColor = new Color(28, 222, 152);
+					drawColor = new Color(0xC0, 255, 0xE0);
+					projectile.frame = 13;
 					break;
+
+					// TODO: nanako bullet, heat bullet
 
 				default:
 					projectile.frame = 0;
+					drawColor = new Color(0xC0, 0, 0);
 					break;
 			}
 			return drawColor;
@@ -173,8 +193,8 @@ namespace Acceleration.Projectiles
 
 			Main.spriteBatch.Draw(Main.projectileTexture[projectile.type],
 				projectile.Center - Main.screenPosition,
-				new Rectangle(0, 12 * projectile.frame, 24, 12),
-				drawColor,
+				new Rectangle(0, 16 * projectile.frame, 32, 16),
+				Color.White,
 				projectile.rotation,
 				new Vector2(12, 6),
 				1.0f,
