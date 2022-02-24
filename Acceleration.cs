@@ -39,6 +39,7 @@ namespace Acceleration
 		public static LegacySoundStyle sword2Sound;
 		public static LegacySoundStyle sword3Sound;
 		public static LegacySoundStyle swordHyperSound;
+		public static LegacySoundStyle bossDeathSound;
 		public ModHotKey hyperKey;
 
 		public static Acceleration thisMod;
@@ -71,6 +72,7 @@ namespace Acceleration
 				sword2Sound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/sword2");
 				sword3Sound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/sword3");
 				swordHyperSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/crash16_c");
+				bossDeathSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/don11");
 				// load our shaders
 				Ref<Effect> projectileShader = new Ref<Effect>(GetEffect("Effects/RainbowRing"));
 

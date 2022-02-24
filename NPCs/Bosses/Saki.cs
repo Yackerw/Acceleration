@@ -325,9 +325,17 @@ namespace Acceleration.NPCs.Bosses
 					if (npc.ai[AITimer] <= 0)
 					{
 						npc.ai[AIState] = 101;
-						npc.life = 0;
-						npc.realLife = 0;
+						npc.StrikeNPCNoInteraction(9999, 0, 0);
 						// TODO: particle effects, sfx for death
+						for (int i = 0; i < 5; ++i)
+						{
+							Dust.NewDust(npc.Center, 20, 20, DustID.TopazBolt, Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-6, 6));
+							Dust.NewDust(npc.Center, 20, 20, DustID.SapphireBolt, Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-6, 6));
+							Dust.NewDust(npc.Center, 20, 20, DustID.RubyBolt, Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-6, 6));
+							Dust.NewDust(npc.Center, 20, 20, DustID.EmeraldBolt, Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-6, 6));
+							Dust.NewDust(npc.Center, 20, 20, DustID.AmethystBolt, Main.rand.NextFloat(-6, 6), Main.rand.NextFloat(-6, 6));
+						}
+						Main.PlaySound(Acceleration.bossDeathSound, npc.position);
 					}
 					break;
 				case 200:
@@ -365,15 +373,20 @@ namespace Acceleration.NPCs.Bosses
 					npc.ai[AIState] = 100;
 					npc.ai[AITimer] = 140;
 					npc.frameCounter = 1000;
-					npc.life = 1000;
-					npc.realLife = 1000;
-					npc.friendly = true;
+					npc.life = 1;
+					npc.active = true;
+					npc.dontTakeDamage = true;
 				}
 				return false;
 			}
 			npc.friendly = false;
 			npc.boss = true;
 			return base.CheckDead();
+		}
+
+		public override void BossLoot(ref string name, ref int potionType)
+		{
+			base.BossLoot(ref name, ref potionType);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
@@ -383,6 +396,15 @@ namespace Acceleration.NPCs.Bosses
 			Rectangle frame = new Rectangle(X * 66, Y * 66, 64, 64);
 
 			AccelerationHelper.DrawSpriteRect(ModContent.GetTexture("Acceleration/NPCs/Bosses/SakiSheet"), npc.Center, frame, drawColor, 0, Vector2.One, spriteBatch, npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+
+			if (npc.ai[AIState] == 100)
+			{
+				if (npc.ai[AITimer] < 60)
+				{
+					float circleScale = (npc.ai[AITimer] / 60) * 2.5f;
+					AccelerationHelper.DrawSprite("Sprites/Circle", npc.Center, 0, 256, Color.White, 0, new Vector2(circleScale, circleScale), spriteBatch);
+				}
+			}
 
 			return false;
 		}
