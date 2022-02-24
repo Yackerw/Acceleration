@@ -91,7 +91,7 @@ namespace Acceleration.Projectiles.Saki
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return projectile.timeLeft > 125 ? false : base.Colliding(projHitbox, targetHitbox);
+			return projectile.timeLeft > 225 ? false : base.Colliding(projHitbox, targetHitbox);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
