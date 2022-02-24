@@ -100,7 +100,7 @@ namespace Acceleration.NPCs.Bosses
 			}
 			// handle aggro
 			Player target = Main.player[npc.target];
-			if (npc.target < 0 || npc.target == 255 || target.dead || !target.active)
+			if (npc.target < 0 || npc.target == 255 || target.dead || !target.active || Matht.Magnitude(target.position - npc.position) > 4000)
 			{
 				npc.TargetClosest(true);
 				target = Main.player[npc.target];
@@ -131,7 +131,14 @@ namespace Acceleration.NPCs.Bosses
 					break;
 				case 1:
 					// prepare to fly to a specific spot, and set up our next state
-					npc.ai[AINextState] = Main.rand.Next(0, 4);
+					if (npc.life > npc.lifeMax / 2)
+					{
+						npc.ai[AINextState] = Main.rand.Next(0, 4);
+					} else
+					{
+						// BIG BANG ATTACK
+						npc.ai[AINextState] = Main.rand.Next(0, 5);
+					}
 					switch (npc.ai[AINextState])
 					{
 						case 1:
@@ -141,6 +148,10 @@ namespace Acceleration.NPCs.Bosses
 						case 2:
 							// semi-circular shots
 							npc.ai[AINextState] = 4;
+							break;
+						case 4:
+							// big bang bell
+							npc.ai[AINextState] = 5;
 							break;
 						default:
 							npc.ai[AINextState] = 0;
@@ -153,7 +164,7 @@ namespace Acceleration.NPCs.Bosses
 					targetPosition = new Vector2(Main.rand.NextFloat(-300, 300), Main.rand.NextFloat(-300, 300));
 					// ensure it stays around the spawn point enough...and don't go beneath the player (unless they're above our spawn point)
 					// try to move towards player if we're too far away
-					while (((npc.position.Y + targetPosition.Y) > target.position.Y && Matht.DotProduct(targetPosition, new Vector2(-1, 0)) < 0) || (Matht.Magnitude((npc.position + targetPosition) - target.position) > 300 && Matht.DotProduct(targetPosition, target.position - npc.position) < 0.1f))
+					while (((npc.position.Y + targetPosition.Y) > target.position.Y && Matht.DotProduct(targetPosition, new Vector2(0, -1)) < 0) || (Matht.Magnitude((npc.position + targetPosition) - target.position) > 300 && Matht.DotProduct(targetPosition, target.position - npc.position) < 0.1f))
 					//while (Matht.Magnitude((npc.position + targetPosition) - spawnPoint) > 800 || ((npc.position.Y + targetPosition.Y) > target.position.Y && target.position.Y > spawnPoint.Y) || npc.position.Y + targetPosition.Y > spawnPoint.Y)
 					{
 						targetPosition = new Vector2(Main.rand.NextFloat(-300, 300), Main.rand.NextFloat(-300, 300));
@@ -216,7 +227,7 @@ namespace Acceleration.NPCs.Bosses
 								break;
 							default:
 								// this is dumb why is ai0 not working
-								int proj = Projectile.NewProjectile(npc.position, new Vector2(0, 6).RotatedByRandom(360*Matht.Deg2Rad), ModContent.ProjectileType<SakiOrb>(), 15, 1.0f, 255, npc.whoAmI, target.whoAmI);
+								int proj = Projectile.NewProjectile(npc.position, new Vector2(0, 6).RotatedByRandom(360 * Matht.Deg2Rad), ModContent.ProjectileType<SakiOrb>(), 15, 1.0f, 255, npc.whoAmI, target.whoAmI);
 								Projectile newProj = Main.projectile[proj];
 								newProj.ai[0] = npc.whoAmI;
 								break;
@@ -281,6 +292,30 @@ namespace Acceleration.NPCs.Bosses
 						npc.ai[AIState] = 1;
 					}
 					break;
+				case 5:
+					// do a little prep work for big bang bell
+					npc.ai[AIState] = 6;
+					npc.ai[AITimer] = 120;
+					Projectile.NewProjectile(npc.Center - new Vector2(0, 170), Vector2.Zero, ModContent.ProjectileType<SakiBigBangBell>(), 20, 1.0f, 255, target.whoAmI, target.whoAmI);
+					Main.PlaySound(Acceleration.hyperSound, npc.position);
+					break;
+				case 6:
+					// animate
+					--npc.ai[AITimer];
+					if (npc.ai[AITimer] > 20)
+					{
+						npc.frameCounter = Math.Min(2, 24 - (npc.ai[AITimer] / 5));
+					} else
+					{
+						npc.frameCounter = 3 + Math.Min(2, 4 - (npc.ai[AITimer] / 5));
+					}
+					ChangeSetKeepFrame(700);
+					// done
+					if (npc.ai[AITimer] <= 0)
+					{
+						npc.ai[AIState] = 1;
+					}
+					break;
 				case 100:
 					if (generalCounter % 2 == 0)
 					{
@@ -309,6 +344,16 @@ namespace Acceleration.NPCs.Bosses
 			}
 
 			++generalCounter;
+		}
+
+		public override bool? CanBeHitByItem(Player player, Item item)
+		{
+			return npc.ai[AIState] > 100 ? false : base.CanBeHitByItem(player, item);
+		}
+
+		public override bool? CanBeHitByProjectile(Projectile projectile)
+		{
+			return npc.ai[AIState] > 100 ? false : base.CanBeHitByProjectile(projectile);
 		}
 
 		public override bool CheckDead()
