@@ -153,7 +153,7 @@ namespace Acceleration.NPCs.Bosses
 					targetPosition = new Vector2(Main.rand.NextFloat(-300, 300), Main.rand.NextFloat(-300, 300));
 					// ensure it stays around the spawn point enough...and don't go beneath the player (unless they're above our spawn point)
 					// try to move towards player if we're too far away
-					while ((npc.position.Y + targetPosition.Y) > target.position.Y || (Matht.Magnitude((npc.position + targetPosition) - target.position) > 600 && Matht.DotProduct(targetPosition, target.position - npc.position) < 0.1f))
+					while ((npc.position.Y + targetPosition.Y) > target.position.Y || (Matht.Magnitude((npc.position + targetPosition) - target.position) > 300 && Matht.DotProduct(targetPosition, target.position - npc.position) < 0.1f))
 					//while (Matht.Magnitude((npc.position + targetPosition) - spawnPoint) > 800 || ((npc.position.Y + targetPosition.Y) > target.position.Y && target.position.Y > spawnPoint.Y) || npc.position.Y + targetPosition.Y > spawnPoint.Y)
 					{
 						targetPosition = new Vector2(Main.rand.NextFloat(-300, 300), Main.rand.NextFloat(-300, 300));
@@ -164,7 +164,7 @@ namespace Acceleration.NPCs.Bosses
 					// travel to target position, unless we already there
 					Vector2 posToMove = targetPosition - npc.position;
 					posToMove.Normalize();
-					posToMove *= 2.0f;
+					posToMove *= 3.0f;
 					npc.position += posToMove;
 					Vector2 newPosToMove = targetPosition - npc.position;
 					// face the player
@@ -204,7 +204,7 @@ namespace Acceleration.NPCs.Bosses
 					}
 
 					// spawn a projectile every now and then
-					if (generalCounter % 70 == 0)
+					if (generalCounter % 45 == 0)
 					{
 						switch (Main.rand.Next(0, 3))
 						{

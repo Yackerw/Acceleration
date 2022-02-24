@@ -26,7 +26,7 @@ namespace Acceleration.Projectiles.Saki
 			projectile.width = 44;
 			projectile.height = 44;
 			//projectile.alpha = 50;
-			projectile.timeLeft = 250;
+			projectile.timeLeft = 350;
 			projectile.penetrate = 1;
 			projectile.hostile = true;
 			projectile.tileCollide = false;
@@ -40,10 +40,10 @@ namespace Acceleration.Projectiles.Saki
 		public override void AI()
 		{
 			// target saki until we grow big, then target player for a short while
-			if (projectile.timeLeft > 50)
+			if (projectile.timeLeft > 150)
 			{
 				Vector2 targetPos;
-				if (projectile.timeLeft > 125)
+				if (projectile.timeLeft > 225)
 				{
 					// let us randomly be blue
 					if (projectile.frameCounter == 0)
