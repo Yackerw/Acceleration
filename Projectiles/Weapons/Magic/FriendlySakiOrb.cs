@@ -37,6 +37,16 @@ namespace Acceleration.Projectiles.Weapons.Magic
 			projectile.frame = 0;
 		}
 
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+			ap.hyper += 0.04f;
+			if (ap.hyper > 3.0f)
+			{
+				ap.hyper = 3.0f;
+			}
+		}
+
 		public override void AI()
 		{
 			// target saki until we grow big, then target player for a short while

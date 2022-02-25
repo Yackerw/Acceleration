@@ -104,11 +104,10 @@ namespace Acceleration.Items.Weapons.Magic
 					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
 					proj.rotation = shotAngle - 19 * Mathj.Matht.Deg2Rad;
 					Main.PlaySound(item.UseSound, player.position);
-					player.itemAnimation = 25;
-					player.itemAnimationMax = 25;
-					player.reuseDelay = 25;
-					item.useTime = 25;
-					item.useAnimation = 25;
+					player.itemAnimation = 27;
+					player.itemAnimationMax = 27;
+					player.reuseDelay = 27;
+					altFire = true;
 				}
 			}
 
@@ -125,39 +124,9 @@ namespace Acceleration.Items.Weapons.Magic
 				player.itemAnimation = 1;
 				player.itemAnimationMax = 1;
 				// actually fire the projectile
-				if (hyperTimer == 25)
+				if (hyperTimer == 60)
 				{
-					Main.PlaySound(Acceleration.beamRifleHyperSound, player.position);
-					float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
-					Projectile projectile = Main.projectile[Projectile.NewProjectile(player.position + new Vector2(40, 0).RotatedBy(shotAngle), new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamHyper>(), (int)(item.damage * 0.666f * player.magicDamageMult), 1.0f, player.whoAmI, 0, shotAngle)];
-					// spawn the rest of them...
-					// draw a good number of projectiles
-					Vector2 spawnPos = projectile.Center;
-					int projToSpawn = ModContent.ProjectileType<Projectiles.BeamHyper>();
-					Vector2 normal = new Vector2(1, 0).RotatedBy(shotAngle);
-					Vector2 spawnIncrement = normal * 40;
-					for (int i = 0; i < 40; ++i)
-					{
-						Vector2 moveAmnt = Collision.TileCollision(spawnPos, spawnIncrement, 40, 40, false, false, 0);
-						if (moveAmnt.X != spawnIncrement.X || moveAmnt.Y != spawnIncrement.Y)
-						{
-							spawnPos += moveAmnt;
-							break;
-						}
-						spawnPos += spawnIncrement;
-						Projectile proj = Main.projectile[Projectile.NewProjectile(spawnPos, new Vector2(0, 0), projToSpawn, projectile.damage, projectile.knockBack, projectile.owner, 2 + ((i * 2) % 4 <= 1 ? 1 : 0), projectile.ai[1])];
-						proj.alpha = projectile.alpha;
-						// hack for ordering...
-						if (proj.whoAmI < projectile.whoAmI)
-						{
-							proj.timeLeft -= 1;
-						}
-					}
-					Projectile explodeProj = Main.projectile[Projectile.NewProjectile(spawnPos, new Vector2(0, 0), projToSpawn, projectile.damage, projectile.knockBack, projectile.owner, 4, 0)];
-					if (explodeProj.whoAmI < projectile.whoAmI)
-					{
-						explodeProj.timeLeft -= 1;
-					}
+					Projectile.NewProjectile(player.Center - new Vector2(0, 160), Vector2.Zero, ModContent.ProjectileType<Projectiles.Weapons.Magic.FriendlyBigBangBell>(), (int)(item.damage * player.magicDamage), item.knockBack * 0.5f, player.whoAmI);
 				}
 			}
 

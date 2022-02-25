@@ -39,6 +39,16 @@ namespace Acceleration.Projectiles.Weapons.Magic
 			projectile.friendly = true;
 		}
 
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+			ap.hyper += 0.04f;
+			if (ap.hyper > 3.0f)
+			{
+				ap.hyper = 3.0f;
+			}
+		}
+
 		public override void AI()
 		{
 			// set it to blue if it should be

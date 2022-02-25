@@ -13,9 +13,9 @@ using Terraria.Graphics.Shaders;
 using Mathj;
 using Acceleration;
 
-namespace Acceleration.Projectiles.Saki
+namespace Acceleration.Projectiles.Weapons.Magic
 {
-	class SakiBigBangBell : ModProjectile
+	class FriendlyBigBangBell : ModProjectile
 	{
 		public override void SetStaticDefaults()
 		{
@@ -28,7 +28,7 @@ namespace Acceleration.Projectiles.Saki
 			//projectile.alpha = 50;
 			projectile.timeLeft = 650;
 			projectile.penetrate = -1;
-			projectile.hostile = true;
+			projectile.friendly = true;
 			projectile.tileCollide = false;
 			projectile.ignoreWater = true;
 			projectile.Name = "Big Bang Bell";
@@ -47,10 +47,19 @@ namespace Acceleration.Projectiles.Saki
 				{
 					// increase in scale, then idle for a short while
 					projectile.scale = (1.0f - Math.Max((projectile.timeLeft - 600.0f) / 50.0f, 0.0f)) * 2.0f;
+					projectile.ai[0] = AccelerationHelper.FindClosestNPC(projectile.Center, 600);
 				}
 				else
 				{
-					Player target = Main.player[(int)projectile.ai[1]];
+					if (projectile.ai[0] == -1 || !Main.npc[(int)projectile.ai[0]].active)
+					{
+						projectile.ai[0] = AccelerationHelper.FindClosestNPC(projectile.Center, 600);
+						if (projectile.ai[0] == -1)
+						{
+							return;
+						}
+					}
+					NPC target = Main.npc[(int)projectile.ai[0]];
 					if (!target.active)
 					{
 						return;
