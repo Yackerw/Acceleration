@@ -227,9 +227,7 @@ namespace Acceleration.NPCs.Bosses
 								break;
 							default:
 								// this is dumb why is ai0 not working
-								int proj = Projectile.NewProjectile(npc.position, new Vector2(0, 6).RotatedByRandom(360 * Matht.Deg2Rad), ModContent.ProjectileType<SakiOrb>(), 15, 1.0f, 255, npc.whoAmI, target.whoAmI);
-								Projectile newProj = Main.projectile[proj];
-								newProj.ai[0] = npc.whoAmI;
+								Projectile.NewProjectile(npc.position, new Vector2(0, 6).RotatedByRandom(360 * Matht.Deg2Rad), ModContent.ProjectileType<SakiOrb>(), 15, 1.0f, Main.myPlayer, npc.whoAmI, target.whoAmI);
 								break;
 						}
 					}
@@ -258,7 +256,8 @@ namespace Acceleration.NPCs.Bosses
 					if (npc.ai[AITimer] <= 135 && npc.ai[AITimer] >= 125)
 					{
 						// spawn maraccas in random directions
-						Projectile.NewProjectile(npc.position, new Vector2(Main.rand.NextFloat(-6.0f, 6.0f), Main.rand.NextFloat(-6.0f, 0.0f)), ModContent.ProjectileType<SakiMaracca>(), 13, 3.0f);
+						Projectile mar = Main.projectile[Projectile.NewProjectile(npc.position, new Vector2(Main.rand.NextFloat(-6.0f, 6.0f), Main.rand.NextFloat(-6.0f, 0.0f)), ModContent.ProjectileType<SakiMaracca>(), 13, 3.0f, Main.myPlayer, Main.rand.Next(0, 2))];
+						//mar.ai[0] = Main.rand.Next(0, 2);
 					}
 					if (npc.ai[AITimer] <= 0)
 					{

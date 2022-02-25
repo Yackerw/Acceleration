@@ -35,6 +35,7 @@ namespace Acceleration.Projectiles.Saki
 			projectile.magic = true;
 			projectile.frameCounter = 0;
 			projectile.frame = 0;
+			projectile.aiStyle = -1;
 		}
 
 		public override void AI()
@@ -58,7 +59,7 @@ namespace Acceleration.Projectiles.Saki
 					projectile.rotation += 1 * Matht.Deg2Rad;
 				}
 				projectile.velocity = new Vector2(0, MathHelper.Lerp(7, 2, (projectile.timeLeft - 190) / 10.0f));
-			}
+			} else
 			{
 				// speed
 				projectile.velocity = new Vector2(0, 7).RotatedBy(projectile.rotation);

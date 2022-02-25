@@ -17,8 +17,6 @@ namespace Acceleration.Projectiles.Saki
 {
 	class SakiTambourine : ModProjectile
 	{
-		Vector2[] rotpos = new Vector2[8];
-		float[] rotations = new float[8];
 
 		public override void SetStaticDefaults()
 		{
@@ -41,14 +39,6 @@ namespace Acceleration.Projectiles.Saki
 		{
 			// simply rotate a bit
 			projectile.rotation += 3 * Matht.Deg2Rad;
-
-			for (int i = 0; i < 7; i++) //blur shit wooooo also its 7 because + 1 will be 8 at 7 
-			{
-				rotations[i] = rotations[i + 1];
-				rotpos[i] = rotpos[i + 1];
-			}
-			rotations[7] = projectile.rotation;
-			rotpos[7] = projectile.Center;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -56,10 +46,7 @@ namespace Acceleration.Projectiles.Saki
 			base.PostDraw(spriteBatch, lightColor);
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
-			for (int i = 0; i < 8; i++)
-			{
-				AccelerationHelper.DrawSprite("Projectiles/Tambourine_Emiss", rotpos[i], 0, 48, new Color(255 - ((8 - i) * 35), 255 - ((8 - i) * 35), 255 - ((8 - i) * 35)), rotations[i], new Vector2(1, 1), spriteBatch);
-			}
+			AccelerationHelper.DrawSprite("Projectiles/Tambourine_Emiss", projectile.Center, 0, 48, Color.White, projectile.rotation, new Vector2(1, 1), spriteBatch);
 			spriteBatch.End();
 			spriteBatch.Begin();
 		}

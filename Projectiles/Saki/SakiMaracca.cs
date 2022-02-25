@@ -32,6 +32,7 @@ namespace Acceleration.Projectiles.Saki
 			projectile.tileCollide = true;
 			projectile.ignoreWater = true;
 			projectile.Name = "Tambourine";
+			projectile.aiStyle = -1;
 		}
 
 		public override void AI()
@@ -41,7 +42,17 @@ namespace Acceleration.Projectiles.Saki
 			projectile.velocity.Y = Math.Min(projectile.velocity.Y, 7.0f);
 			if (projectile.timeLeft % 6 == 0)
 			{
-				projectile.frame = (projectile.frame + 1) % 6;
+				if (projectile.ai[0] == 0)
+				{
+					projectile.frame = (projectile.frame + 1) % 6;
+				} else
+				{
+					projectile.frame = (projectile.frame - 1) % 6;
+					if (projectile.frame < 0)
+					{
+						projectile.frame = 5;
+					}
+				}
 			}
 		}
 
