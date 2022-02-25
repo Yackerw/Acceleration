@@ -55,7 +55,7 @@ namespace Acceleration.Items.Weapons.Magic
 			item.knockBack = 6;
 			item.value = Item.sellPrice(silver: 50);
 			item.rare = ItemRarityID.Orange;
-			item.UseSound = Acceleration.BeamRifleSound;
+			item.UseSound = SoundID.Item25;
 			item.shoot = ModContent.ProjectileType<Projectiles.Weapons.Magic.FriendlySakiOrb>();
 			item.shootSpeed = 10f;
 		}
@@ -89,6 +89,21 @@ namespace Acceleration.Items.Weapons.Magic
 				{
 					float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
 					// shoot here
+					// spawn 3 orange 3 blue projectiles
+					int projType = ModContent.ProjectileType<Projectiles.Weapons.Magic.FriendlySakiPellet>();
+					Projectile proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI)];
+					proj.rotation = shotAngle;
+					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI)];
+					proj.rotation = shotAngle + 17 * Mathj.Matht.Deg2Rad;
+					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI)];
+					proj.rotation = shotAngle - 17 * Mathj.Matht.Deg2Rad;
+					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
+					proj.rotation = shotAngle - 2 * Mathj.Matht.Deg2Rad;
+					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
+					proj.rotation = shotAngle + 15 * Mathj.Matht.Deg2Rad;
+					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
+					proj.rotation = shotAngle - 19 * Mathj.Matht.Deg2Rad;
+					Main.PlaySound(item.UseSound, player.position);
 					player.itemAnimation = 25;
 					player.itemAnimationMax = 25;
 					player.reuseDelay = 25;
