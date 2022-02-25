@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ID;
 using Mathj;
+using Acceleration.Items.Weapons.Melee;
 
 namespace Acceleration.Projectiles
 {
@@ -37,9 +38,9 @@ namespace Acceleration.Projectiles
                 ap.hyper = 3.0f;
             }
             // grant some invuln frames
-            if (ap.player.HeldItem.type == ModContent.ItemType<Items.Weapons.Melee.BeamSword>())
+            if (ap.player.HeldItem.type == ModContent.ItemType<BeamSword>())
 			{
-                Items.Weapons.Melee.BeamSword bm = (Items.Weapons.Melee.BeamSword)ap.player.HeldItem.modItem;
+                BeamSword bm = (BeamSword)ap.player.HeldItem.modItem;
                 if (bm.swingInvulnDelay <= 0)
                 {
                     ap.player.immune = true;

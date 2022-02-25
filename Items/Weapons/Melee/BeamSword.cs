@@ -56,7 +56,7 @@ namespace Acceleration.Items.Weapons.Melee
 			item.knockBack = 4;
 			item.value = Item.sellPrice(silver: 50);
 			item.rare = ItemRarityID.Orange;
-			item.shoot = ModContent.ProjectileType<Projectiles.BeamSword>();
+			item.shoot = ModContent.ProjectileType<Projectiles.BeamSwordProjectile>();
 			item.shootSpeed = 10f;
 			item.noUseGraphic = true;
 			item.channel = false;
@@ -107,7 +107,7 @@ namespace Acceleration.Items.Weapons.Melee
 					break;
 			}
 			Main.PlaySound(soundToPlay, player.position);
-			Projectile.NewProjectile(player.position, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamSword>(), (int)(dmg * player.meleeDamageMult), item.knockBack * (swingAnim == 2 ? 2.5f : 1), player.whoAmI, swingAnim + ((int)(item.useTime * player.meleeSpeed) << 2), mouseDir);
+			Projectile.NewProjectile(player.position, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamSwordProjectile>(), (int)(dmg * player.meleeDamageMult), item.knockBack * (swingAnim == 2 ? 2.5f : 1), player.whoAmI, swingAnim + ((int)(item.useTime * player.meleeSpeed) << 2), mouseDir);
 			++swingAnim;
 			if (swingAnim == 3)
 			{

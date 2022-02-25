@@ -57,5 +57,27 @@ namespace Acceleration
 		{
 			return (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
 		}
+
+		static public int FindClosestNPC(Vector2 position, float threshold)
+		{
+			int closest = -1;
+			float closestDist = threshold;
+			for (int i = 0; i < Main.npc.Length; ++i)
+			{
+				NPC target = Main.npc[i];
+				if (!target.active || target.friendly)
+				{
+					continue;
+				}
+				// get distance and compare it to our current distance
+				float currDist = Mathj.Matht.Magnitude(position - target.position);
+				if (currDist < closestDist)
+				{
+					closest = i;
+					closestDist = currDist;
+				}
+			}
+			return closest;
+		}
 	}
 }

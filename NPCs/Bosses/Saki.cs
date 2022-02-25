@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using Acceleration.Projectiles.Saki;
+using Acceleration.Items.Bags;
 using Mathj;
 
 namespace Acceleration.NPCs.Bosses
@@ -50,6 +51,8 @@ namespace Acceleration.NPCs.Bosses
 			music = mod.GetSoundSlot(Terraria.ModLoader.SoundType.Music, "Sounds/Music/MigratoryBirdFromNorth");
 			musicPriority = MusicPriority.BossLow;
 			npc.ai[AINextState] = 1;
+			npc.value = Item.buyPrice(0, 6, 50, 0);
+			bossBag = ModContent.ItemType<SakiBag>();
 		}
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -386,6 +389,13 @@ namespace Acceleration.NPCs.Bosses
 		public override void BossLoot(ref string name, ref int potionType)
 		{
 			base.BossLoot(ref name, ref potionType);
+			if (Main.expertMode)
+			{
+				npc.DropBossBags();
+			} else
+			{
+
+			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
