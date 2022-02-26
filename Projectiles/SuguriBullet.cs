@@ -42,8 +42,7 @@ namespace Acceleration.Projectiles
 			// dust
 			Color drawColor = GetColorDraw();
 			Vector2 dustSpeed = projectile.velocity - new Vector2(10, 0).RotatedBy(projectile.rotation);
-			Vector2 randomPositioning = new Vector2(Main.rand.NextFloat(-2.999f, 2.999f), Main.rand.NextFloat(-2.999f, 2.999f));
-			Dust.NewDustPerfect(projectile.position - (0.5f * projectile.velocity), mod.DustType("Bullet_Trail_White"), dustSpeed, 0, drawColor);
+			Dust.NewDustPerfect(projectile.Center - (0.5f * projectile.velocity), mod.DustType("Bullet_Trail_White"), dustSpeed, 0, drawColor);
 		}
 
 		Color GetColorDraw()
@@ -188,13 +187,10 @@ namespace Acceleration.Projectiles
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Color drawColor = GetColorDraw();
-			drawColor = drawColor.MultiplyRGB(lightColor);
-
 			Main.spriteBatch.Draw(Main.projectileTexture[projectile.type],
 				projectile.Center - Main.screenPosition,
 				new Rectangle(0, 16 * projectile.frame, 32, 16),
-				Color.White,
+				lightColor,
 				projectile.rotation,
 				new Vector2(12, 6),
 				1.0f,

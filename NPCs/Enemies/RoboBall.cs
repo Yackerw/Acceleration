@@ -107,7 +107,7 @@ namespace Acceleration.NPCs.Enemies
 				Vector2 speed = (target.position - npc.position);
 				speed.Normalize();
 				speed *= 5.0f;
-				Projectile.NewProjectile(npc.position + new Vector2(10 * npc.spriteDirection, 20), speed, Acceleration.thisMod.ProjectileType("RoboShot"), 22, 1.0f);
+				Projectile.NewProjectile(npc.position + new Vector2(10 * npc.spriteDirection, 20), speed, Acceleration.thisMod.ProjectileType("RoboShot"), 12, 1.0f);
 				npc.ai[0] = 60*4;
 				Main.PlaySound(SoundID.Item43, npc.position);
 			}

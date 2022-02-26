@@ -128,7 +128,7 @@ namespace Acceleration.NPCs.Enemies
 					{
 						// calculate speed to player
 						Vector2 angleToPlayer = (target.position - npc.position);
-						int missile = Projectile.NewProjectile(npc.position, new Vector2(0, 0), Acceleration.thisMod.ProjectileType("SuguriMissile"), 25, 2.0f, 255, target.whoAmI);
+						int missile = Projectile.NewProjectile(npc.position, new Vector2(0, 0), Acceleration.thisMod.ProjectileType("SuguriMissile"), 15, 2.0f, 255, target.whoAmI);
 						Main.projectile[missile].rotation = (float)Math.Atan2(angleToPlayer.Y, angleToPlayer.X);
 					}
 				}

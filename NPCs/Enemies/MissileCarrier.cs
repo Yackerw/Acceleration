@@ -234,7 +234,7 @@ namespace Acceleration.NPCs.Enemies
 							plDiff *= 5.0f;
 							// proper offset depending on which way we're facing
 							Vector2 shotOffset = new Vector2(npc.direction == 1 ? 50 : -50, 0).RotatedBy(npc.rotation);
-							Projectile.NewProjectile(npc.Center + shotOffset, plDiff, Acceleration.thisMod.ProjectileType("RoboShot"), 22, 1.0f);
+							Projectile.NewProjectile(npc.Center + shotOffset, plDiff, Acceleration.thisMod.ProjectileType("RoboShot"), 12, 1.0f);
 							Main.PlaySound(SoundID.Item43, npc.position);
 						}
 						if (npc.ai[waitTimer] <= 0)

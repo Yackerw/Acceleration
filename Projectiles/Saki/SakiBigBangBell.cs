@@ -62,7 +62,7 @@ namespace Acceleration.Projectiles.Saki
 					targetPos *= 0.15f;
 					projectile.velocity += targetPos;
 					float projMag = Matht.Magnitude(projectile.velocity);
-					if (projMag > 1.25f)
+					if (projMag > 4.0f)
 					{
 						projectile.velocity *= 4.0f / projMag;
 					}
