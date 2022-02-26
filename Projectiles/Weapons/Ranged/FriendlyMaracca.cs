@@ -13,9 +13,9 @@ using Terraria.Graphics.Shaders;
 using Mathj;
 using Acceleration.NPCs;
 
-namespace Acceleration.Projectiles.Saki
+namespace Acceleration.Projectiles.Weapons.Ranged
 {
-	class SakiMaracca : ModProjectile
+	class FriendlyMaracca : ModProjectile
 	{
 		public override void SetStaticDefaults()
 		{
@@ -28,24 +28,36 @@ namespace Acceleration.Projectiles.Saki
 			//projectile.alpha = 50;
 			projectile.timeLeft = 600;
 			projectile.penetrate = 1;
-			projectile.hostile = true;
+			projectile.friendly = true;
 			projectile.tileCollide = true;
 			projectile.ignoreWater = true;
 			projectile.Name = "Maracca";
 			projectile.aiStyle = -1;
 		}
 
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			base.OnHitNPC(target, damage, knockback, crit);
+			AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+			ap.hyper += 0.035f;
+			if (ap.hyper > 3.0f)
+			{
+				ap.hyper = 3.0f;
+			}
+		}
+
 		public override void AI()
 		{
 			// just apply light gravity
-			projectile.velocity.Y += 0.25f;
-			projectile.velocity.Y = Math.Min(projectile.velocity.Y, 7.0f);
+			projectile.velocity.Y += 0.12f;
+			projectile.velocity.Y = Math.Min(projectile.velocity.Y, 8.0f);
 			if (projectile.timeLeft % 6 == 0)
 			{
-				if (projectile.ai[0] == 0)
+				if (projectile.velocity.X > 0)
 				{
 					projectile.frame = (projectile.frame + 1) % 6;
-				} else
+				}
+				else
 				{
 					projectile.frame = (projectile.frame - 1) % 6;
 					if (projectile.frame < 0)

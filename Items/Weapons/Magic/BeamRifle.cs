@@ -24,6 +24,7 @@ namespace Acceleration.Items.Weapons.Magic
 
 		public static void FireCharged(int whom, bool charged, float angle)
 		{
+			Invasions.SakiInvasion.StartInvasion();
 			Player player = Main.player[whom];
 			if (!player.active)
 			{

@@ -23,23 +23,6 @@ namespace Acceleration.Items.Weapons.Magic
 				"\nA large homing projectile");
 		}
 
-		public override void AddRecipes()
-		{
-			ModRecipe currRecipe = new ModRecipe(Acceleration.thisMod);
-			currRecipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12);
-			currRecipe.AddIngredient(ItemID.SilverBar, 20);
-			currRecipe.AddTile(TileID.Anvils);
-			currRecipe.SetResult(ModContent.ItemType<BeamRifle>());
-			currRecipe.AddRecipe();
-
-			currRecipe = new ModRecipe(Acceleration.thisMod);
-			currRecipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12);
-			currRecipe.AddIngredient(ItemID.TungstenBar, 20);
-			currRecipe.AddTile(TileID.Anvils);
-			currRecipe.SetResult(ModContent.ItemType<BeamRifle>());
-			currRecipe.AddRecipe();
-		}
-
 		public override void SetDefaults()
 		{
 			item.damage = 25;

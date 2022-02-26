@@ -16,6 +16,7 @@ using Mathj;
 
 namespace Acceleration.NPCs.Bosses
 {
+	[AutoloadBossHead]
 	class Saki : ModNPC
 	{
 
@@ -109,7 +110,7 @@ namespace Acceleration.NPCs.Bosses
 				target = Main.player[npc.target];
 			}
 			// leave if all targets dead/too far away
-			if (target.dead || Matht.Magnitude(target.position - npc.position) > 4000)
+			if (target.dead || Matht.Magnitude(target.position - npc.position) > 4000 && npc.ai[AIState] != 0)
 			{
 				if (npc.ai[AIState] != 200)
 				{
@@ -121,15 +122,51 @@ namespace Acceleration.NPCs.Bosses
 			switch (npc.ai[AIState])
 			{
 				case 0:
-					// wait a little while
-					--npc.ai[AITimer];
-					if (npc.ai[AITimer] <= 0)
+					// charge towards nearest player
+					if (Matht.Magnitude(targDiff) > 600)
+					{
+						Vector2 moveAmnt = targDiff;
+						moveAmnt.Normalize();
+						moveAmnt *= 12.0f;
+						npc.position += moveAmnt;
+						// face the player
+						if (targDiff.X > 0)
+						{
+							npc.spriteDirection = 1;
+						}
+						else
+						{
+							npc.spriteDirection = -1;
+						}
+						if (moveAmnt.X > 0)
+						{
+							if (npc.spriteDirection == 1)
+							{
+								ChangeSetKeepFrame(200);
+							}
+							else
+							{
+								ChangeSetKeepFrame(100);
+							}
+						}
+						else
+						{
+							if (npc.spriteDirection == 1)
+							{
+								ChangeSetKeepFrame(100);
+							}
+							else
+							{
+								ChangeSetKeepFrame(200);
+							}
+						}
+						if (generalCounter % 3 == 0)
+						{
+							IncrementFrameCounter(4);
+						}
+					} else
 					{
 						npc.ai[AIState] = 1;
-					}
-					if (generalCounter % 3 == 0)
-					{
-						IncrementFrameCounter(8);
 					}
 					break;
 				case 1:
@@ -383,6 +420,7 @@ namespace Acceleration.NPCs.Bosses
 			}
 			npc.friendly = false;
 			npc.boss = true;
+			AccelerateWorld.sakiDefeated = true;
 			return base.CheckDead();
 		}
 

@@ -18,6 +18,7 @@ using Acceleration.Items.Weapons.Melee;
 using Acceleration.Items.Weapons.Ranged;
 using Acceleration.NPCs.Bosses;
 using Acceleration.Misc;
+using System;
 
 namespace Acceleration
 {
@@ -83,6 +84,30 @@ namespace Acceleration
 			RegisterNetFunc(RainbowRing.rrc);
 			RegisterNetFunc(BeamRifle.callBack);
 			RegisterNetFunc(BeamSword.callBack);
+		}
+
+		public override void PostSetupContent()
+		{
+			Mod bossChecklist = ModLoader.GetMod("BossChecklist");
+			if (bossChecklist != null)
+			{
+				bossChecklist.Call(
+					"AddBoss",
+					1.5f,
+					ModContent.NPCType<NPCs.Bosses.Saki>(),
+					this, // Mod
+					"Saki",
+					(Func<bool>)(() => AccelerateWorld.sakiDefeated),
+					null,
+					null,
+					new List<int> { ModContent.ItemType<Items.Weapons.Ranged.Maracca>(), ModContent.ItemType<Items.Weapons.Magic.PowerBell>(), ModContent.ItemType<Items.Weapons.Melee.Tambourine>() },
+					"Shows up at the end of the first Shifu invasion",
+					null,
+					null,
+					null,
+					null);
+				// Additional bosses here
+			}
 		}
 
 		public override void UpdateUI(GameTime gameTime)

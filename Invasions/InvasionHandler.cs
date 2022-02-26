@@ -57,8 +57,15 @@ namespace Acceleration.Invasions
 				if (npc.type == npcs[i])
 				{
 					--Main.invasionSize;
+					Main.invasionProgress += 1;
 					if (Main.invasionSize <= 0)
 					{
+						// if we're saki invasion, and saki hasn't been defeated yet, spawn her
+						if (Main.invasionType == (int)AccelerateWorld.Invasions.Saki && !AccelerateWorld.sakiDefeated)
+						{
+							NPC.NewNPC((int)Main.rightWorld / 2, (int)Main.topWorld + 800, ModContent.NPCType<NPCs.Bosses.Saki>());
+							Main.NewText("A girl descends from the sky...");
+						}
 						Main.invasionType = 0;
 						Main.NewText("The sky is decelerating...", 12, 140, 255, true);
 					}
