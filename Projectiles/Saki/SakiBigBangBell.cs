@@ -55,9 +55,9 @@ namespace Acceleration.Projectiles.Saki
 					{
 						return;
 					}
-					Vector2 targetPos = target.position;
+					Vector2 targetPos = target.Center;
 					// simply accelerate towards our target
-					targetPos = targetPos - projectile.position;
+					targetPos = targetPos - projectile.Center;
 					targetPos.Normalize();
 					targetPos *= 0.15f;
 					projectile.velocity += targetPos;

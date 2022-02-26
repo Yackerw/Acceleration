@@ -13,7 +13,7 @@ namespace Acceleration.Invasions
 	class SakiInvasion
 	{
 		static public int[] enemies = { ModContent.NPCType<RoboBall>(), ModContent.NPCType<MissileBot>(), ModContent.NPCType<MissileCarrier>() };
-		static public float[] enemyRate = { 1.0f, 1.0f, 0.05f };
+		static public float[] enemyRate = { 0.8f, 0.8f, 0.05f };
 
 		static public void StartInvasion()
 		{
