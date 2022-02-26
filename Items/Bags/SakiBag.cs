@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using System;
 using Microsoft.Xna.Framework.Graphics;
 using Acceleration.NPCs.Bosses;
+using Acceleration.Items.Weapons.Ranged;
 
 namespace Acceleration.Items.Bags
 {
@@ -37,6 +38,18 @@ namespace Acceleration.Items.Bags
 			player.TryGettingDevArmor();
 			// TODO
 			// player.QuickSpawnItem
+			if (Main.rand.Next(0, 3) <= 1)
+			{
+				player.QuickSpawnItem(ModContent.ItemType<Maracca>(), 30);
+			}
+			if (Main.rand.Next(0, 3) <= 1)
+			{
+				player.QuickSpawnItem(ModContent.ItemType<Items.Weapons.Melee.Tambourine>(), 1);
+			}
+			if (Main.rand.Next(0, 3) <= 1)
+			{
+				player.QuickSpawnItem(ModContent.ItemType<Items.Weapons.Magic.PowerBell>(), 1);
+			}
 		}
 
 		public override int BossBagNPC => ModContent.NPCType<Saki>();

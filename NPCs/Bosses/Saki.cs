@@ -432,7 +432,18 @@ namespace Acceleration.NPCs.Bosses
 				npc.DropBossBags();
 			} else
 			{
-
+				if (Main.rand.NextBool())
+				{
+					Item.NewItem(npc.getRect(), ModContent.ItemType<Items.Weapons.Ranged.Maracca>(), 30);
+				}
+				if (Main.rand.NextBool())
+				{
+					Item.NewItem(npc.getRect(), ModContent.ItemType<Items.Weapons.Melee.Tambourine>(), 1);
+				}
+				if (Main.rand.NextBool())
+				{
+					Item.NewItem(npc.getRect(), ModContent.ItemType<Items.Weapons.Magic.PowerBell>(), 1);
+				}
 			}
 		}
 
