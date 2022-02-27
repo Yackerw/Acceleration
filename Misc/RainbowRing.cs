@@ -182,7 +182,7 @@ namespace Acceleration.Misc
 				{
 					Projectile currProj = Main.projectile[i];
 					// not active, or friendly? no! i don't want that! give me the <hostile projectiles>
-					if (!currProj.active || currProj.friendly)
+					if (!currProj.active || currProj.friendly || !currProj.hostile)
 					{
 						continue;
 					}
