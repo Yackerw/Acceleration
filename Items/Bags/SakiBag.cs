@@ -50,6 +50,7 @@ namespace Acceleration.Items.Bags
 			{
 				player.QuickSpawnItem(ModContent.ItemType<Items.Weapons.Magic.PowerBell>(), 1);
 			}
+			player.QuickSpawnItem(ModContent.ItemType<Items.Accessories.Pudding>());
 		}
 
 		public override int BossBagNPC => ModContent.NPCType<Saki>();

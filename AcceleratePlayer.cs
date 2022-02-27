@@ -19,6 +19,7 @@ namespace Acceleration
 	public class AcceleratePlayer : ModPlayer
 	{
 		static public PlayerStepCallback pstepCallback = new PlayerStepCallback();
+		static public PuddingCallback puddingCallback = new PuddingCallback();
 		public float heat = 0f;
 		public bool accel;
 		public bool dashing;
@@ -40,6 +41,11 @@ namespace Acceleration
 		// accelerator values
 		public int maxAccelTime;
 		public int accelTime;
+		// rbits
+		public bool rbits;
+		public int rbitCooldown;
+		public float rbitAngles;
+		public int rbitTarget;
 
 		public class PlayerStepCallback : SyncCallback
 		{
@@ -57,6 +63,16 @@ namespace Acceleration
 				{
 					ap.SyncStep(ap.player.whoAmI);
 				}
+			}
+		}
+
+		public class PuddingCallback : SyncCallback
+		{
+			public override void Callback(BinaryReader reader)
+			{
+				int owner = reader.ReadByte();
+				AcceleratePlayer ap = Main.player[owner].GetModPlayer<AcceleratePlayer>();
+				ap.rbitAngles = reader.ReadSingle();
 			}
 		}
 
@@ -114,6 +130,7 @@ namespace Acceleration
 		{
 			// make us unable to accelerate...
 			accel = false;
+			rbits = false;
 		}
 
 		// process our input
@@ -168,6 +185,27 @@ namespace Acceleration
 			rightClick = triggersSet.MouseRight;
 			prevHyperButton = hyperButton;
 			hyperButton = ((Acceleration)mod).hyperKey.Current;
+		}
+
+		public void FireRbitShots()
+		{
+			// only if we're local
+			if (player.whoAmI != Main.myPlayer)
+			{
+				return;
+			}
+			// fire the shot from our expected rbit positions
+			Vector2 rbitPosition = new Vector2(32.0f, 0).RotatedBy(rbitAngles);
+			rbitPosition = rbitPosition.RotatedBy(-40 * Matht.Deg2Rad);
+			for (int i = 0; i < 8; ++i)
+			{
+				Vector2 shotSpeed = rbitPosition;
+				shotSpeed.Normalize();
+				shotSpeed *= 8.0f;
+				Projectile.NewProjectile(player.Center + rbitPosition, shotSpeed, ModContent.ProjectileType<Projectiles.Accessories.RbitShot>(), (int)(12.0f * player.minionDamage), 0, player.whoAmI);
+				rbitPosition = rbitPosition.RotatedBy(10 * Matht.Deg2Rad);
+			}
+			rbitCooldown = 90;
 		}
 
 		// apply our dash
@@ -257,6 +295,16 @@ namespace Acceleration
 			DASHEND:
 			// store that so we can know
 			prevDashing = dashing;
+
+			// if we have pudding on and some summon slots, fire boolet
+			if (rbits)
+			{
+				--rbitCooldown;
+				if (rbitCooldown <= 0 && player.numMinions > 0 && rbitTarget != -1)
+				{
+					FireRbitShots();
+				}
+			}
 		}
 
 		// make us take more damage from heat
@@ -293,6 +341,51 @@ namespace Acceleration
 				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, new Vector2(drawScale1, drawScale1), null);
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin();
+			}
+			if (rbits)
+			{
+				// render our rbits from pudding
+				Texture2D rbitTex = mod.GetTexture("Projectiles/Accessories/rbit");
+				Vector2 rbitPosition = Vector2.Zero;
+				if (Main.myPlayer == player.whoAmI)
+				{
+					if (player.numMinions > 0)
+					{
+						// find nearest enemy and angle to that
+						rbitTarget = AccelerationHelper.FindClosestNPC(player.Center, 600);
+						if (rbitTarget != -1)
+						{
+							NPC targ = Main.npc[rbitTarget];
+							Vector2 targDiff = targ.Center - player.Center;
+							rbitAngles += Matht.AngleBetween(rbitAngles * Matht.Rad2Deg, (float)Math.Atan2(targDiff.Y, targDiff.X) * Matht.Rad2Deg) * Matht.Deg2Rad * 0.5f;
+						}
+						rbitPosition = new Vector2(32.0f, 0).RotatedBy(rbitAngles);
+					}
+					else
+					{
+						rbitPosition = Main.MouseWorld - player.Center;
+						rbitPosition.Normalize();
+						rbitPosition *= 32.0f;
+						rbitAngles = (float)Math.Atan2(rbitPosition.Y, rbitPosition.X);
+					}
+					// sync the value
+					if (Main.netMode != NetmodeID.SinglePlayer)
+					{
+						ModPacket puddingPack = mod.GetPacket();
+						puddingPack.Write(puddingCallback.reference);
+						puddingPack.Write((byte)player.whoAmI);
+						puddingPack.Write(rbitAngles);
+						puddingPack.Send();
+					}
+				} else
+				{
+					rbitPosition = new Vector2(32.0f, 0).RotatedBy(rbitAngles);
+				}
+				rbitPosition = rbitPosition.RotatedBy(-40 * Matht.Deg2Rad);
+				for (int i = 0; i < 8; ++i) {
+					AccelerationHelper.DrawSpriteCached(rbitTex, player.Center + rbitPosition, 0, 24, Lighting.GetColor((int)(player.Center.X + rbitPosition.X) / 16, (int)(player.Center.Y + rbitPosition.Y) / 16), 0, Vector2.One);
+					rbitPosition = rbitPosition.RotatedBy(10 * Matht.Deg2Rad);
+				}
 			}
 		}
 

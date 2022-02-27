@@ -84,6 +84,7 @@ namespace Acceleration
 			RegisterNetFunc(RainbowRing.rrc);
 			RegisterNetFunc(BeamRifle.callBack);
 			RegisterNetFunc(BeamSword.callBack);
+			RegisterNetFunc(AcceleratePlayer.puddingCallback);
 		}
 
 		public override void PostSetupContent()
