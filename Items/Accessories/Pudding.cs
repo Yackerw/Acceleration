@@ -15,7 +15,7 @@ namespace Acceleration.Items.Accessories
 		{
 			DisplayName.SetDefault("Pudding");
 			Tooltip.SetDefault("A treat so tasty, it was said to have been sealed away..." +
-				"\nSummons protective rbits around the player." +
+				"\nSummons protective rbits around the player" +
 				"\nCounts as summon damage");
 		}
 		public override void SetDefaults()
