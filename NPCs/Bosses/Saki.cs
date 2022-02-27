@@ -54,6 +54,7 @@ namespace Acceleration.NPCs.Bosses
 			npc.ai[AINextState] = 1;
 			npc.value = Item.buyPrice(0, 6, 50, 0);
 			bossBag = ModContent.ItemType<SakiBag>();
+			npc.netAlways = true;
 		}
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -97,6 +98,7 @@ namespace Acceleration.NPCs.Bosses
 
 		public override void AI()
 		{
+			npc.netUpdate = true;
 			if (spawnPoint.Y == 0)
 			{
 				// set this so we can keep the npc around where it started
@@ -194,7 +196,7 @@ namespace Acceleration.NPCs.Bosses
 							npc.ai[AINextState] = 5;
 							break;
 						default:
-							npc.ai[AINextState] = 0;
+							npc.ai[AINextState] = 1;
 							break;
 					}
 					// set us to fly
@@ -255,20 +257,23 @@ namespace Acceleration.NPCs.Bosses
 					}
 
 					// spawn a projectile every now and then
-					if (generalCounter % 45 == 0)
+					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						switch (Main.rand.Next(0, 3))
+						if (generalCounter % 45 == 0)
 						{
-							case 0:
-								Vector2 tambSpeed = targDiff;
-								tambSpeed.Normalize();
-								tambSpeed *= 1.5f;
-								Projectile.NewProjectile(npc.position, tambSpeed, ModContent.ProjectileType<SakiTambourine>(), 15, 1.0f);
-								break;
-							default:
-								// this is dumb why is ai0 not working
-								Projectile.NewProjectile(npc.position, new Vector2(0, 6).RotatedByRandom(360 * Matht.Deg2Rad), ModContent.ProjectileType<SakiOrb>(), 15, 1.0f, Main.myPlayer, npc.whoAmI, target.whoAmI);
-								break;
+							switch (Main.rand.Next(0, 3))
+							{
+								case 0:
+									Vector2 tambSpeed = targDiff;
+									tambSpeed.Normalize();
+									tambSpeed *= 1.5f;
+									Projectile.NewProjectile(npc.position, tambSpeed, ModContent.ProjectileType<SakiTambourine>(), 15, 1.0f);
+									break;
+								default:
+									// this is dumb why is ai0 not working
+									Projectile.NewProjectile(npc.position, new Vector2(0, 6).RotatedByRandom(360 * Matht.Deg2Rad), ModContent.ProjectileType<SakiOrb>(), 15, 1.0f, Main.myPlayer, npc.whoAmI, target.whoAmI);
+									break;
+							}
 						}
 					}
 
@@ -293,11 +298,14 @@ namespace Acceleration.NPCs.Bosses
 					npc.frameCounter = Math.Min(((160 - (int)npc.ai[AITimer]) / 5), 11);
 					ChangeSetKeepFrame(500);
 					--npc.ai[AITimer];
-					if (npc.ai[AITimer] <= 135 && npc.ai[AITimer] >= 125)
+					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						// spawn maraccas in random directions
-						Projectile mar = Main.projectile[Projectile.NewProjectile(npc.position, new Vector2(Main.rand.NextFloat(-6.0f, 6.0f), Main.rand.NextFloat(-6.0f, 0.0f)), ModContent.ProjectileType<SakiMaracca>(), 13, 3.0f, Main.myPlayer, Main.rand.Next(0, 2))];
-						//mar.ai[0] = Main.rand.Next(0, 2);
+						if (npc.ai[AITimer] <= 135 && npc.ai[AITimer] >= 125)
+						{
+							// spawn maraccas in random directions
+							Projectile mar = Main.projectile[Projectile.NewProjectile(npc.position, new Vector2(Main.rand.NextFloat(-6.0f, 6.0f), Main.rand.NextFloat(-6.0f, 0.0f)), ModContent.ProjectileType<SakiMaracca>(), 13, 3.0f, Main.myPlayer, Main.rand.Next(0, 2))];
+							//mar.ai[0] = Main.rand.Next(0, 2);
+						}
 					}
 					if (npc.ai[AITimer] <= 0)
 					{
@@ -308,21 +316,21 @@ namespace Acceleration.NPCs.Bosses
 					npc.frameCounter = Math.Min(((160 - (int)npc.ai[AITimer]) / 5), 11);
 					ChangeSetKeepFrame(500);
 					--npc.ai[AITimer];
-					if (npc.ai[AITimer] <= 135 && npc.ai[AITimer] >= 115)
+					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						// pellets in a rotational pattern...
-						if (npc.ai[AITimer] % 2 == 1)
+						if (npc.ai[AITimer] <= 135 && npc.ai[AITimer] >= 115)
 						{
-							float rotationalAdditive = (npc.ai[AITimer] - 125) * 1.7f * Matht.Deg2Rad;
-							for (int i = 0; i < 5; ++i)
+							// pellets in a rotational pattern...
+							if (npc.ai[AITimer] % 2 == 1)
 							{
-								float rotationalBase = i * 72 * Matht.Deg2Rad;
-								Projectile proj = Main.projectile[Projectile.NewProjectile(npc.position, Vector2.Zero, ModContent.ProjectileType<SakiPellet>(), 13, 3.0f, 255, 0, 0)];
-								proj.rotation = rotationalBase + rotationalAdditive;
-								// minus a little for blue
-								proj = Main.projectile[Projectile.NewProjectile(npc.position, Vector2.Zero, ModContent.ProjectileType<SakiPellet>(), 13, 3.0f, 255, 1, 1)];
-								proj.rotation = rotationalBase + rotationalAdditive - (3 * Matht.Deg2Rad);
-								proj.ai[1] = 1;
+								float rotationalAdditive = (npc.ai[AITimer] - 125) * 1.7f * Matht.Deg2Rad;
+								for (int i = 0; i < 5; ++i)
+								{
+									float rotationalBase = i * 72 * Matht.Deg2Rad;
+									Projectile proj = Main.projectile[Projectile.NewProjectile(npc.position, new Vector2(1, 0).RotatedBy(rotationalBase + rotationalAdditive), ModContent.ProjectileType<SakiPellet>(), 13, 3.0f, Main.myPlayer, 0, 0)];
+									// minus a little for blue
+									proj = Main.projectile[Projectile.NewProjectile(npc.position, new Vector2(1, 0).RotatedBy(rotationalBase + rotationalAdditive - (3 * Matht.Deg2Rad)), ModContent.ProjectileType<SakiPellet>(), 13, 3.0f, Main.myPlayer, 1, 1)];
+								}
 							}
 						}
 					}
@@ -335,7 +343,10 @@ namespace Acceleration.NPCs.Bosses
 					// do a little prep work for big bang bell
 					npc.ai[AIState] = 6;
 					npc.ai[AITimer] = 120;
-					Projectile.NewProjectile(npc.Center - new Vector2(0, 170), Vector2.Zero, ModContent.ProjectileType<SakiBigBangBell>(), 20, 1.0f, 255, target.whoAmI, target.whoAmI);
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+					{
+						Projectile.NewProjectile(npc.Center - new Vector2(0, 170), Vector2.Zero, ModContent.ProjectileType<SakiBigBangBell>(), 20, 1.0f, 255, target.whoAmI, target.whoAmI);
+					}
 					Main.PlaySound(Acceleration.hyperSound, npc.position);
 					break;
 				case 6:

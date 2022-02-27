@@ -17,6 +17,7 @@ namespace Acceleration.Projectiles.Saki
 {
 	class SakiPellet : ModProjectile
 	{
+		bool rotSetup = false;
 		public override void SetStaticDefaults()
 		{
 			Main.projFrames[projectile.type] = 2;
@@ -45,6 +46,11 @@ namespace Acceleration.Projectiles.Saki
 			{
 				projectile.frame = 1;
 			}
+			if (!rotSetup)
+			{
+				projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X);
+				rotSetup = true;
+			}
 			// go slowly at first
 			if (projectile.timeLeft > 200) {
 				projectile.velocity = new Vector2(0, 2).RotatedBy(projectile.rotation);
@@ -70,7 +76,7 @@ namespace Acceleration.Projectiles.Saki
 		{
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-			AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, projectile.frame, 32, Color.White, projectile.rotation + (90 * Matht.Deg2Rad), new Vector2(1, 1), spriteBatch);
+			AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, projectile.frame, 16, Color.White, projectile.rotation + (90 * Matht.Deg2Rad), new Vector2(1, 1), spriteBatch);
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
 			return false;

@@ -23,8 +23,8 @@ namespace Acceleration.Projectiles.Saki
 		}
 		public override void SetDefaults()
 		{
-			projectile.width = 44;
-			projectile.height = 44;
+			projectile.width = 48;
+			projectile.height = 48;
 			//projectile.alpha = 50;
 			projectile.timeLeft = 350;
 			projectile.penetrate = 1;
@@ -98,7 +98,7 @@ namespace Acceleration.Projectiles.Saki
 		{
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-			AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, projectile.frame, 48, Color.White, 0, new Vector2(1, 1), spriteBatch);
+			AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, projectile.frame, 64, Color.White, 0, new Vector2(1, 1), spriteBatch);
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
 			return false;

@@ -19,12 +19,12 @@ namespace Acceleration.Projectiles
 
 		public override void SetStaticDefaults()
 		{
-			Main.projFrames[projectile.type] = 1;
+			Main.projFrames[projectile.type] = 2;
 		}
 		public override void SetDefaults()
 		{
-			projectile.width = 74;
-			projectile.height = 42;
+			projectile.width = 58;
+			projectile.height = 28;
 			//projectile.alpha = 50;
 			projectile.timeLeft = 600;
 			projectile.penetrate = -1;
@@ -37,6 +37,12 @@ namespace Acceleration.Projectiles
 		public override void AI()
 		{
 			base.AI();
+			++projectile.frameCounter;
+			if (projectile.frameCounter >= 2)
+			{
+				projectile.frame += 1;
+				projectile.frame %= 2;
+			}
 			int timeForCalc = Math.Max(0, projectile.timeLeft - 535);
 			if (timeForCalc < 50)
 			{

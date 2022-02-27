@@ -73,6 +73,11 @@ namespace Acceleration
 				int owner = reader.ReadByte();
 				AcceleratePlayer ap = Main.player[owner].GetModPlayer<AcceleratePlayer>();
 				ap.rbitAngles = reader.ReadSingle();
+				// sync it to other players
+				if (Main.netMode == NetmodeID.Server)
+				{
+					ap.SyncRbits();
+				}
 			}
 		}
 
@@ -104,6 +109,15 @@ namespace Acceleration
 			pack.Write((ushort)(hyper * 10000));
 			pack.Write((ushort)accelTime);
 			pack.Send(-1, fromwho);
+		}
+
+		void SyncRbits()
+		{
+			ModPacket puddingPack = mod.GetPacket();
+			puddingPack.Write(puddingCallback.reference);
+			puddingPack.Write((byte)player.whoAmI);
+			puddingPack.Write(rbitAngles);
+			puddingPack.Send(-1, player.whoAmI);
 		}
 
 		public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
@@ -371,11 +385,7 @@ namespace Acceleration
 					// sync the value
 					if (Main.netMode != NetmodeID.SinglePlayer)
 					{
-						ModPacket puddingPack = mod.GetPacket();
-						puddingPack.Write(puddingCallback.reference);
-						puddingPack.Write((byte)player.whoAmI);
-						puddingPack.Write(rbitAngles);
-						puddingPack.Send();
+						SyncRbits();
 					}
 				} else
 				{

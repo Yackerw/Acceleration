@@ -74,18 +74,12 @@ namespace Acceleration.Items.Weapons.Magic
 					// shoot here
 					// spawn 3 orange 3 blue projectiles
 					int projType = ModContent.ProjectileType<Projectiles.Weapons.Magic.FriendlySakiPellet>();
-					Projectile proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI)];
-					proj.rotation = shotAngle;
-					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI)];
-					proj.rotation = shotAngle + 17 * Mathj.Matht.Deg2Rad;
-					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI)];
-					proj.rotation = shotAngle - 17 * Mathj.Matht.Deg2Rad;
-					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
-					proj.rotation = shotAngle - 2 * Mathj.Matht.Deg2Rad;
-					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
-					proj.rotation = shotAngle + 15 * Mathj.Matht.Deg2Rad;
-					proj = Main.projectile[Projectile.NewProjectile(player.position, Vector2.Zero, projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
-					proj.rotation = shotAngle - 19 * Mathj.Matht.Deg2Rad;
+					Projectile proj = Main.projectile[Projectile.NewProjectile(player.position, new Vector2(1, 0).RotatedBy(shotAngle), projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI)];
+					proj = Main.projectile[Projectile.NewProjectile(player.position, new Vector2(1, 0).RotatedBy(shotAngle + 17 * Mathj.Matht.Deg2Rad), projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI)];
+					proj = Main.projectile[Projectile.NewProjectile(player.position, new Vector2(1, 0).RotatedBy(shotAngle - 17 * Mathj.Matht.Deg2Rad), projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI)];
+					proj = Main.projectile[Projectile.NewProjectile(player.position, new Vector2(1, 0).RotatedBy(shotAngle - 2 * Mathj.Matht.Deg2Rad), projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
+					proj = Main.projectile[Projectile.NewProjectile(player.position, new Vector2(1, 0).RotatedBy(shotAngle + 15 * Mathj.Matht.Deg2Rad), projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
+					proj = Main.projectile[Projectile.NewProjectile(player.position, new Vector2(1, 0).RotatedBy(shotAngle - 19 * Mathj.Matht.Deg2Rad), projType, (int)(item.damage * player.magicDamage), item.knockBack, player.whoAmI, 1)];
 					Main.PlaySound(item.UseSound, player.position);
 					player.itemAnimation = 27;
 					player.itemAnimationMax = 27;
