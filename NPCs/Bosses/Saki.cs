@@ -470,8 +470,12 @@ namespace Acceleration.NPCs.Bosses
 			{
 				if (npc.ai[AITimer] < 60)
 				{
+					spriteBatch.End();
+					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
 					float circleScale = (npc.ai[AITimer] / 60) * 2.5f;
-					AccelerationHelper.DrawSprite("Sprites/Circle", npc.Center, 0, 256, Color.White, 0, new Vector2(circleScale, circleScale), spriteBatch);
+					AccelerationHelper.DrawSprite("Sprites/Circle", npc.Center, 0, 256, new Color(1.0f, 1.0f, 1.0f, 1.0f - Math.Max((npc.ai[AITimer] - 40) / 20.0f, 0)), 0, new Vector2(circleScale, circleScale), spriteBatch);
+					spriteBatch.End();
+					spriteBatch.Begin();
 				}
 			}
 
