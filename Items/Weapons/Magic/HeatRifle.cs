@@ -11,17 +11,6 @@ namespace Acceleration.Items.Weapons.Magic
 	class HeatRifle : ModItem
 	{
 
-		public class HeatRifleFireCallback : SyncCallback
-		{
-			public override void Callback(BinaryReader reader)
-			{
-				int whom = reader.ReadByte();
-				bool charged = reader.ReadBoolean();
-				float angle = reader.ReadSingle();
-				HeatRifle.FireCharged(whom, charged, angle);
-			}
-		}
-
 		public static void FireCharged(int whom, bool charged, float angle)
 		{
 			Player player = Main.player[whom];
@@ -61,8 +50,6 @@ namespace Acceleration.Items.Weapons.Magic
 			proj.owner = player.whoAmI;
 		}
 
-
-		public static HeatRifleFireCallback callBack = new HeatRifleFireCallback();
 		bool charging = false;
 		int chargeTime;
 		bool hyper = false;

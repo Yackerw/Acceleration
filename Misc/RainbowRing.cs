@@ -54,15 +54,15 @@ namespace Acceleration.Misc
 
 		public class RainbowRingCallback : SyncCallback
 		{
-			public override void Callback(BinaryReader reader)
+			public static void Callback(BinaryReader reader)
 			{
 				int owner = reader.ReadByte();
 				RainbowRing.Spawn(owner);
 				// re-send callback
 				if (Main.netMode == NetmodeID.Server)
 				{
-					ModPacket mp = Acceleration.thisMod.GetPacket();
-					mp.Write(reference);
+					RainbowRingCallback rrc = new RainbowRingCallback();
+					ModPacket mp = rrc.GetPacket();
 					mp.Write((byte)owner);
 					mp.Send(-1, owner);
 				}

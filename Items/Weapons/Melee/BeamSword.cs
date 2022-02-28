@@ -21,7 +21,7 @@ namespace Acceleration.Items.Weapons.Melee
 		}
 		public class BeamSwordCallback : SyncCallback
 		{
-			public override void Callback(BinaryReader reader)
+			public static void Callback(BinaryReader reader)
 			{
 				int whom = reader.ReadByte();
 				if (Main.player[whom].HeldItem.type == ModContent.ItemType<BeamSword>())
@@ -29,20 +29,19 @@ namespace Acceleration.Items.Weapons.Melee
 					BeamSword bm = (BeamSword)Main.player[whom].HeldItem.modItem;
 					bm.hyperTimer = 25;
 					bm.hyper = true;
-				}
-				// send it to everyone else
-				if (Main.netMode == NetmodeID.Server)
-				{
-					ModPacket pack = Acceleration.thisMod.GetPacket();
-					pack.Write(reference);
-					pack.Write((byte)whom);
-					pack.Send(-1, whom);
+					// relay
+					if (Main.netMode == NetmodeID.Server)
+					{
+						BeamSwordCallback bsc = new BeamSwordCallback();
+						ModPacket mp = bsc.GetPacket();
+						mp.Write(whom);
+						mp.Send(-1, whom);
+					}
 				}
 			}
 		}
 		int swingAnim = 0;
 		int swingTimer = 0;
-		static public BeamSwordCallback callBack = new BeamSwordCallback();
 		public override void SetDefaults()
 		{
 			item.damage = 35;
@@ -142,9 +141,11 @@ namespace Acceleration.Items.Weapons.Melee
 				hyper = true;
 				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
-					ModPacket mp = Acceleration.thisMod.GetPacket();
-					mp.Write((int)callBack.reference);
+					BeamSwordCallback bsc = new BeamSwordCallback();
+					ModPacket mp = bsc.GetPacket();
 					mp.Write((byte)player.whoAmI);
+					mp.Send(-1, Main.myPlayer);
+					//bsc.SendPacketRelayed(mp);
 				}
 
 			}

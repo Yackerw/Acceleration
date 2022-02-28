@@ -13,7 +13,7 @@ namespace Acceleration.Items.Weapons.Magic
 
 		public class BeamRifleFireCallback : SyncCallback
 		{
-			public override void Callback(BinaryReader reader)
+			public static void Callback(BinaryReader reader)
 			{
 				int whom = reader.ReadByte();
 				bool charged = reader.ReadBoolean();
@@ -58,8 +58,6 @@ namespace Acceleration.Items.Weapons.Magic
 			proj.owner = player.whoAmI;
 		}
 
-
-		public static BeamRifleFireCallback callBack = new BeamRifleFireCallback();
 		bool charging = false;
 		int chargeTime;
 		bool chargeFire;

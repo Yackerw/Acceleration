@@ -80,11 +80,30 @@ namespace Acceleration
 				GameShaders.Misc["RainbowRing"] = new MiscShaderData(projectileShader, "ModdersToolkitShaderPass");
 			}
 			thisMod = this;
-			RegisterNetFunc(AcceleratePlayer.pstepCallback);
-			RegisterNetFunc(RainbowRing.rrc);
-			RegisterNetFunc(BeamRifle.callBack);
-			RegisterNetFunc(BeamSword.callBack);
-			RegisterNetFunc(AcceleratePlayer.puddingCallback);
+			// smoother way to handle network functions...
+			System.Reflection.Assembly[] asms = AppDomain.CurrentDomain.GetAssemblies();
+			int i = 0;
+			Type t = new SyncCallback().GetType();
+			KEEPGOING:
+			try
+			{
+				while (i < asms.Length)
+				{
+					var asm = asms[i];
+					foreach (var type in asm.GetTypes())
+					{
+						if (type.BaseType == t)
+						{
+							RegisterNetFunc(type);
+						}
+					}
+					++i;
+				}
+			} catch
+			{
+				++i;
+				goto KEEPGOING;
+			}
 		}
 
 		public override void PostSetupContent()
@@ -132,19 +151,41 @@ namespace Acceleration
 
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
 		{
+			//int packetStart = (int)reader.BaseStream.Position;
 			int id = reader.ReadInt32();
+			/*if (id == -1)
+			{
+				int len = reader.ReadUInt16();
+				// relay to everyone else
+				int whom = reader.ReadByte();
+				Logger.Info(len.ToString());
+				Logger.Info(whom.ToString());
+				ModPacket relayPacket = GetPacket();
+				while (reader.BaseStream.Position < len)
+				{
+					relayPacket.Write((byte)reader.ReadByte());
+				}
+				relayPacket.Send(-1, whom);
+				reader.BaseStream.Seek(packetStart + 7, SeekOrigin.Begin);
+				id = reader.ReadInt32();
+			}*/
+			Logger.Info(id.ToString());
+
 			if (id < callbacks.Count)
 			{
-				callbacks[id].Callback(reader);
+				Logger.Info(id.ToString());
+				callbacks[id].GetMethod("Callback").Invoke(null, new object[] { reader });
 			}
+			Logger.Info("DONE");
 		}
 
-		List<SyncCallback> callbacks = new List<SyncCallback>();
+		List<Type> callbacks = new List<Type>();
 
-		public void RegisterNetFunc(SyncCallback callback)
+		public void RegisterNetFunc(Type t)
 		{
-			callback.reference = callbacks.Count;
-			callbacks.Add(callback);
+			Logger.Info(t.ToString());
+			SyncCallback.references.Add(t, callbacks.Count);
+			callbacks.Add(t);
 		}
 
 		public override void Unload()

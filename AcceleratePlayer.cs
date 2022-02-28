@@ -18,8 +18,6 @@ namespace Acceleration
 {
 	public class AcceleratePlayer : ModPlayer
 	{
-		static public PlayerStepCallback pstepCallback = new PlayerStepCallback();
-		static public PuddingCallback puddingCallback = new PuddingCallback();
 		public float heat = 0f;
 		public bool accel;
 		public bool dashing;
@@ -49,7 +47,7 @@ namespace Acceleration
 
 		public class PlayerStepCallback : SyncCallback
 		{
-			public override void Callback(BinaryReader reader)
+			public static void Callback(BinaryReader reader)
 			{
 				int owner = reader.ReadByte();
 				AcceleratePlayer ap = Main.player[owner].GetModPlayer<AcceleratePlayer>();
@@ -58,22 +56,20 @@ namespace Acceleration
 				ap.dashing = reader.ReadBoolean();
 				ap.hyper = reader.ReadUInt16() / 10000;
 				ap.accelTime = reader.ReadUInt16();
-				// sync player stuff to other players
 				if (Main.netMode == NetmodeID.Server)
 				{
-					ap.SyncStep(ap.player.whoAmI);
+					ap.SyncStep();
 				}
 			}
 		}
 
 		public class PuddingCallback : SyncCallback
 		{
-			public override void Callback(BinaryReader reader)
+			public static void Callback(BinaryReader reader)
 			{
 				int owner = reader.ReadByte();
 				AcceleratePlayer ap = Main.player[owner].GetModPlayer<AcceleratePlayer>();
 				ap.rbitAngles = reader.ReadSingle();
-				// sync it to other players
 				if (Main.netMode == NetmodeID.Server)
 				{
 					ap.SyncRbits();
@@ -100,24 +96,26 @@ namespace Acceleration
 
 		void SyncStep(int fromwho = -1)
 		{
-			ModPacket pack = mod.GetPacket();
-			pack.Write(pstepCallback.reference);
+			PlayerStepCallback psc = new PlayerStepCallback();
+			ModPacket pack = psc.GetPacket();
 			pack.Write((byte)player.whoAmI);
 			pack.Write((UInt16)heat);
 			pack.Write(dashDirection);
 			pack.Write(dashing);
 			pack.Write((ushort)(hyper * 10000));
 			pack.Write((ushort)accelTime);
-			pack.Send(-1, fromwho);
+			pack.Send(-1, player.whoAmI);
+			//psc.SendPacketRelayed(pack);
 		}
 
 		void SyncRbits()
 		{
-			ModPacket puddingPack = mod.GetPacket();
-			puddingPack.Write(puddingCallback.reference);
+			PuddingCallback pc = new PuddingCallback();
+			ModPacket puddingPack = pc.GetPacket();
 			puddingPack.Write((byte)player.whoAmI);
 			puddingPack.Write(rbitAngles);
 			puddingPack.Send(-1, player.whoAmI);
+			//pc.SendPacketRelayed(puddingPack);
 		}
 
 		public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
@@ -291,11 +289,12 @@ namespace Acceleration
 					ringSpawn = 0;
 					if (Main.netMode == NetmodeID.MultiplayerClient)
 					{
-						ModPacket mp = Acceleration.thisMod.GetPacket();
+						RainbowRing.RainbowRingCallback rrc = new RainbowRing.RainbowRingCallback();
+						ModPacket mp = rrc.GetPacket();
 						// sorta awkward but first 4 is packet id
-						mp.Write(RainbowRing.rrc.reference);
 						mp.Write((byte)player.whoAmI);
-						mp.Send(-1, player.whoAmI);
+						mp.Send();
+						//rrc.SendPacketRelayed(mp);
 					}
 					RainbowRing.Spawn(player.whoAmI);
 					//ring.projectile.rotation = dashDirection;

@@ -460,12 +460,14 @@ namespace Acceleration.NPCs.Bosses
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
+			// since bosses use a lot of sprites, this is a custom system set up that spans both the X and Y axis. 100 = go down 1 on the Y axis, 1 = go right 1 on the X axis
 			int Y = (int)npc.frameCounter / 100;
 			int X = (int)npc.frameCounter - (Y * 100);
 			Rectangle frame = new Rectangle(X * 66, Y * 66, 64, 64);
 
 			AccelerationHelper.DrawSpriteRect(ModContent.GetTexture("Acceleration/NPCs/Bosses/SakiSheet"), npc.Center, frame, drawColor, 0, Vector2.One, spriteBatch, npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
 
+			// draw a little circle that closes in on her before she goes "pop"
 			if (npc.ai[AIState] == 100)
 			{
 				if (npc.ai[AITimer] < 60)
