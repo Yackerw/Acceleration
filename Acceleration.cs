@@ -161,7 +161,7 @@ namespace Acceleration
 				Logger.Info(len.ToString());
 				Logger.Info(whom.ToString());
 				ModPacket relayPacket = GetPacket();
-				while (reader.BaseStream.Position < len)
+				while (reader.BaseStream.Position < len + packetStart)
 				{
 					relayPacket.Write((byte)reader.ReadByte());
 				}
@@ -169,14 +169,14 @@ namespace Acceleration
 				reader.BaseStream.Seek(packetStart + 7, SeekOrigin.Begin);
 				id = reader.ReadInt32();
 			}*/
-			Logger.Info(id.ToString());
+			//Logger.Info(id.ToString());
 
 			if (id < callbacks.Count)
 			{
-				Logger.Info(id.ToString());
+				//Logger.Info(id.ToString());
 				callbacks[id].GetMethod("Callback").Invoke(null, new object[] { reader });
 			}
-			Logger.Info("DONE");
+			//Logger.Info("DONE");
 		}
 
 		List<Type> callbacks = new List<Type>();
