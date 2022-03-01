@@ -56,10 +56,6 @@ namespace Acceleration
 				ap.dashing = reader.ReadBoolean();
 				ap.hyper = reader.ReadUInt16() / 10000;
 				ap.accelTime = reader.ReadUInt16();
-				if (Main.netMode == NetmodeID.Server)
-				{
-					ap.SyncStep();
-				}
 			}
 		}
 
@@ -70,10 +66,6 @@ namespace Acceleration
 				int owner = reader.ReadByte();
 				AcceleratePlayer ap = Main.player[owner].GetModPlayer<AcceleratePlayer>();
 				ap.rbitAngles = reader.ReadSingle();
-				if (Main.netMode == NetmodeID.Server)
-				{
-					ap.SyncRbits();
-				}
 			}
 		}
 
@@ -104,8 +96,8 @@ namespace Acceleration
 			pack.Write(dashing);
 			pack.Write((ushort)(hyper * 10000));
 			pack.Write((ushort)accelTime);
-			pack.Send(-1, player.whoAmI);
-			//psc.SendPacketRelayed(pack);
+			//pack.Send(-1, player.whoAmI);
+			psc.SendPacketRelayed(pack);
 		}
 
 		void SyncRbits()
@@ -114,8 +106,8 @@ namespace Acceleration
 			ModPacket puddingPack = pc.GetPacket();
 			puddingPack.Write((byte)player.whoAmI);
 			puddingPack.Write(rbitAngles);
-			puddingPack.Send(-1, player.whoAmI);
-			//pc.SendPacketRelayed(puddingPack);
+			//puddingPack.Send(-1, player.whoAmI);
+			pc.SendPacketRelayed(puddingPack);
 		}
 
 		public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
@@ -293,8 +285,8 @@ namespace Acceleration
 						ModPacket mp = rrc.GetPacket();
 						// sorta awkward but first 4 is packet id
 						mp.Write((byte)player.whoAmI);
-						mp.Send();
-						//rrc.SendPacketRelayed(mp);
+						//mp.Send();
+						rrc.SendPacketRelayed(mp);
 					}
 					RainbowRing.Spawn(player.whoAmI);
 					//ring.projectile.rotation = dashDirection;

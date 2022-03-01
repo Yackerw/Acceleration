@@ -53,7 +53,7 @@ namespace Acceleration.Items.Weapons.Magic
 				Main.PlaySound(Acceleration.ChargeShotSound, player.position);
 				shootSpeed = new Vector2((float)Math.Cos(angle) * 13.0f, (float)Math.Sin(angle) * 13.0f);
 			}
-			Projectile proj = Main.projectile[Projectile.NewProjectile(player.position, shootSpeed, projectile, (int)(player.magicDamageMult * damage), 6, player.whoAmI)];
+			Projectile proj = Main.projectile[Projectile.NewProjectile(player.Center, shootSpeed, projectile, (int)(player.magicDamageMult * damage), 6, player.whoAmI)];
 			proj.rotation = angle;
 			proj.owner = player.whoAmI;
 		}
@@ -163,9 +163,9 @@ namespace Acceleration.Items.Weapons.Magic
 				// upon release, fire either a normal shot or charge shot depending on how long we've charged
 				if (!ap.rightClick && player == Main.LocalPlayer)
 				{
-					if (player.CheckMana(10, true))
+					if (player.CheckMana(player.GetManaCost(item), true))
 					{
-						float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
+						float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.Center.Y, Main.MouseWorld.X - player.Center.X);
 						//if (Main.netMode == NetmodeID.SinglePlayer)
 						//{
 							FireCharged(player.whoAmI, chargeTime >= 60, shotAngle);
@@ -184,7 +184,6 @@ namespace Acceleration.Items.Weapons.Magic
 							packet.Write(shotAngle);
 							packet.Send();*/
 						//}
-						player.statMana -= player.GetManaCost(item);
 					}
 					player.itemAnimation = 25;
 					player.itemAnimationMax = 25;

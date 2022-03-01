@@ -29,14 +29,6 @@ namespace Acceleration.Items.Weapons.Melee
 					BeamSword bm = (BeamSword)Main.player[whom].HeldItem.modItem;
 					bm.hyperTimer = 25;
 					bm.hyper = true;
-					// relay
-					if (Main.netMode == NetmodeID.Server)
-					{
-						BeamSwordCallback bsc = new BeamSwordCallback();
-						ModPacket mp = bsc.GetPacket();
-						mp.Write(whom);
-						mp.Send(-1, whom);
-					}
 				}
 			}
 		}
@@ -144,8 +136,8 @@ namespace Acceleration.Items.Weapons.Melee
 					BeamSwordCallback bsc = new BeamSwordCallback();
 					ModPacket mp = bsc.GetPacket();
 					mp.Write((byte)player.whoAmI);
-					mp.Send(-1, Main.myPlayer);
-					//bsc.SendPacketRelayed(mp);
+					//mp.Send(-1, Main.myPlayer);
+					bsc.SendPacketRelayed(mp);
 				}
 
 			}

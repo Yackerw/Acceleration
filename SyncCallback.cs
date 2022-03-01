@@ -54,19 +54,23 @@ namespace Acceleration
 
 		public void SendPacketRelayed(ModPacket packet)
 		{
+			if (Main.netMode == NetmodeID.Server)
+			{
+				// no relay needed
+				packet.Send(-1, Main.myPlayer);
+				return;
+			}
 			// LOL sike, make a new one
 			ModPacket newPacket = Acceleration.thisMod.GetPacket();
 			newPacket.Write(-1);
-			newPacket.Write((ushort)packet.BaseStream.Position);
+			newPacket.Write((ushort)(packet.BaseStream.Position - 4));
 			newPacket.Write((byte)Main.myPlayer);
 			int len = (int)packet.BaseStream.Position;
 			// ??
 			packet.BaseStream.Seek(4, SeekOrigin.Begin);
-			//Acceleration.thisMod.Logger.Info("START HERE");
 			for (int i = 4; i < len; ++i)
 			{
 				byte toWrite = (byte)packet.BaseStream.ReadByte();
-				//Acceleration.thisMod.Logger.Info(toWrite.ToString());
 				newPacket.Write(toWrite);
 			}
 			newPacket.Send(-1, Main.myPlayer);

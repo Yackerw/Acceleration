@@ -151,32 +151,27 @@ namespace Acceleration
 
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
 		{
-			//int packetStart = (int)reader.BaseStream.Position;
+			int packetStart = (int)reader.BaseStream.Position;
 			int id = reader.ReadInt32();
-			/*if (id == -1)
+			if (id == -1)
 			{
 				int len = reader.ReadUInt16();
 				// relay to everyone else
 				int whom = reader.ReadByte();
-				Logger.Info(len.ToString());
-				Logger.Info(whom.ToString());
 				ModPacket relayPacket = GetPacket();
-				while (reader.BaseStream.Position < len + packetStart)
+				while (reader.BaseStream.Position < len + packetStart + 7)
 				{
 					relayPacket.Write((byte)reader.ReadByte());
 				}
 				relayPacket.Send(-1, whom);
 				reader.BaseStream.Seek(packetStart + 7, SeekOrigin.Begin);
 				id = reader.ReadInt32();
-			}*/
-			//Logger.Info(id.ToString());
+			}
 
 			if (id < callbacks.Count)
 			{
-				//Logger.Info(id.ToString());
 				callbacks[id].GetMethod("Callback").Invoke(null, new object[] { reader });
 			}
-			//Logger.Info("DONE");
 		}
 
 		List<Type> callbacks = new List<Type>();
