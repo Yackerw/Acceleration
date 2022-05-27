@@ -12,6 +12,7 @@ using Terraria.GameInput;
 using Mathj;
 using Acceleration.NPCs;
 using Acceleration.Misc;
+using Terraria.Audio;
 
 
 namespace Acceleration
@@ -82,7 +83,7 @@ namespace Acceleration
 		public void SetupHyper()
 		{
 			hyperDrawTimer = 40;
-			Main.PlaySound(Acceleration.hyperSound);
+			SoundEngine.PlaySound(Acceleration.hyperSound);
 			hyper = Math.Max(0, hyper - 1.0f);
 		}
 
@@ -90,13 +91,13 @@ namespace Acceleration
 		{
 			PlayerStepCallback psc = new PlayerStepCallback();
 			ModPacket pack = psc.GetPacket();
-			pack.Write((byte)player.whoAmI);
+			pack.Write((byte)Player.whoAmI);
 			pack.Write((UInt16)heat);
 			pack.Write(dashDirection);
 			pack.Write(dashing);
 			pack.Write((ushort)(hyper * 10000));
 			pack.Write((ushort)accelTime);
-			//pack.Send(-1, player.whoAmI);
+			//pack.Send(-1, Player.whoAmI);
 			psc.SendPacketRelayed(pack);
 		}
 
@@ -104,9 +105,9 @@ namespace Acceleration
 		{
 			PuddingCallback pc = new PuddingCallback();
 			ModPacket puddingPack = pc.GetPacket();
-			puddingPack.Write((byte)player.whoAmI);
+			puddingPack.Write((byte)Player.whoAmI);
 			puddingPack.Write(rbitAngles);
-			//puddingPack.Send(-1, player.whoAmI);
+			//puddingPack.Send(-1, Player.whoAmI);
 			pc.SendPacketRelayed(puddingPack);
 		}
 
@@ -114,7 +115,7 @@ namespace Acceleration
 		{
 			/*ModPacket pack = mod.GetPacket(12);
 			pack.Write((int)1);
-			pack.Write((byte)player.whoAmI);
+			pack.Write((byte)Player.whoAmI);
 			pack.Write((UInt16)heat);
 			pack.Write(dashDirection);
 			pack.Write(dashing);
@@ -127,7 +128,7 @@ namespace Acceleration
 			AcceleratePlayer ap = clientPlayer as AcceleratePlayer;
 			// compare clone values and sync them here
 			// fuck you i won't compare
-			SyncStep(player.whoAmI);
+			SyncStep(Player.whoAmI);
 		}
 
 		public override void ResetEffects()
@@ -140,7 +141,7 @@ namespace Acceleration
 		// process our input
 		public override void ProcessTriggers(TriggersSet triggersSet)
 		{
-			if (player != Main.LocalPlayer)
+			if (Player != Main.LocalPlayer)
 			{
 				return;
 			}
@@ -152,15 +153,15 @@ namespace Acceleration
 			left = triggersSet.Left;
 
 			// enable our dash if at the right time
-			if (jump && !prevJump && player.velocity.Y != 0.0f && !player.sliding && accelTime < maxAccelTime)
+			if (jump && !prevJump && Player.velocity.Y != 0.0f && !Player.sliding && accelTime < maxAccelTime)
 			{
 				dashing = true;
 				// mild punishment for spam
 				accelTime += 20;
-				accelTime -= (int)player.wingTime;
-				accelTime -= player.rocketTime;
-				player.wingTime = 0;
-				player.rocketTime = 0;
+				accelTime -= (int)Player.wingTime;
+				accelTime -= Player.rocketTime;
+				Player.wingTime = 0;
+				Player.rocketTime = 0;
 			}
 			else
 			{
@@ -177,7 +178,7 @@ namespace Acceleration
 				else
 				{
 					// reset our acceleration timer
-					if (player.velocity.Y == 0)
+					if (Player.velocity.Y == 0)
 					{
 						accelTime = 0;
 					}
@@ -188,13 +189,13 @@ namespace Acceleration
 			prevRightClick = rightClick;
 			rightClick = triggersSet.MouseRight;
 			prevHyperButton = hyperButton;
-			hyperButton = ((Acceleration)mod).hyperKey.Current;
+			hyperButton = ((Acceleration)Mod).hyperKey.Current;
 		}
 
 		public void FireRbitShots()
 		{
 			// only if we're local
-			if (player.whoAmI != Main.myPlayer)
+			if (Player.whoAmI != Main.myPlayer)
 			{
 				return;
 			}
@@ -206,7 +207,7 @@ namespace Acceleration
 				Vector2 shotSpeed = rbitPosition;
 				shotSpeed.Normalize();
 				shotSpeed *= 8.0f;
-				Projectile.NewProjectile(player.Center + rbitPosition, shotSpeed, ModContent.ProjectileType<Projectiles.Accessories.RbitShot>(), (int)(12.0f * player.minionDamage), 0, player.whoAmI);
+				Projectile.NewProjectile(Player.GetSource_Misc("Rbit"), Player.Center + rbitPosition, shotSpeed, ModContent.ProjectileType<Projectiles.Accessories.RbitShot>(), (int)(12.0f * Player.GetTotalDamage(DamageClass.Summon).Multiplicative), 0, Player.whoAmI);
 				rbitPosition = rbitPosition.RotatedBy(10 * Matht.Deg2Rad);
 			}
 			rbitCooldown = 90;
@@ -222,17 +223,17 @@ namespace Acceleration
 			if (dashing && accel)
 			{
 				// if we're not local, just hover
-				if (player != Main.LocalPlayer)
+				if (Player != Main.LocalPlayer)
 				{
-					player.velocity = new Vector2(10f * (float)Math.Cos(dashDirection), 10f * (float)Math.Sin(dashDirection));
+					Player.velocity = new Vector2(10f * (float)Math.Cos(dashDirection), 10f * (float)Math.Sin(dashDirection));
 					// dirty hack because terraria determines whether or not you're grounded entirely by your y velocity for some god forsaken reason
-					if (player.velocity.Y == 0.0f)
+					if (Player.velocity.Y == 0.0f)
 					{
-						player.velocity.Y = 0.00001f;
+						Player.velocity.Y = 0.00001f;
 					}
 					if (!prevDashing)
 					{
-						Main.PlaySound(Acceleration.dashSound, player.position);
+						SoundEngine.PlaySound(Acceleration.dashSound, Player.position);
 					}
 					goto DASHEND;
 				}
@@ -243,13 +244,13 @@ namespace Acceleration
 					// if we're holding neutral, dash in the direction of our speed
 					if (!up && !down && !left && !right)
 					{
-						dashDirection = (float)Math.Atan2(player.velocity.Y, player.velocity.X);
+						dashDirection = (float)Math.Atan2(Player.velocity.Y, Player.velocity.X);
 					}
 					else
 					{
 						dashDirection = (float)Math.Atan2((up ? -1 : 0) + (down ? 1 : 0), (right ? 1 : 0) + (left ? -1 : 0));
 					}
-					Main.PlaySound(Acceleration.dashSound, player.position);
+					SoundEngine.PlaySound(Acceleration.dashSound, Player.position);
 					// force spawn a rainbow colored ring at the start of our dash
 					ringSpawn = 12;
 				}
@@ -262,11 +263,11 @@ namespace Acceleration
 					dashDirection += angBtwn > 0 ? Math.Min(2.5f * Matht.Deg2Rad, angBtwn) : Math.Max(-2.5f * Matht.Deg2Rad, angBtwn);
 					dashDirection %= 360 * Matht.Deg2Rad;
 				}
-				player.velocity = new Vector2(10f * (float)Math.Cos(dashDirection), 10f * (float)Math.Sin(dashDirection));
+				Player.velocity = new Vector2(10f * (float)Math.Cos(dashDirection), 10f * (float)Math.Sin(dashDirection));
 				// dirty hack because terraria determines whether or not you're grounded entirely by your y velocity for some god forsaken reason
-				if (player.velocity.Y == 0.0f)
+				if (Player.velocity.Y == 0.0f)
 				{
-					player.velocity.Y = 0.00001f;
+					Player.velocity.Y = 0.00001f;
 				}
 				heat += 0.8f;
 				heat = Math.Min(300, heat);
@@ -276,7 +277,7 @@ namespace Acceleration
 				{
 					// try to determine offset for the rainbow ring
 					//Vector2 newPos = new Vector2((12f * (float)Math.Cos(dashDirection)) - (24f * (float)Math.Sin(dashDirection)), (24f * (float)Math.Cos(dashDirection)) + (12f * (float)Math.Sin(dashDirection)));
-					//int rRing = Projectile.NewProjectile(new Vector2(player.position.X + newPos.X), new Vector2(0, 0), mod.ProjectileType("RainbowRing"), 0, 0, Main.myPlayer);
+					//int rRing = Projectile.NewProjectile(new Vector2(Player.position.X + newPos.X), new Vector2(0, 0), mod.ProjectileType("RainbowRing"), 0, 0, Main.myPlayer);
 					//RainbowRing ring = (RainbowRing)Main.projectile[rRing].modProjectile;
 					ringSpawn = 0;
 					if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -284,11 +285,11 @@ namespace Acceleration
 						RainbowRing.RainbowRingCallback rrc = new RainbowRing.RainbowRingCallback();
 						ModPacket mp = rrc.GetPacket();
 						// sorta awkward but first 4 is packet id
-						mp.Write((byte)player.whoAmI);
+						mp.Write((byte)Player.whoAmI);
 						//mp.Send();
 						rrc.SendPacketRelayed(mp);
 					}
-					RainbowRing.Spawn(player.whoAmI);
+					RainbowRing.Spawn(Player.whoAmI);
 					//ring.projectile.rotation = dashDirection;
 					ringSpawn = 0;
 				}
@@ -305,7 +306,7 @@ namespace Acceleration
 			if (rbits)
 			{
 				--rbitCooldown;
-				if (rbitCooldown <= 0 && player.numMinions > 0 && rbitTarget != -1)
+				if (rbitCooldown <= 0 && Player.numMinions > 0 && rbitTarget != -1)
 				{
 					FireRbitShots();
 				}
@@ -316,7 +317,7 @@ namespace Acceleration
 		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 			// a projectile, ignore the damage
-			if (dashing && damageSource.SourceProjectileType != 0 && Main.projectile[damageSource.SourceProjectileIndex].magic)
+			if (dashing && damageSource.SourceProjectileType != null && Main.projectile[damageSource.SourceProjectileIndex].DamageType == DamageClass.Magic)
 			{
 				return false;
 			}
@@ -324,16 +325,16 @@ namespace Acceleration
 			float defDamage;
 			if (Main.expertMode)
 			{
-				defDamage = damage - (player.statDefense * 0.75f);
+				defDamage = damage - (Player.statDefense * 0.75f);
 			} else
 			{
-				defDamage = damage - (player.statDefense * 0.5f);
+				defDamage = damage - (Player.statDefense * 0.5f);
 			}
 			damage += (int)(defDamage * (heat * 0.01f));
 			return true;
 		}
 
-		public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+		public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
 		{
 			base.DrawEffects(drawInfo, ref r, ref g, ref b, ref a, ref fullBright);
 			if (hyperDrawTimer > 0)
@@ -342,33 +343,33 @@ namespace Acceleration
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
 				float drawScale0 = ((float)hyperDrawTimer / 40) * 5;
 				float drawScale1 = ((1.0f - (float)hyperDrawTimer / 40)) * 6;
-				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, new Vector2(drawScale0, drawScale0), null);
-				AccelerationHelper.DrawSprite("Sprites/Circle", player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, new Vector2(drawScale1, drawScale1), null);
+				AccelerationHelper.DrawSprite("Acceleration/Sprites/Circle", Player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, new Vector2(drawScale0, drawScale0), null);
+				AccelerationHelper.DrawSprite("Acceleration/Sprites/Circle", Player.position, 0, 256, new Color(1.0f, 1.0f, 1.0f, 0.5f), 0, new Vector2(drawScale1, drawScale1), null);
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin();
 			}
 			if (rbits)
 			{
 				// render our rbits from pudding
-				Texture2D rbitTex = mod.GetTexture("Projectiles/Accessories/rbit");
+				Texture2D rbitTex = ModContent.Request<Texture2D>("Acceleration/Projectiles/Accessories/rbit").Value;
 				Vector2 rbitPosition = Vector2.Zero;
-				if (Main.myPlayer == player.whoAmI)
+				if (Main.myPlayer == Player.whoAmI)
 				{
-					if (player.numMinions > 0)
+					if (Player.numMinions > 0)
 					{
 						// find nearest enemy and angle to that
-						rbitTarget = AccelerationHelper.FindClosestNPC(player.Center, 600);
+						rbitTarget = AccelerationHelper.FindClosestNPC(Player.Center, 600);
 						if (rbitTarget != -1)
 						{
 							NPC targ = Main.npc[rbitTarget];
-							Vector2 targDiff = targ.Center - player.Center;
+							Vector2 targDiff = targ.Center - Player.Center;
 							rbitAngles += Matht.AngleBetween(rbitAngles * Matht.Rad2Deg, (float)Math.Atan2(targDiff.Y, targDiff.X) * Matht.Rad2Deg) * Matht.Deg2Rad * 0.5f;
 						}
 						rbitPosition = new Vector2(32.0f, 0).RotatedBy(rbitAngles);
 					}
 					else
 					{
-						rbitPosition = Main.MouseWorld - player.Center;
+						rbitPosition = Main.MouseWorld - Player.Center;
 						rbitPosition.Normalize();
 						rbitPosition *= 32.0f;
 						rbitAngles = (float)Math.Atan2(rbitPosition.Y, rbitPosition.X);
@@ -384,15 +385,15 @@ namespace Acceleration
 				}
 				rbitPosition = rbitPosition.RotatedBy(-40 * Matht.Deg2Rad);
 				for (int i = 0; i < 8; ++i) {
-					AccelerationHelper.DrawSpriteCached(rbitTex, player.Center + rbitPosition, 0, 24, Lighting.GetColor((int)(player.Center.X + rbitPosition.X) / 16, (int)(player.Center.Y + rbitPosition.Y) / 16), 0, Vector2.One);
+					AccelerationHelper.DrawSpriteCached(rbitTex, Player.Center + rbitPosition, 0, 24, Lighting.GetColor((int)(Player.Center.X + rbitPosition.X) / 16, (int)(Player.Center.Y + rbitPosition.Y) / 16), 0, Vector2.One);
 					rbitPosition = rbitPosition.RotatedBy(10 * Matht.Deg2Rad);
 				}
 			}
 		}
 
-		public override void OnRespawn(Player player)
+		public override void OnRespawn(Player Player)
 		{
-			//AcceleratePlayer ap = player.GetModPlayer<AcceleratePlayer>();
+			//AcceleratePlayer ap = Player.GetModPlayer<AcceleratePlayer>();
 			heat = 0;
 		}
 	}

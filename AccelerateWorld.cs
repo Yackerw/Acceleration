@@ -22,23 +22,42 @@ using Acceleration.Invasions;
 
 namespace Acceleration
 {
-	class AccelerateWorld : ModWorld
+	class AccelerateWorld : ModSystem
 	{
 		static public bool sakiDefeated;
 		bool prevDayTime = true;
 
 		public enum Invasions { Saki = -56 };
-		public override void Initialize()
+		public override void OnWorldLoad()
 		{
 			RainbowRing.firstRing = null;
 			RainbowRing.lastRing = null;
 		}
-		public override void PreUpdate()
+		public override void PreUpdateWorld()
 		{
 
 		}
 
-		public override void PostUpdate()
+		public override void UpdateUI(GameTime gameTime)
+		{
+			if (((Acceleration)Mod).UI != null) ((Acceleration)Mod).UI.Update(gameTime);
+		}
+
+		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+		{
+			int ind = layers.FindIndex(layer => layer.Name.Equals("AccelerateMod: Heat"));
+			if (ind == -1)
+			{
+				layers.Add(new LegacyGameInterfaceLayer("AccelerateMod: Heat", delegate
+				{
+					((Acceleration)Mod).UI.Draw(Main.spriteBatch, Main._drawInterfaceGameTime);
+					return true;
+				}
+				));
+			}
+		}
+
+		public override void PostUpdateWorld()
 		{
 			// handle the invasion stuff
 			if (Main.invasionType == (int)Invasions.Saki)
@@ -60,14 +79,12 @@ namespace Acceleration
 			prevDayTime = Main.dayTime;
 		}
 
-		public override TagCompound Save()
+		public override void SaveWorldData(TagCompound tag)
 		{
-			TagCompound tc = new TagCompound();
-			tc.Add(new KeyValuePair<string, object>("SakiDefeat", sakiDefeated));
-			return tc;
+			tag.Add(new KeyValuePair<string, object>("SakiDefeat", sakiDefeated));
 		}
 
-		public override void Load(TagCompound tag)
+		public override void LoadWorldData(TagCompound tag)
 		{
 			sakiDefeated = tag.GetBool("SakiDefeat");
 		}

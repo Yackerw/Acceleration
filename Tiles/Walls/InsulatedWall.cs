@@ -17,11 +17,11 @@ namespace Acceleration.Tiles.Walls
 {
 	public class InsulatedWall: ModWall
 	{
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			Main.wallHouse[Type] = true;
 			//dustType = ModContent.DustType<Sparkle>();
-			drop = ModContent.ItemType<Items.Placeable.InsulatedWall>();
+			ItemDrop = ModContent.ItemType<Items.Placeable.InsulatedWall>();
 			AddMapEntry(new Color(72, 80, 64));
 			//SetModTree(new Trees.ExampleTree());
 		}

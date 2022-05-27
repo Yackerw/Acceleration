@@ -19,29 +19,29 @@ namespace Acceleration.NPCs.Enemies
 
 		public override void SetDefaults()
 		{
-			npc.lifeMax = 125;
-			npc.damage = 15;
-			npc.defense = 8;
-			npc.knockBackResist = 0f;
-			npc.aiStyle = -1;
-			npc.noGravity = true;
-			npc.width = 86;
-			npc.height = 54;
-			npc.friendly = false;
-			npc.HitSound = SoundID.NPCHit4;
-			npc.DeathSound = SoundID.NPCDeath14;
-			npc.noTileCollide = true;
+			NPC.lifeMax = 125;
+			NPC.damage = 15;
+			NPC.defense = 8;
+			NPC.knockBackResist = 0f;
+			NPC.aiStyle = -1;
+			NPC.noGravity = true;
+			NPC.width = 86;
+			NPC.height = 54;
+			NPC.friendly = false;
+			NPC.HitSound = SoundID.NPCHit4;
+			NPC.DeathSound = SoundID.NPCDeath14;
+			NPC.noTileCollide = true;
 		}
 
 		public override void AutoStaticDefaults()
 		{
 			base.AutoStaticDefaults();
-			Main.npcFrameCount[npc.type] = 2;
+			Main.npcFrameCount[NPC.type] = 2;
 		}
 
 		public override void FindFrame(int frameHeight)
 		{
-			npc.frame.Y = (int)npc.ai[topOrBottom] * frameHeight;
+			NPC.frame.Y = (int)NPC.ai[topOrBottom] * frameHeight;
 		}
 
 		public override void SetStaticDefaults()
@@ -52,23 +52,23 @@ namespace Acceleration.NPCs.Enemies
 		public override void AI()
 		{
 			// proper aggro handling!
-			Player target = Main.player[npc.target];
-			if (npc.target < 0 || npc.target == 255 || target.dead || !target.active)
+			Player target = Main.player[NPC.target];
+			if (NPC.target < 0 || NPC.target == 255 || target.dead || !target.active)
 			{
-				npc.TargetClosest(true);
-				target = Main.player[npc.target];
+				NPC.TargetClosest(true);
+				target = Main.player[NPC.target];
 			}
 
-			if (!Main.npc[(int)npc.ai[creator]].active)
+			if (!Main.npc[(int)NPC.ai[creator]].active)
 			{
-				npc.active = false;
+				NPC.active = false;
 				return;
 			}
 
-			MissileCarrier mc = (MissileCarrier)Main.npc[(int)npc.ai[creator]].modNPC;
+			MissileCarrier mc = (MissileCarrier)Main.npc[(int)NPC.ai[creator]].ModNPC;
 			Vector2 offset = new Vector2();
 
-			if (npc.ai[backFront] == 0)
+			if (NPC.ai[backFront] == 0)
 			{
 				// back
 				offset.X = 16;
@@ -76,7 +76,7 @@ namespace Acceleration.NPCs.Enemies
 			{
 				offset.X = -16;
 			}
-			if (npc.ai[topOrBottom] == 0)
+			if (NPC.ai[topOrBottom] == 0)
 			{
 				// top
 				offset.Y = -40;
@@ -85,13 +85,13 @@ namespace Acceleration.NPCs.Enemies
 				offset.Y = 30;
 			}
 
-			npc.ai[timer] -= 1;
-			if (npc.ai[timer] <= 0)
+			NPC.ai[timer] -= 1;
+			if (NPC.ai[timer] <= 0)
 			{
 				// shooty shooty time
-				npc.ai[timer] = 300f;
+				NPC.ai[timer] = 300f;
 				Vector2 projectileMom = new Vector2();
-				if (npc.ai[topOrBottom] == 0)
+				if (NPC.ai[topOrBottom] == 0)
 				{
 					// top
 					projectileMom.Y = -10;
@@ -100,7 +100,7 @@ namespace Acceleration.NPCs.Enemies
 					// bottom
 					projectileMom.Y = 13;
 				}
-				if (npc.ai[backFront] == 0)
+				if (NPC.ai[backFront] == 0)
 				{
 					// back
 					projectileMom.X = 10;
@@ -109,24 +109,24 @@ namespace Acceleration.NPCs.Enemies
 					// front
 					projectileMom.X = 15;
 				}
-				projectileMom.X *= npc.spriteDirection;
+				projectileMom.X *= NPC.spriteDirection;
 				float initialAngle = (float)Math.Atan2(projectileMom.Y, projectileMom.X);
-				if (npc.spriteDirection == 1)
+				if (NPC.spriteDirection == 1)
 				{
 					projectileMom.X += 60;
 				}
-				int missile = Projectile.NewProjectile(npc.position + projectileMom, new Vector2(0, 0), mod.ProjectileType("SuguriMissile"), 16, 5);
+				int missile = Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.position + projectileMom, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.SuguriMissile>(), 16, 5);
 				Main.projectile[missile].rotation = initialAngle;
 				initialAngle += 15 * Matht.Deg2Rad;
-				projectileMom.X += 9 * npc.spriteDirection;
-				projectileMom.Y += npc.ai[topOrBottom] == 0 ? -24 : 24;
-				//missile = Projectile.NewProjectile(npc.position + projectileMom, new Vector2(0, 0), mod.ProjectileType("SuguriMissile"), 16, 5);
+				projectileMom.X += 9 * NPC.spriteDirection;
+				projectileMom.Y += NPC.ai[topOrBottom] == 0 ? -24 : 24;
+				//missile = Projectile.NewProjectile(NPC.position + projectileMom, new Vector2(0, 0), mod.ProjectileType("SuguriMissile"), 16, 5);
 				Main.projectile[missile].rotation = initialAngle;
-				Main.PlaySound(Acceleration.MissileLaunchSound);
+				SoundEngine.PlaySound(Acceleration.MissileLaunchSound);
 			}
 
-			npc.position = mc.npc.position + offset;
-			npc.spriteDirection = mc.npc.spriteDirection;
+			NPC.position = mc.NPC.position + offset;
+			NPC.spriteDirection = mc.NPC.spriteDirection;
 
 			// fire off missiles
 
@@ -135,9 +135,9 @@ namespace Acceleration.NPCs.Enemies
 
 		public override void HitEffect(int hitDirection, double damage)
 		{
-			Dust.NewDust(npc.position, 80, 50, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-			Dust.NewDust(npc.position, 80, 50, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-			Dust.NewDust(npc.position, 80, 50, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+			Dust.NewDust(NPC.position, 80, 50, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+			Dust.NewDust(NPC.position, 80, 50, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+			Dust.NewDust(NPC.position, 80, 50, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 		}
 
 		public override bool CheckDead()
@@ -145,12 +145,12 @@ namespace Acceleration.NPCs.Enemies
 			// die particles
 			for (int i = 0; i < 20; ++i)
 			{
-				Dust.NewDust(npc.position, 80, 50, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-				Dust.NewDust(npc.position, 80, 50, DustID.Water_BloodMoon, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+				Dust.NewDust(NPC.position, 80, 50, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+				Dust.NewDust(NPC.position, 80, 50, DustID.Water_BloodMoon, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 			}
 			// make sure we subtract the count from our parent
-			MissileCarrier mc = (MissileCarrier)Main.npc[(int)npc.ai[creator]].modNPC;
-			mc.npc.ai[MissileCarrier.launchersAlive] -= 1;
+			MissileCarrier mc = (MissileCarrier)Main.npc[(int)NPC.ai[creator]].ModNPC;
+			mc.NPC.ai[MissileCarrier.launchersAlive] -= 1;
 			return base.CheckDead();
 		}
 	}

@@ -18,69 +18,69 @@ namespace Acceleration.Projectiles
 
         public override void SetDefaults()
         {
-            projectile.width = 48;
-            projectile.height = 48;
-            projectile.alpha = 0;
-            projectile.timeLeft = 360;
-            projectile.penetrate = -1;
-            projectile.hostile = false;
-            projectile.friendly = true;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
-            projectile.melee = true;
-            projectile.light = 0.3f;
+            Projectile.width = 48;
+            Projectile.height = 48;
+            Projectile.alpha = 0;
+            Projectile.timeLeft = 360;
+            Projectile.penetrate = -1;
+            Projectile.hostile = false;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.light = 0.3f;
         }
         public override void AI()
         {
             base.AI();
             // face our momentum
-            projectile.rotation += 15*Mathj.Matht.Deg2Rad;
-            Vector2 tamspeed = projectile.velocity;
+            Projectile.rotation += 15*Mathj.Matht.Deg2Rad;
+            Vector2 tamspeed = Projectile.velocity;
             tamspeed.Normalize();
-            if (projectile.ai[0] == 0 && (projectile.velocity.X * projectile.velocity.X) + (projectile.velocity.Y * projectile.velocity.Y) > 16f) //tambo slows down over time 
+            if (Projectile.ai[0] == 0 && (Projectile.velocity.X * Projectile.velocity.X) + (Projectile.velocity.Y * Projectile.velocity.Y) > 16f) //tambo slows down over time 
             {
-                projectile.velocity -= 0.2f * tamspeed;
+                Projectile.velocity -= 0.2f * tamspeed;
             }
-            if (projectile.ai[0] == 0 && (projectile.velocity.X * projectile.velocity.X) + (projectile.velocity.Y * projectile.velocity.Y) < 16f) //slow down the slow down for some juicy boss dps 
+            if (Projectile.ai[0] == 0 && (Projectile.velocity.X * Projectile.velocity.X) + (Projectile.velocity.Y * Projectile.velocity.Y) < 16f) //slow down the slow down for some juicy boss dps 
             {
-                projectile.velocity -= 0.05f * tamspeed;
+                Projectile.velocity -= 0.05f * tamspeed;
             }
-            if (projectile.ai[0] == 1) //tambo return 
+            if (Projectile.ai[0] == 1) //tambo return 
             {
-                projectile.velocity -= -0.1f * tamspeed;
-                projectile.tileCollide = true;
+                Projectile.velocity -= -0.1f * tamspeed;
+                Projectile.tileCollide = true;
             }
-            if (Vector2.Dot(projectile.velocity, tamspeed) < 0) //dot product multiplies 
+            if (Vector2.Dot(Projectile.velocity, tamspeed) < 0) //dot product multiplies 
             {
-                projectile.ai[0] = 1;
+                Projectile.ai[0] = 1;
             }
             for (int i = 0; i < 7; i++) //blur shit wooooo also its 7 because + 1 will be 8 at 7 
             {
                 rotations[i] = rotations[i + 1];
                 rotpos[i] = rotpos[i + 1];
             }
-            rotations[7] = projectile.rotation;
-            rotpos[7] = projectile.Center;
+            rotations[7] = Projectile.rotation;
+            rotpos[7] = Projectile.Center;
         }
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
-            base.PostDraw(spriteBatch, lightColor);
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
+            base.PostDraw(lightColor);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
             for (int i = 0; i < 8; i++)
             {
-                AccelerationHelper.DrawSprite("Projectiles/Tambourine_Emiss", rotpos[i], 0, 48, new Color(255 - ((8 - i) * 35), 255 - ((8 - i) * 35), 255 - ((8 - i) * 35)), rotations[i], new Vector2(1,1), spriteBatch);
+                AccelerationHelper.DrawSprite("Acceleration/Projectiles/Tambourine_Emiss", rotpos[i], 0, 48, new Color(255 - ((8 - i) * 35), 255 - ((8 - i) * 35), 255 - ((8 - i) * 35)), rotations[i], new Vector2(1,1), Main.spriteBatch);
             }
-            spriteBatch.End();
-            spriteBatch.Begin();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin();
         }
         public override void Kill(int timeLeft)
         {
-            Vector2 position = projectile.position - new Vector2(15, 15);
+            Vector2 position = Projectile.position - new Vector2(15, 15);
             for (int i = 0; i < 20; ++i)
             {
-                Dust.NewDust(projectile.position, 48, 48, DustID.TopazBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-                Dust.NewDust(projectile.position, 48, 48, DustID.SapphireBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+                Dust.NewDust(Projectile.position, 48, 48, DustID.GemTopaz, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+                Dust.NewDust(Projectile.position, 48, 48, DustID.GemSapphire, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
             }
         }
     }

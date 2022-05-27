@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
+using Terraria.Audio;
 using Mathj;
 using Acceleration.NPCs;
 
@@ -19,26 +20,27 @@ namespace Acceleration.Projectiles.Weapons.Ranged
 	{
 		public override void SetStaticDefaults()
 		{
-			Main.projFrames[projectile.type] = 6;
+			Main.projFrames[Projectile.type] = 6;
 		}
 		public override void SetDefaults()
 		{
-			projectile.width = 64;
-			projectile.height = 32;
-			//projectile.alpha = 50;
-			projectile.timeLeft = 600;
-			projectile.penetrate = 1;
-			projectile.friendly = true;
-			projectile.tileCollide = true;
-			projectile.ignoreWater = true;
-			projectile.Name = "Maracca";
-			projectile.aiStyle = -1;
+			Projectile.width = 64;
+			Projectile.height = 32;
+			//Projectile.alpha = 50;
+			Projectile.timeLeft = 600;
+			Projectile.penetrate = 1;
+			Projectile.friendly = true;
+			Projectile.tileCollide = true;
+			Projectile.ignoreWater = true;
+			Projectile.Name = "Maracca";
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.aiStyle = -1;
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			base.OnHitNPC(target, damage, knockback, crit);
-			AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+			AcceleratePlayer ap = Main.player[Projectile.owner].GetModPlayer<AcceleratePlayer>();
 			ap.hyper += 0.035f;
 			if (ap.hyper > 3.0f)
 			{
@@ -49,43 +51,43 @@ namespace Acceleration.Projectiles.Weapons.Ranged
 		public override void AI()
 		{
 			// just apply light gravity
-			projectile.velocity.Y += 0.12f;
-			projectile.velocity.Y = Math.Min(projectile.velocity.Y, 8.0f);
-			if (projectile.timeLeft % 6 == 0)
+			Projectile.velocity.Y += 0.12f;
+			Projectile.velocity.Y = Math.Min(Projectile.velocity.Y, 8.0f);
+			if (Projectile.timeLeft % 6 == 0)
 			{
-				if (projectile.velocity.X > 0)
+				if (Projectile.velocity.X > 0)
 				{
-					projectile.frame = (projectile.frame + 1) % 6;
+					Projectile.frame = (Projectile.frame + 1) % 6;
 				}
 				else
 				{
-					projectile.frame = (projectile.frame - 1) % 6;
-					if (projectile.frame < 0)
+					Projectile.frame = (Projectile.frame - 1) % 6;
+					if (Projectile.frame < 0)
 					{
-						projectile.frame = 5;
+						Projectile.frame = 5;
 					}
 				}
 			}
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
-			base.PostDraw(spriteBatch, lightColor);
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
-			AccelerationHelper.DrawSprite("Projectiles/Saki/Maracca_Emiss", projectile.Center, projectile.frame, 32, Color.White, 0, new Vector2(1, 1), spriteBatch);
-			spriteBatch.End();
-			spriteBatch.Begin();
+			base.PostDraw(lightColor);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
+			AccelerationHelper.DrawSprite("Acceleration/Projectiles/Saki/Maracca_Emiss", Projectile.Center, Projectile.frame, 32, Color.White, 0, new Vector2(1, 1), Main.spriteBatch);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin();
 		}
 		public override void Kill(int timeLeft)
 		{
-			Vector2 position = projectile.position - new Vector2(15, 15);
+			Vector2 position = Projectile.position - new Vector2(15, 15);
 			for (int i = 0; i < 10; ++i)
 			{
-				Dust.NewDust(projectile.position, 64, 32, DustID.TopazBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-				Gore.NewGore(projectile.position, Vector2.Zero, 61);
+				Dust.NewDust(Projectile.position, 64, 32, DustID.GemTopaz, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.position, Vector2.Zero, 61);
 			}
-			Main.PlaySound(SoundID.Item14, projectile.position);
+			SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
 		}
 	}
 }

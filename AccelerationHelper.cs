@@ -32,7 +32,7 @@ namespace Acceleration
 		static public void DrawSprite(string texture, Vector2 position, int frame, int spriteHeight, Color color, float rotation, Vector2 scale, SpriteBatch batch = null)
 		{
 			Texture2D tex;
-			tex = Acceleration.thisMod.GetTexture(texture);
+			tex = ModContent.Request<Texture2D>(texture).Value;
 			DrawSpriteCached(tex, position, frame, spriteHeight, color, rotation, scale, batch);
 		}
 

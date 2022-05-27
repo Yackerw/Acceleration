@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
+using Terraria.GameContent;
 using Mathj;
 using Acceleration;
 
@@ -19,61 +20,61 @@ namespace Acceleration.Projectiles.Weapons.Magic
 	{
 		public override void SetStaticDefaults()
 		{
-			Main.projFrames[projectile.type] = 1;
+			Main.projFrames[Projectile.type] = 1;
 		}
 		public override void SetDefaults()
 		{
-			projectile.width = 280;
-			projectile.height = 280;
-			//projectile.alpha = 50;
-			projectile.timeLeft = 650;
-			projectile.penetrate = -1;
-			projectile.friendly = true;
-			projectile.tileCollide = false;
-			projectile.ignoreWater = true;
-			projectile.Name = "Big Bang Bell";
-			projectile.magic = true;
-			projectile.frameCounter = 0;
-			projectile.frame = 0;
+			Projectile.width = 280;
+			Projectile.height = 280;
+			//Projectile.alpha = 50;
+			Projectile.timeLeft = 650;
+			Projectile.penetrate = -1;
+			Projectile.friendly = true;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+			Projectile.Name = "Big Bang Bell";
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.frameCounter = 0;
+			Projectile.frame = 0;
 		}
 
 		public override void AI()
 		{
 			// rotate a little bit
-			projectile.rotation += 1.5f * Matht.Deg2Rad;
-			if (projectile.timeLeft > 150)
+			Projectile.rotation += 1.5f * Matht.Deg2Rad;
+			if (Projectile.timeLeft > 150)
 			{
-				if (projectile.timeLeft > 550)
+				if (Projectile.timeLeft > 550)
 				{
 					// increase in scale, then idle for a short while
-					projectile.scale = (1.0f - Math.Max((projectile.timeLeft - 600.0f) / 50.0f, 0.0f)) * 2.0f;
-					projectile.ai[0] = AccelerationHelper.FindClosestNPC(projectile.Center, 600);
+					Projectile.scale = (1.0f - Math.Max((Projectile.timeLeft - 600.0f) / 50.0f, 0.0f)) * 2.0f;
+					Projectile.ai[0] = AccelerationHelper.FindClosestNPC(Projectile.Center, 600);
 				}
 				else
 				{
-					if (projectile.ai[0] == -1 || !Main.npc[(int)projectile.ai[0]].active)
+					if (Projectile.ai[0] == -1 || !Main.npc[(int)Projectile.ai[0]].active)
 					{
-						projectile.ai[0] = AccelerationHelper.FindClosestNPC(projectile.Center, 600);
-						if (projectile.ai[0] == -1)
+						Projectile.ai[0] = AccelerationHelper.FindClosestNPC(Projectile.Center, 600);
+						if (Projectile.ai[0] == -1)
 						{
 							return;
 						}
 					}
-					NPC target = Main.npc[(int)projectile.ai[0]];
+					NPC target = Main.npc[(int)Projectile.ai[0]];
 					if (!target.active)
 					{
 						return;
 					}
 					Vector2 targetPos = target.Center;
 					// simply accelerate towards our target
-					targetPos = targetPos - projectile.Center;
+					targetPos = targetPos - Projectile.Center;
 					targetPos.Normalize();
 					targetPos *= 0.15f;
-					projectile.velocity += targetPos;
-					float projMag = Matht.Magnitude(projectile.velocity);
+					Projectile.velocity += targetPos;
+					float projMag = Matht.Magnitude(Projectile.velocity);
 					if (projMag > 4.0f)
 					{
-						projectile.velocity *= 4.0f / projMag;
+						Projectile.velocity *= 4.0f / projMag;
 					}
 				}
 			}
@@ -81,26 +82,26 @@ namespace Acceleration.Projectiles.Weapons.Magic
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return projectile.timeLeft > 550 ? false : base.Colliding(projHitbox, targetHitbox);
+			return Projectile.timeLeft > 550 ? false : base.Colliding(projHitbox, targetHitbox);
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-			AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, 0, 160, Color.White, projectile.rotation, new Vector2(projectile.scale, projectile.scale), spriteBatch);
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+			AccelerationHelper.DrawSpriteCached(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center, 0, 160, Color.White, Projectile.rotation, new Vector2(Projectile.scale, Projectile.scale), Main.spriteBatch);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
 			return false;
 		}
 
 		public override void Kill(int timeLeft)
 		{
-			Vector2 position = projectile.position - new Vector2(15, 15);
+			Vector2 position = Projectile.position - new Vector2(15, 15);
 			for (int i = 0; i < 40; ++i)
 			{
-				Dust.NewDust(projectile.position, 280, 280, DustID.TopazBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-				Dust.NewDust(projectile.position, 280, 280, DustID.SapphireBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+				Dust.NewDust(Projectile.position, 280, 280, DustID.GemTopaz, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+				Dust.NewDust(Projectile.position, 280, 280, DustID.GemSapphire, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 			}
 		}
 	}

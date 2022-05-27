@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Mathj;
 using System;
+using Terraria.DataStructures;
 
 namespace Acceleration.Items.Weapons.Ranged
 {
@@ -18,24 +19,24 @@ namespace Acceleration.Items.Weapons.Ranged
 
 		public override void SetDefaults()
 		{
-			item.damage = 22;
-			item.ranged = true;
-			item.width = 26;
-			item.height = 26;
-			item.useTime = 12;
-			item.useAnimation = 12;
-			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.noMelee = true;
-			item.channel = true; //Channel so that you can held the weapon [Important]
-			item.knockBack = 6;
-			item.value = Item.sellPrice(copper: 50);
-			item.rare = ItemRarityID.Orange;
-			item.UseSound = SoundID.Item1;
-			item.shoot = ModContent.ProjectileType<Projectiles.Weapons.Ranged.FriendlyMaracca>();
-			item.shootSpeed = 8.0f;
-			item.noUseGraphic = true;
-			item.maxStack = 999;
-			item.consumable = true;
+			Item.damage = 22;
+			Item.DamageType = DamageClass.Ranged;
+			Item.width = 26;
+			Item.height = 26;
+			Item.useTime = 12;
+			Item.useAnimation = 12;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.noMelee = true;
+			Item.channel = true; //Channel so that you can held the weapon [Important]
+			Item.knockBack = 6;
+			Item.value = Item.sellPrice(copper: 50);
+			Item.rare = ItemRarityID.Orange;
+			Item.UseSound = SoundID.Item1;
+			Item.shoot = ModContent.ProjectileType<Projectiles.Weapons.Ranged.FriendlyMaracca>();
+			Item.shootSpeed = 8.0f;
+			Item.noUseGraphic = true;
+			Item.maxStack = 999;
+			Item.consumable = true;
 		}
 
 		public bool hyper;
@@ -57,7 +58,7 @@ namespace Acceleration.Items.Weapons.Ranged
 				projectileSpeed.Normalize();
 				projectileSpeed *= 8.0f;
 				projectileSpeed = projectileSpeed.RotateRandom(12.0f * Matht.Deg2Rad);
-				Projectile.NewProjectile(player.Center, projectileSpeed, ModContent.ProjectileType<Projectiles.Weapons.Ranged.FriendlyMaracca>(), (int)(item.damage * player.rangedDamage), item.knockBack, player.whoAmI);
+				Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, projectileSpeed, ModContent.ProjectileType<Projectiles.Weapons.Ranged.FriendlyMaracca>(), (int)(Item.damage * player.GetTotalDamage(DamageClass.Ranged).Multiplicative), Item.knockBack, player.whoAmI);
 			}
 			if (hyper)
 			{
@@ -74,7 +75,7 @@ namespace Acceleration.Items.Weapons.Ranged
 			return hyper ? false : base.CanUseItem(player);
 		}
 
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			// no shooty!
 			if (hyper)

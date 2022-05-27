@@ -13,29 +13,27 @@ namespace Acceleration.Items.Accessories
 		}
 		public override void SetDefaults()
 		{
-			item.damage = -1;
-			item.melee = false;
-			item.width = 30;
-			item.height = 28;
-			item.useTime = 20;
-			//item.useAnimation = 20;
-			//item.useStyle = 1;
-			item.knockBack = -1;
-			item.value = 5000;
-			item.rare = ItemRarityID.Orange;
-			//item.UseSound = SoundID.Item1;
-			//item.autoReuse = false;
-			item.accessory = true;
+			Item.damage = -1;
+			Item.width = 30;
+			Item.height = 28;
+			Item.useTime = 20;
+			//Item.useAnimation = 20;
+			//Item.useStyle = 1;
+			Item.knockBack = -1;
+			Item.value = 5000;
+			Item.rare = ItemRarityID.Orange;
+			//Item.UseSound = SoundID.Item1;
+			//Item.autoReuse = false;
+			Item.accessory = true;
 		}
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 20);
-			recipe.AddIngredient(ItemID.FallenStar, 5);
-			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			CreateRecipe()
+				.AddTile(TileID.Anvils)
+				.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 20)
+				.AddIngredient(ItemID.FallenStar, 5)
+				.Register();
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)

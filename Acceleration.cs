@@ -26,7 +26,7 @@ namespace Acceleration
 	{
 
 		public HeatUI heat;
-		UserInterface UI;
+		public UserInterface UI;
 
 		public static LegacySoundStyle dashSound;
 		public static LegacySoundStyle RRSound;
@@ -41,7 +41,7 @@ namespace Acceleration
 		public static LegacySoundStyle sword3Sound;
 		public static LegacySoundStyle swordHyperSound;
 		public static LegacySoundStyle bossDeathSound;
-		public ModHotKey hyperKey;
+		public ModKeybind hyperKey;
 
 		public static Acceleration thisMod;
 
@@ -55,29 +55,29 @@ namespace Acceleration
 			if (!Main.dedServ)
 			{
 				//dashKey = RegisterHotKey("Dash", "C");
-				hyperKey = RegisterHotKey("Hyper", "V");
+				hyperKey = KeybindLoader.RegisterKeybind(this, "Hyper", Microsoft.Xna.Framework.Input.Keys.V);
 				heat = new HeatUI();
 				heat.Activate();
 				UI = new UserInterface();
 				UI.SetState(heat);
 				heat.visible = true;
-				dashSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/air01");
-				RRSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/power36");
-				BeamRifleSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/BeamRifle");
-				ChargeInitialSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/Charge");
-				ChargeShotSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/ChargeShot");
-				MissileLaunchSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/Burst00");
-				hyperSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/HyperUse");
-				beamRifleHyperSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/gun11_r");
-				tambourineSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/Tambourine");
-				sword2Sound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/sword2");
-				sword3Sound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/sword3");
-				swordHyperSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/crash16_c");
-				bossDeathSound = GetLegacySoundSlot(Terraria.ModLoader.SoundType.Custom, "Sounds/Custom/don11");
+				dashSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/air01");
+				RRSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/power36");
+				BeamRifleSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/BeamRifle");
+				ChargeInitialSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/Charge");
+				ChargeShotSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/ChargeShot");
+				MissileLaunchSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/Burst00");
+				hyperSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/HyperUse");
+				beamRifleHyperSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/gun11_r");
+				tambourineSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/Tambourine");
+				sword2Sound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/sword2");
+				sword3Sound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/sword3");
+				swordHyperSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/crash16_c");
+				bossDeathSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/don11");
 				// load our shaders
-				Ref<Effect> projectileShader = new Ref<Effect>(GetEffect("Effects/RainbowRing"));
+				//Ref<Effect> projectileShader = new Ref<Effect>(GetEffect("Effects/RainbowRing"));
 
-				GameShaders.Misc["RainbowRing"] = new MiscShaderData(projectileShader, "ModdersToolkitShaderPass");
+				//GameShaders.Misc["RainbowRing"] = new MiscShaderData(projectileShader, "ModdersToolkitShaderPass");
 			}
 			thisMod = this;
 			// smoother way to handle network functions...
@@ -108,7 +108,14 @@ namespace Acceleration
 
 		public override void PostSetupContent()
 		{
-			Mod bossChecklist = ModLoader.GetMod("BossChecklist");
+			Mod bossChecklist = null;
+			try
+			{
+				bossChecklist = ModLoader.GetMod("BossChecklist");
+			} catch
+			{
+				// none
+			}
 			if (bossChecklist != null)
 			{
 				bossChecklist.Call(
@@ -130,24 +137,7 @@ namespace Acceleration
 			}
 		}
 
-		public override void UpdateUI(GameTime gameTime)
-		{
-			if (UI != null) UI.Update(gameTime);
-		}
 
-		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
-		{
-			int ind = layers.FindIndex(layer => layer.Name.Equals("AccelerateMod: Heat"));
-			if (ind == -1)
-			{
-				layers.Add(new LegacyGameInterfaceLayer("AccelerateMod: Heat", delegate
-				{
-					UI.Draw(Main.spriteBatch, Main._drawInterfaceGameTime);
-					return true;
-				}
-				));
-			}
-		}
 
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
 		{
@@ -188,16 +178,6 @@ namespace Acceleration
 			base.Unload();
 			// kill our reference to ourself?
 			thisMod = null;
-		}
-
-		public override void UpdateMusic(ref int music, ref MusicPriority priority)
-		{
-			if (Main.invasionType == (int)AccelerateWorld.Invasions.Saki)
-			{
-				music = GetSoundSlot(Terraria.ModLoader.SoundType.Music, "Sounds/Music/GreenBird");
-				priority = MusicPriority.Event;
-				return;
-			}
 		}
 	}
 }

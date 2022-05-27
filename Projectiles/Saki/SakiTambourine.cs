@@ -20,43 +20,43 @@ namespace Acceleration.Projectiles.Saki
 
 		public override void SetStaticDefaults()
 		{
-			Main.projFrames[projectile.type] = 1;
+			Main.projFrames[Projectile.type] = 1;
 		}
 		public override void SetDefaults()
 		{
-			projectile.width = 48;
-			projectile.height = 48;
-			//projectile.alpha = 50;
-			projectile.timeLeft = 600;
-			projectile.penetrate = -1;
-			projectile.hostile = true;
-			projectile.tileCollide = false;
-			projectile.ignoreWater = true;
-			projectile.Name = "Tambourine";
+			Projectile.width = 48;
+			Projectile.height = 48;
+			//Projectile.alpha = 50;
+			Projectile.timeLeft = 600;
+			Projectile.penetrate = -1;
+			Projectile.hostile = true;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+			Projectile.Name = "Tambourine";
 		}
 
 		public override void AI()
 		{
 			// simply rotate a bit
-			projectile.rotation += 3 * Matht.Deg2Rad;
+			Projectile.rotation += 3 * Matht.Deg2Rad;
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
-			base.PostDraw(spriteBatch, lightColor);
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
-			AccelerationHelper.DrawSprite("Projectiles/Tambourine_Emiss", projectile.Center, 0, 48, Color.White, projectile.rotation, new Vector2(1, 1), spriteBatch);
-			spriteBatch.End();
-			spriteBatch.Begin();
+			base.PostDraw(lightColor);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
+			AccelerationHelper.DrawSprite("Acceleration/Projectiles/Tambourine_Emiss", Projectile.Center, 0, 48, Color.White, Projectile.rotation, new Vector2(1, 1), Main.spriteBatch);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin();
 		}
 		public override void Kill(int timeLeft)
 		{
-			Vector2 position = projectile.position - new Vector2(15, 15);
+			Vector2 position = Projectile.position - new Vector2(15, 15);
 			for (int i = 0; i < 20; ++i)
 			{
-				Dust.NewDust(projectile.position, 48, 48, DustID.TopazBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-				Dust.NewDust(projectile.position, 48, 48, DustID.SapphireBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+				Dust.NewDust(Projectile.position, 48, 48, DustID.GemTopaz, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+				Dust.NewDust(Projectile.position, 48, 48, DustID.GemSapphire, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 			}
 		}
 	}

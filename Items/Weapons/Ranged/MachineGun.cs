@@ -3,8 +3,10 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Audio;
 using Mathj;
 using System;
+using Terraria.DataStructures;
 
 namespace Acceleration.Items.Weapons.Ranged
 {
@@ -17,25 +19,25 @@ namespace Acceleration.Items.Weapons.Ranged
 		}
 
 		public override void SetDefaults() {
-			item.damage = 9;
-			item.ranged = true;
-			item.width = 26;
-			item.height = 26;
-			item.useTime = 8;
-			item.useAnimation = 8;
-			item.useStyle = ItemUseStyleID.HoldingOut;
-			item.noMelee = true;
-			item.channel = true; //Channel so that you can held the weapon [Important]
-			item.knockBack = 6;
-			item.value = Item.sellPrice(silver : 50);
-			item.rare = ItemRarityID.Orange;
-			item.UseSound = SoundID.Item11;
-			item.shoot = ModContent.ProjectileType<Projectiles.SuguriBullet>();
-			item.autoReuse = true;
-			item.useAmmo = AmmoID.Bullet;
+			Item.damage = 9;
+			Item.DamageType = DamageClass.Ranged;
+			Item.width = 26;
+			Item.height = 26;
+			Item.useTime = 8;
+			Item.useAnimation = 8;
+			Item.useStyle = ItemUseStyleID.Shoot;
+			Item.noMelee = true;
+			Item.channel = true; //Channel so that you can held the weapon [Important]
+			Item.knockBack = 6;
+			Item.value = Item.sellPrice(gold : 5);
+			Item.rare = ItemRarityID.Orange;
+			Item.UseSound = SoundID.Item11;
+			Item.shoot = ModContent.ProjectileType<Projectiles.SuguriBullet>();
+			Item.autoReuse = true;
+			Item.useAmmo = AmmoID.Bullet;
 		}
 
-		public override bool ConsumeAmmo(Player player)
+		public override bool CanConsumeAmmo(Player player)
 		{
 			return Main.rand.NextFloat() >= 0.2f;
 		}
@@ -62,23 +64,22 @@ namespace Acceleration.Items.Weapons.Ranged
 				float bulletAngle = (hyperTimer / 60.0f) * (float)Math.PI * 2;
 				Vector2 spawnPos = new Vector2(50, 0).RotatedBy(bulletAngle);
 				Vector2 spawnVel = new Vector2(8, 0).RotatedBy(bulletAngle);
-				Projectile.NewProjectile(player.position + spawnPos, spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(item.damage * 2.75f * player.rangedDamageMult), item.knockBack, player.whoAmI, -1);
-				Projectile.NewProjectile(player.position - spawnPos, -spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(item.damage * 2.75f * player.rangedDamageMult), item.knockBack, player.whoAmI, -1);
-				Main.PlaySound(SoundID.Item11, player.position);
+				Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem), player.position + spawnPos, spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(Item.damage * 2.75f * player.GetTotalDamage(DamageClass.Ranged).Multiplicative), Item.knockBack, player.whoAmI, -1);
+				Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem), player.position - spawnPos, -spawnVel, ModContent.ProjectileType<Projectiles.SuguriBullet>(), (int)(Item.damage * 2.75f * player.GetTotalDamage(DamageClass.Ranged).Multiplicative), Item.knockBack, player.whoAmI, -1);
+				SoundEngine.PlaySound(SoundID.Item11, player.position);
 			}
 		}
 
 		public override void AddRecipes()
 		{
-			ModRecipe currRecipe = new ModRecipe(Acceleration.thisMod);
-			currRecipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12);
-			currRecipe.AddIngredient(ItemID.IllegalGunParts, 1);
-			currRecipe.AddTile(TileID.Anvils);
-			currRecipe.SetResult(ModContent.ItemType<MachineGun>());
-			currRecipe.AddRecipe();
+			CreateRecipe()
+				.AddTile(TileID.Anvils)
+				.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12)
+				.AddIngredient(ItemID.IllegalGunParts)
+				.Register();
 		}
 
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			// no shooty!
 			if (hyper)
@@ -89,17 +90,18 @@ namespace Acceleration.Items.Weapons.Ranged
 				}
 				return false;
 			}
-			Vector2 sp = new Vector2(speedX, speedY).RotatedByRandom(15.0f * Matht.Deg2Rad);
+			Vector2 sp = velocity.RotatedByRandom(15.0f * Matht.Deg2Rad);
 
 			int projToFire = 0;
 			float speed = 8.0f;
 			bool canShoot = false;
-			int dmg = item.damage;
+			int dmg = Item.damage;
 			float kBack = 0;
-			player.PickAmmo(item, ref projToFire, ref speed, ref canShoot, ref dmg, ref kBack, true);
+			int ammoID;
+			player.PickAmmo(Item, ref projToFire, ref speed, ref canShoot, ref dmg, ref kBack, out ammoID, true);
 			float angle = (float)Math.Atan2(sp.Y, sp.X);
 			// spawn boolet
-			int proj = Projectile.NewProjectile(position, new Vector2(speed, 0).RotatedBy(angle), mod.ProjectileType("SuguriBullet"), dmg, kBack, player.whoAmI, projToFire);
+			int proj = Projectile.NewProjectile(player.GetSource_ItemUse(Item) ,position, new Vector2(speed, 0).RotatedBy(angle), ModContent.ProjectileType<Projectiles.SuguriBullet>(), dmg, kBack, player.whoAmI, projToFire);
 			Projectile realProj = Main.projectile[proj];
 			if (projToFire == ProjectileID.MeteorShot)
 			{

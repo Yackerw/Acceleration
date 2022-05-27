@@ -8,6 +8,7 @@ using System.IO;
 using Mathj;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Terraria.Audio;
 
 /*public class RainbowRing : ModProjectile
 {
@@ -75,7 +76,7 @@ namespace Acceleration.Misc
 		{
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
 			RainbowRing ring = firstRing;
-			Texture2D tex = ModContent.GetTexture("Acceleration/Misc/RainbowRing");
+			Texture2D tex = ModContent.Request<Texture2D>("Acceleration/Misc/RainbowRing").Value;
 			while (ring != null)
 			{
 				AccelerationHelper.DrawSpriteCached(tex, ring.position, (int)(((float)ring.existTime / 90f) * 16f), 141, new Color(255 - (int)ring.alpha, 255 - (int)ring.alpha, 255 - (int)ring.alpha, 255), ring.rotation, new Vector2(ring.scale, ring.scale));
@@ -186,7 +187,7 @@ namespace Acceleration.Misc
 						hit = true;
 						AcceleratePlayer ap = Main.player[owner].GetModPlayer<AcceleratePlayer>();
 						ap.hyper = Math.Min(ap.hyper + 0.04f, 3.0f);
-						Main.PlaySound(Acceleration.RRSound);
+						SoundEngine.PlaySound(Acceleration.RRSound);
 						// create "CHARGE" pop-up thing
 						//Projectile.NewProjectile(currProj.position, new Vector2(0, 0), mod.ProjectileType("Charge"), 0, 0);
 						Charge.AddCharge(currProj.position);

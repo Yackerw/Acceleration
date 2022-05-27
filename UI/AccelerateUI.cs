@@ -6,6 +6,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using System;
 using Terraria.ID;
+using Terraria.GameContent;
 using System.Linq;
 using Acceleration;
 using Mathj;
@@ -45,7 +46,7 @@ namespace Acceleration.UI
 			hyperBar.Height.Set(20f, 0f);
 			Append(hyperBar);
 
-			hyperBarHolder = new UIImage(ModContent.GetTexture("Acceleration/UI/HyperBar"));
+			hyperBarHolder = new UIImage(ModContent.Request<Texture2D>("Acceleration/UI/HyperBar").Value);
 			hyperBarHolder.Left.Set(0, 0f);
 			hyperBarHolder.Top.Set(0, 0f);
 			hyperBarHolder.Width.Set(120f, 0f);
@@ -96,8 +97,9 @@ namespace Acceleration.UI
 			}
 			Rectangle backRect = new Rectangle((int)hyperBar.Left.Pixels + 4, (int)hyperBar.Top.Pixels + 4, 112, 16);
 			Rectangle rect = new Rectangle((int)hyperBar.Left.Pixels + 4, (int)hyperBar.Top.Pixels + 4, width, 16);
-			spriteBatch.Draw(Main.magicPixel, backRect, backColor);
-			spriteBatch.Draw(Main.magicPixel, rect, frontColor);
+			spriteBatch.Draw(TextureAssets.MagicPixel.Value, backRect, backColor);
+			spriteBatch.Draw(TextureAssets.MagicPixel.Value, rect, frontColor);
+			spriteBatch.Draw(ModContent.Request<Texture2D>("Acceleration/UI/HyperBar").Value, new Rectangle((int)hyperBar.Left.Pixels, (int)hyperBar.Top.Pixels, (int)hyperBar.Width.Pixels, (int)hyperBar.Height.Pixels), Color.White);
 			base.DrawSelf(spriteBatch);
 		}
 	}

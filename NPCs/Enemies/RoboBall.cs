@@ -7,6 +7,8 @@ using System.IO;
 using Mathj;
 using System;
 using Terraria.Audio;
+using Terraria.ModLoader.Utilities;
+using Terraria.GameContent.ItemDropRules;
 
 namespace Acceleration.NPCs.Enemies
 {
@@ -23,19 +25,19 @@ namespace Acceleration.NPCs.Enemies
 		}
 		public override void SetDefaults()
 		{
-			npc.lifeMax = 70;
-			npc.damage = 15;
-			npc.defense = 12;
-			npc.knockBackResist = 0f;
-			npc.aiStyle = -1;
-			npc.noGravity = true;
-			npc.width = 44;
-			npc.height = 30;
-			Main.npcFrameCount[npc.type] = 1;
-			npc.friendly = false;
-			npc.HitSound = SoundID.NPCHit4;
-			npc.DeathSound = SoundID.NPCDeath14;
-			npc.ai[0] = 4 * 60;
+			NPC.lifeMax = 70;
+			NPC.damage = 15;
+			NPC.defense = 12;
+			NPC.knockBackResist = 0f;
+			NPC.aiStyle = -1;
+			NPC.noGravity = true;
+			NPC.width = 44;
+			NPC.height = 30;
+			Main.npcFrameCount[NPC.type] = 1;
+			NPC.friendly = false;
+			NPC.HitSound = SoundID.NPCHit4;
+			NPC.DeathSound = SoundID.NPCDeath14;
+			NPC.ai[0] = 4 * 60;
 		}
 
 		public override void SetStaticDefaults()
@@ -46,86 +48,86 @@ namespace Acceleration.NPCs.Enemies
 		public override void AI()
 		{
 			// proper aggro handling!
-			Player target = Main.player[npc.target];
-			if (npc.target < 0 || npc.target == 255 || target.dead || !target.active)
+			Player target = Main.player[NPC.target];
+			if (NPC.target < 0 || NPC.target == 255 || target.dead || !target.active)
 			{
-				npc.TargetClosest(true);
-				target = Main.player[npc.target];
+				NPC.TargetClosest(true);
+				target = Main.player[NPC.target];
 			}
 			// wander away if all players dead...so, do nothing.
 			// wander towards player if found
 			if (!target.dead)
 			{
-				npc.spriteDirection = Math.Sign(target.position.X - npc.position.X);
-				npc.velocity.X = 1.5f * (float)npc.spriteDirection;
+				NPC.spriteDirection = Math.Sign(target.position.X - NPC.position.X);
+				NPC.velocity.X = 1.5f * (float)NPC.spriteDirection;
 			}
 			// despawn
-			if (Matht.Magnitude(npc.position - target.position) > 2400)
+			if (Matht.Magnitude(NPC.position - target.position) > 2400)
 			{
-				npc.active = false;
+				NPC.active = false;
 				return;
 			}
-			npc.velocity.Y = 0;
+			NPC.velocity.Y = 0;
 			// hover up if we're too close to the ground
 			int outUp;
 			int outDown;
-			Collision.ExpandVertically((int)npc.position.X / 16, (int)npc.position.Y / 16, out outUp, out outDown, 100, 10);
+			Collision.ExpandVertically((int)NPC.position.X / 16, (int)NPC.position.Y / 16, out outUp, out outDown, 100, 10);
 			// didn't reach max capacity?
-			if (outDown < (int)((npc.position.X / 16) + 10))
+			if (outDown < (int)((NPC.position.X / 16) + 10))
 			{
 				outDown *= 16;
-				float floorDiff = npc.position.Y - outDown;
-				float targetPosition = -90.0f + (float)Math.Sin((float)npc.ai[1] / 27.0f) * 15;
+				float floorDiff = NPC.position.Y - outDown;
+				float targetPosition = -90.0f + (float)Math.Sin((float)NPC.ai[1] / 27.0f) * 15;
 				if (floorDiff < targetPosition)
 				{
-					npc.velocity.Y = Math.Min(targetPosition - floorDiff, 0.5f);
+					NPC.velocity.Y = Math.Min(targetPosition - floorDiff, 0.5f);
 				} else
 				{
-					npc.velocity.Y = Math.Max(targetPosition - floorDiff, -0.5f);
+					NPC.velocity.Y = Math.Max(targetPosition - floorDiff, -0.5f);
 				}
 			}
-			npc.ai[0] -= 1;
-			npc.ai[1] += 1;
-			if ((int)npc.ai[0] % 10 == 0)
+			NPC.ai[0] -= 1;
+			NPC.ai[1] += 1;
+			if ((int)NPC.ai[0] % 10 == 0)
 			{
-				npc.netUpdate = true;
+				NPC.netUpdate = true;
 			}
 			// start some particles to show charging
-			if (npc.ai[0] <= 80)
+			if (NPC.ai[0] <= 80)
 			{
 				if (Main.rand.NextFloat() < 0.40)
 				{
 					Dust dust;
 					// You need to set position depending on what you are doing. You may need to subtract width/2 and height/2 as well to center the spawn rectangle.
-					Vector2 position = npc.position - new Vector2(15, 15);
+					Vector2 position = NPC.position - new Vector2(15, 15);
 					dust = Main.dust[Terraria.Dust.NewDust(position, 30, 30, 43, 0f, 0f, 0, new Color(255, 255, 0), 0.4069768f)];
 				}
 			}
-			if (npc.ai[0] <= 0)
+			if (NPC.ai[0] <= 0)
 			{
 				// fire shot
-				Vector2 speed = (target.position - npc.position);
+				Vector2 speed = (target.position - NPC.position);
 				speed.Normalize();
 				speed *= 5.0f;
-				Projectile.NewProjectile(npc.position + new Vector2(10 * npc.spriteDirection, 20), speed, Acceleration.thisMod.ProjectileType("RoboShot"), 12, 1.0f);
-				npc.ai[0] = 60*4;
-				Main.PlaySound(SoundID.Item43, npc.position);
+				Projectile.NewProjectile(NPC.GetSource_FromThis(),NPC.position + new Vector2(10 * NPC.spriteDirection, 20), speed, ModContent.ProjectileType<Projectiles.RoboShot>(), 12, 1.0f);
+				NPC.ai[0] = 60*4;
+				SoundEngine.PlaySound(SoundID.Item43, NPC.position);
 			}
 			base.AI();
 		}
 
 		public override void HitEffect(int hitDirection, double damage)
 		{
-			Dust.NewDust(npc.position, 20, 20, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-			Dust.NewDust(npc.position, 20, 20, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-			Dust.NewDust(npc.position, 20, 20, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+			Dust.NewDust(NPC.position, 20, 20, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+			Dust.NewDust(NPC.position, 20, 20, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+			Dust.NewDust(NPC.position, 20, 20, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 		}
 
 		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
 		{
 			base.OnHitByItem(player, item, damage, knockback, crit);
-			npc.ai[0] += 50;
-			npc.netUpdate = true;
+			NPC.ai[0] += 50;
+			NPC.netUpdate = true;
 		}
 
 		public override bool CheckDead()
@@ -133,26 +135,14 @@ namespace Acceleration.NPCs.Enemies
 			// die particles
 			for (int i = 0; i < 20; ++i)
 			{
-				Dust.NewDust(npc.position, 20, 20, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-				Dust.NewDust(npc.position, 20, 20, DustID.Water_BloodMoon, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+				Dust.NewDust(NPC.position, 20, 20, DustID.Iron, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+				Dust.NewDust(NPC.position, 20, 20, DustID.Water_BloodMoon, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 			}
 			return base.CheckDead();
 		}
-		public override void NPCLoot()
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
 		{
-			int choice = Main.rand.Next(0, 10);
-			if (choice < 6)
-			{
-				if (choice < 3)
-				{
-					// drop 2
-					Item.NewItem(npc.getRect(), ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 2);
-				}
-				else
-				{
-					Item.NewItem(npc.getRect(), ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 1);
-				}
-			}
+			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 2, 1, 2));
 		}
 	}
 }

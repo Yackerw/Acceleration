@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "joQw6Tmf7wZK67qd6M6c2HS53+Ep4wis+A3NeGYAtfUY2Ky1OylLJer5nJPqlbQBw9peueve1CC05yy9yJt6Eg==",
+  "dgSpecHash": "Akny72iYaaBlxB3vIo5ScvsPjqvZ6uFKFuKB5BKRG0C4JPh4pFHZz4C8B87ojvPrk10+sQx/8QZnXRUZR0CIiQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\yacke\\Documents\\My Games\\Terraria\\ModLoader\\Mod Sources\\Acceleration\\Acceleration.csproj",
+  "projectFilePath": "C:\\Users\\yacke\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\Acceleration\\Acceleration.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\yacke\\.nuget\\packages\\tmodloader.codeassist\\0.1.3\\tmodloader.codeassist.0.1.3.nupkg.sha512"
+    "C:\\Users\\yacke\\.nuget\\packages\\tmodloader.codeassist\\0.1.5\\tmodloader.codeassist.0.1.5.nupkg.sha512"
   ],
   "logs": []
 }

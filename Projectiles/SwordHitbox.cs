@@ -17,37 +17,37 @@ namespace Acceleration.Projectiles
 	{
 		public override void SetDefaults()
 		{
-            projectile.width = 11;
-            projectile.height = 11;
-            projectile.alpha = 0;
-            projectile.timeLeft = 2;
-            projectile.penetrate = -1;
-            projectile.hostile = false;
-            projectile.friendly = true;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
-            projectile.melee = true;
+            Projectile.width = 11;
+            Projectile.height = 11;
+            Projectile.alpha = 0;
+            Projectile.timeLeft = 2;
+            Projectile.penetrate = -1;
+            Projectile.hostile = false;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Melee;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+            AcceleratePlayer ap = Main.player[Projectile.owner].GetModPlayer<AcceleratePlayer>();
             ap.hyper += 0.05f;
             if (ap.hyper > 3.0f)
             {
                 ap.hyper = 3.0f;
             }
             // grant some invuln frames
-            if (ap.player.HeldItem.type == ModContent.ItemType<BeamSword>())
+            if (ap.Player.HeldItem.type == ModContent.ItemType<BeamSword>())
 			{
-                BeamSword bm = (BeamSword)ap.player.HeldItem.modItem;
+                BeamSword bm = (BeamSword)ap.Player.HeldItem.ModItem;
                 if (bm.swingInvulnDelay <= 0)
                 {
-                    ap.player.immune = true;
-                    ap.player.immuneTime = 90;
-                    for (int i = 0; i < ap.player.hurtCooldowns.Length; ++i)
+                    ap.Player.immune = true;
+                    ap.Player.immuneTime = 90;
+                    for (int i = 0; i < ap.Player.hurtCooldowns.Length; ++i)
                     {
-                        ap.player.hurtCooldowns[i] = 90;
+                        ap.Player.hurtCooldowns[i] = 90;
                     }
                     // put a delay
                     bm.swingInvulnDelay = 300;
@@ -57,12 +57,12 @@ namespace Acceleration.Projectiles
 
         public override void AI()
 		{
-            projectile.rotation = projectile.ai[0];
-            if (projectile.ai[1] != 0)
+            Projectile.rotation = Projectile.ai[0];
+            if (Projectile.ai[1] != 0)
 			{
-                projectile.scale = projectile.ai[1];
-                projectile.width = 11 * (int)projectile.scale;
-                projectile.height = 11 * (int)projectile.scale;
+                Projectile.scale = Projectile.ai[1];
+                Projectile.width = 11 * (int)Projectile.scale;
+                Projectile.height = 11 * (int)Projectile.scale;
 			}
 		}
 	}

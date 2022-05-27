@@ -13,28 +13,23 @@ namespace Acceleration.Items.Accessories
 		}
 		public override void SetDefaults()
 		{
-			item.damage = -1;
-			item.melee = false;
-			item.width = 30;
-			item.height = 28;
-			item.useTime = 20;
-			//item.useAnimation = 20;
-			//item.useStyle = 1;
-			item.knockBack = -1;
-			item.value = 10000;
-			item.rare = ItemRarityID.Orange;
-			//item.UseSound = SoundID.Item1;
-			//item.autoReuse = false;
-			item.accessory = true;
+			Item.damage = -1;
+			Item.width = 30;
+			Item.height = 28;
+			Item.useTime = 20;
+			//Item.useAnimation = 20;
+			//Item.useStyle = 1;
+			Item.knockBack = -1;
+			Item.value = 10000;
+			Item.rare = ItemRarityID.Orange;
+			//Item.UseSound = SoundID.Item1;
+			//Item.autoReuse = false;
+			Item.accessory = true;
 		}
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.DirtBlock, 10);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			CreateRecipe().AddIngredient(ItemID.DirtBlock, 10).AddTile(TileID.WorkBenches).Register();
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)

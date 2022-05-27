@@ -13,22 +13,22 @@ namespace Acceleration.Items.Weapons.Melee
 	{
         public override void SetDefaults()
         {
-			item.damage = 10;
-			item.melee = true;
-			item.width = 48;
-			item.height = 48;
-			item.useTime = 25;
-			item.useAnimation = 25;
-			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.noMelee = true;
-			item.knockBack = 0;
-			item.value = Item.sellPrice(silver: 50);
-			item.rare = ItemRarityID.Orange;
-			item.UseSound = Acceleration.tambourineSound;
-			item.shoot = ModContent.ProjectileType<Projectiles.Tambourine>();
-			item.shootSpeed = 10f;
-			item.noUseGraphic = true;
-			item.channel = false;
+			Item.damage = 10;
+			Item.DamageType = DamageClass.Melee;
+			Item.width = 48;
+			Item.height = 48;
+			Item.useTime = 25;
+			Item.useAnimation = 25;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.noMelee = true;
+			Item.knockBack = 0;
+			Item.value = Item.sellPrice(silver: 50);
+			Item.rare = ItemRarityID.Orange;
+			Item.UseSound = Acceleration.tambourineSound;
+			Item.shoot = ModContent.ProjectileType<Projectiles.Tambourine>();
+			Item.shootSpeed = 10f;
+			Item.noUseGraphic = true;
+			Item.channel = false;
 		}
 	}
 }

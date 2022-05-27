@@ -19,53 +19,53 @@ namespace Acceleration.Projectiles
 	{
 		public override void SetStaticDefaults()
 		{
-			Main.projFrames[projectile.type] = 1;
+			Main.projFrames[Projectile.type] = 1;
 		}
 		public override void SetDefaults()
 		{
-			projectile.width = 38;
-			projectile.height = 12;
-			projectile.alpha = 0;
-			projectile.timeLeft = 600;
-			projectile.penetrate = 1;
-			projectile.hostile = false;
-			projectile.friendly = true;
-			projectile.tileCollide = true;
-			projectile.ignoreWater = true;
-			projectile.magic = true;
-			projectile.light = 0.5f;
+			Projectile.width = 38;
+			Projectile.height = 12;
+			Projectile.alpha = 0;
+			Projectile.timeLeft = 600;
+			Projectile.penetrate = 1;
+			Projectile.hostile = false;
+			Projectile.friendly = true;
+			Projectile.tileCollide = true;
+			Projectile.ignoreWater = true;
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.light = 0.5f;
 		}
 
 		public override void AI()
 		{
 			base.AI();
 			// face our momentum
-			projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X);
+			Projectile.rotation = (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X);
 		}
 
 		public override void Kill(int timeLeft)
 		{
-			Vector2 position = projectile.position - new Vector2(15, 15);
+			Vector2 position = Projectile.position - new Vector2(15, 15);
 			for (int i = 0; i < 20; ++i)
 			{
-				Dust.NewDust(projectile.position, 14, 14, DustID.RubyBolt, projectile.oldVelocity.X, projectile.oldVelocity.Y);
+				Dust.NewDust(Projectile.position, 14, 14, DustID.GemRuby, Projectile.oldVelocity.X, Projectile.oldVelocity.Y);
 			}
 			base.Kill(timeLeft);
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone);
-			AccelerationHelper.DrawSprite("Projectiles/HeatBeam", projectile.Center, 0, 16, Color.White, projectile.rotation, new Vector2(1,1), spriteBatch);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone);
+			AccelerationHelper.DrawSprite("Acceleration/Projectiles/HeatBeam", Projectile.Center, 0, 16, Color.White, Projectile.rotation, new Vector2(1,1), Main.spriteBatch);
 			return false;
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
-			spriteBatch.End();
-			spriteBatch.Begin();
-			base.PostDraw(spriteBatch, lightColor);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin();
+			base.PostDraw(lightColor);
 		}
 	}
 }

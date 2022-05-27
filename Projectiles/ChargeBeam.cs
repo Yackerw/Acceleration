@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent;
 using Terraria.ModLoader.IO;
 using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
@@ -19,26 +20,26 @@ namespace Acceleration.Projectiles
 	{
 		public override void SetStaticDefaults()
 		{
-			Main.projFrames[projectile.type] = 1;
+			Main.projFrames[Projectile.type] = 1;
 		}
 		public override void SetDefaults()
 		{
-			projectile.width = 56;
-			projectile.height = 32;
-			projectile.alpha = 0;
-			projectile.timeLeft = 600;
-			projectile.penetrate = 3;
-			projectile.hostile = false;
-			projectile.friendly = true;
-			projectile.tileCollide = true;
-			projectile.ignoreWater = true;
-			projectile.magic = true;
-			projectile.light = 0.5f;
+			Projectile.width = 56;
+			Projectile.height = 32;
+			Projectile.alpha = 0;
+			Projectile.timeLeft = 600;
+			Projectile.penetrate = 3;
+			Projectile.hostile = false;
+			Projectile.friendly = true;
+			Projectile.tileCollide = true;
+			Projectile.ignoreWater = true;
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.light = 0.5f;
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			AcceleratePlayer ap = Main.player[projectile.owner].GetModPlayer<AcceleratePlayer>();
+			AcceleratePlayer ap = Main.player[Projectile.owner].GetModPlayer<AcceleratePlayer>();
 			ap.hyper += 0.06f;
 			if (ap.hyper > 3.0f)
 			{
@@ -50,32 +51,32 @@ namespace Acceleration.Projectiles
 		{
 			base.AI();
 			// face our momentum
-			projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X);
+			Projectile.rotation = (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X);
 		}
 
 		public override void Kill(int timeLeft)
 		{
-			Vector2 position = projectile.position - new Vector2(15, 15);
+			Vector2 position = Projectile.position - new Vector2(15, 15);
 			for (int i = 0; i < 20; ++i)
 			{
-				Dust.NewDust(projectile.position, 14, 14, DustID.SapphireBolt, projectile.oldVelocity.X, projectile.oldVelocity.Y);
+				Dust.NewDust(Projectile.position, 14, 14, DustID.GemSapphire, Projectile.oldVelocity.X, Projectile.oldVelocity.Y);
 			}
 			base.Kill(timeLeft);
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone);
-			AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, 0, 24, Color.White, projectile.rotation, new Vector2(1,1), spriteBatch);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone);
+			AccelerationHelper.DrawSpriteCached(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center, 0, 24, Color.White, Projectile.rotation, new Vector2(1,1), Main.spriteBatch);
 			return false;
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
-			spriteBatch.End();
-			spriteBatch.Begin();
-			base.PostDraw(spriteBatch, lightColor);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin();
+			base.PostDraw(lightColor);
 		}
 	}
 }

@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.GameInput;
 using Terraria.Graphics.Shaders;
+using Terraria.GameContent;
 using Mathj;
 using Acceleration;
 
@@ -20,80 +21,80 @@ namespace Acceleration.Projectiles.Saki
 		bool rotSetup = false;
 		public override void SetStaticDefaults()
 		{
-			Main.projFrames[projectile.type] = 2;
+			Main.projFrames[Projectile.type] = 2;
 		}
 		public override void SetDefaults()
 		{
-			projectile.width = 26;
-			projectile.height = 26;
-			//projectile.alpha = 50;
-			projectile.timeLeft = 250;
-			projectile.penetrate = 1;
-			projectile.hostile = true;
-			projectile.tileCollide = false;
-			projectile.ignoreWater = true;
-			projectile.Name = "Saki Pellet";
-			projectile.magic = true;
-			projectile.frameCounter = 0;
-			projectile.frame = 0;
-			projectile.aiStyle = -1;
+			Projectile.width = 26;
+			Projectile.height = 26;
+			//Projectile.alpha = 50;
+			Projectile.timeLeft = 250;
+			Projectile.penetrate = 1;
+			Projectile.hostile = true;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+			Projectile.Name = "Saki Pellet";
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.frameCounter = 0;
+			Projectile.frame = 0;
+			Projectile.aiStyle = -1;
 		}
 
 		public override void AI()
 		{
 			// set it to blue if it should be
-			if (projectile.ai[1] > 0)
+			if (Projectile.ai[1] > 0)
 			{
-				projectile.frame = 1;
+				Projectile.frame = 1;
 			}
 			if (!rotSetup)
 			{
-				projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X);
+				Projectile.rotation = (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X);
 				rotSetup = true;
 			}
 			// go slowly at first
-			if (projectile.timeLeft > 200) {
-				projectile.velocity = new Vector2(0, 2).RotatedBy(projectile.rotation);
-			} else if (projectile.timeLeft > 190)
+			if (Projectile.timeLeft > 200) {
+				Projectile.velocity = new Vector2(0, 2).RotatedBy(Projectile.rotation);
+			} else if (Projectile.timeLeft > 190)
 			{
 				// rotate a tiny bit and add speed
-				if (projectile.ai[1] == 1)
+				if (Projectile.ai[1] == 1)
 				{
-					projectile.rotation -= 1 * Matht.Deg2Rad;
+					Projectile.rotation -= 1 * Matht.Deg2Rad;
 				} else
 				{
-					projectile.rotation += 1 * Matht.Deg2Rad;
+					Projectile.rotation += 1 * Matht.Deg2Rad;
 				}
-				projectile.velocity = new Vector2(0, MathHelper.Lerp(7, 2, (projectile.timeLeft - 190) / 10.0f));
+				Projectile.velocity = new Vector2(0, MathHelper.Lerp(7, 2, (Projectile.timeLeft - 190) / 10.0f));
 			} else
 			{
 				// speed
-				projectile.velocity = new Vector2(0, 7).RotatedBy(projectile.rotation);
+				Projectile.velocity = new Vector2(0, 7).RotatedBy(Projectile.rotation);
 			}
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-			AccelerationHelper.DrawSpriteCached(Main.projectileTexture[projectile.type], projectile.Center, projectile.frame, 16, Color.White, projectile.rotation + (90 * Matht.Deg2Rad), new Vector2(1, 1), spriteBatch);
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+			AccelerationHelper.DrawSpriteCached(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center, Projectile.frame, 16, Color.White, Projectile.rotation + (90 * Matht.Deg2Rad), new Vector2(1, 1), Main.spriteBatch);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
 			return false;
 		}
 
 		public override void Kill(int timeLeft)
 		{
-			Vector2 position = projectile.position - new Vector2(15, 15);
+			Vector2 position = Projectile.position - new Vector2(15, 15);
 			for (int i = 0; i < 10; ++i)
 			{
-				if (projectile.frame < 1)
+				if (Projectile.frame < 1)
 				{
-					Dust.NewDust(projectile.position, 32, 32, DustID.TopazBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+					Dust.NewDust(Projectile.position, 32, 32, DustID.GemTopaz, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 				}
 				else
 				{
-					Dust.NewDust(projectile.position, 32, 32, DustID.SapphireBolt, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+					Dust.NewDust(Projectile.position, 32, 32, DustID.GemSapphire, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
 				}
 			}
 		}

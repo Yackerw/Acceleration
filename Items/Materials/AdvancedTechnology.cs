@@ -12,11 +12,11 @@ namespace Acceleration.Items.Materials
 	{
 		public override void SetDefaults()
 		{
-			item.material = true;
-			item.noMelee = true;
-			item.maxStack = 999;
-			item.width = 20;
-			item.height = 20;
+			Item.material = true;
+			Item.noMelee = true;
+			Item.maxStack = 999;
+			Item.width = 20;
+			Item.height = 20;
 		}
 	}
 }

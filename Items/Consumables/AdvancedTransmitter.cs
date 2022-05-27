@@ -14,20 +14,20 @@ namespace Acceleration.Items.Consumables
 	{
 		public override void SetDefaults()
 		{
-			item.width = 26;
-			item.height = 26;
-			item.useTime = 30;
-			item.useAnimation = 30;
-			item.useStyle = ItemUseStyleID.HoldingUp;
-			item.noMelee = true;
-			item.knockBack = 6;
-			item.value = Item.sellPrice(silver: 15);
-			item.rare = ItemRarityID.Orange;
-			item.maxStack = 999;
-			item.consumable = true;
+			Item.width = 26;
+			Item.height = 26;
+			Item.useTime = 30;
+			Item.useAnimation = 30;
+			Item.useStyle = ItemUseStyleID.HoldUp;
+			Item.noMelee = true;
+			Item.knockBack = 6;
+			Item.value = Item.sellPrice(silver: 15);
+			Item.rare = ItemRarityID.Orange;
+			Item.maxStack = 999;
+			Item.consumable = true;
 		}
 
-		public override bool UseItem(Player player)
+		public override bool? UseItem(Player player)
 		{
 			if (Main.invasionType != 0)
 			{
@@ -39,11 +39,11 @@ namespace Acceleration.Items.Consumables
 
 		public override void AddRecipes()
 		{
-			ModRecipe currRecipe = new ModRecipe(Acceleration.thisMod);
-			currRecipe.AddIngredient(ModContent.ItemType<Materials.AdvancedTechnology>(), 20);
-			currRecipe.AddTile(TileID.WorkBenches);
-			currRecipe.SetResult(ModContent.ItemType<AdvancedTransmitter>());
-			currRecipe.AddRecipe();
+			CreateRecipe()
+				.AddTile(TileID.WorkBenches)
+				.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 20)
+				.AddIngredient(ItemID.FallenStar, 5)
+				.Register();
 		}
 	}
 }

@@ -8,6 +8,8 @@ using Terraria;
 using Terraria.ID;
 using Microsoft.Xna.Framework;
 using System.IO;
+using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace Acceleration.Items.Weapons.Melee
 {
@@ -26,7 +28,7 @@ namespace Acceleration.Items.Weapons.Melee
 				int whom = reader.ReadByte();
 				if (Main.player[whom].HeldItem.type == ModContent.ItemType<BeamSword>())
 				{
-					BeamSword bm = (BeamSword)Main.player[whom].HeldItem.modItem;
+					BeamSword bm = (BeamSword)Main.player[whom].HeldItem.ModItem;
 					bm.hyperTimer = 25;
 					bm.hyper = true;
 				}
@@ -36,21 +38,21 @@ namespace Acceleration.Items.Weapons.Melee
 		int swingTimer = 0;
 		public override void SetDefaults()
 		{
-			item.damage = 35;
-			item.melee = true;
-			item.width = 48;
-			item.height = 48;
-			item.useTime = 25;
-			item.useAnimation = 25;
-			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.noMelee = true;
-			item.knockBack = 4;
-			item.value = Item.sellPrice(silver: 50);
-			item.rare = ItemRarityID.Orange;
-			item.shoot = ModContent.ProjectileType<Projectiles.BeamSwordProjectile>();
-			item.shootSpeed = 10f;
-			item.noUseGraphic = true;
-			item.channel = false;
+			Item.damage = 35;
+			Item.DamageType = DamageClass.Melee;
+			Item.width = 48;
+			Item.height = 48;
+			Item.useTime = 25;
+			Item.useAnimation = 25;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.noMelee = true;
+			Item.knockBack = 4;
+			Item.value = Item.sellPrice(silver: 50);
+			Item.rare = ItemRarityID.Orange;
+			Item.shoot = ModContent.ProjectileType<Projectiles.BeamSwordProjectile>();
+			Item.shootSpeed = 10f;
+			Item.noUseGraphic = true;
+			Item.channel = false;
 		}
 
 		int hyperTimer = 0;
@@ -59,30 +61,28 @@ namespace Acceleration.Items.Weapons.Melee
 
 		public override void AddRecipes()
 		{
-			ModRecipe currRecipe = new ModRecipe(Acceleration.thisMod);
-			currRecipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12);
-			currRecipe.AddIngredient(ItemID.SilverBar, 10);
-			currRecipe.AddIngredient(ItemID.Ruby, 5);
-			currRecipe.AddTile(TileID.Anvils);
-			currRecipe.SetResult(ModContent.ItemType<BeamSword>());
-			currRecipe.AddRecipe();
-			currRecipe = new ModRecipe(Acceleration.thisMod);
-			currRecipe.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12);
-			currRecipe.AddIngredient(ItemID.TungstenBar, 10);
-			currRecipe.AddIngredient(ItemID.Ruby, 5);
-			currRecipe.AddTile(TileID.Anvils);
-			currRecipe.SetResult(ModContent.ItemType<BeamSword>());
-			currRecipe.AddRecipe();
+			CreateRecipe()
+				.AddTile(TileID.Anvils)
+				.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12)
+				.AddIngredient(ItemID.SilverBar, 10)
+				.AddIngredient(ItemID.Ruby, 5)
+				.Register();
+			CreateRecipe()
+				.AddTile(TileID.Anvils)
+				.AddIngredient(ModContent.ItemType<Items.Materials.AdvancedTechnology>(), 12)
+				.AddIngredient(ItemID.TungstenBar, 10)
+				.AddIngredient(ItemID.Ruby, 5)
+				.Register();
 		}
 
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (hyper)
 			{
 				return false;
 			}
 			float mouseDir = (float)Math.Atan2(Main.MouseWorld.Y - player.position.Y, Main.MouseWorld.X - player.position.X);
-			float dmg = item.damage;
+			float dmg = Item.damage;
 			if (swingAnim == 2)
 			{
 				dmg *= 1.333f;
@@ -97,8 +97,8 @@ namespace Acceleration.Items.Weapons.Melee
 					soundToPlay = Acceleration.sword2Sound;
 					break;
 			}
-			Main.PlaySound(soundToPlay, player.position);
-			Projectile.NewProjectile(player.position, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamSwordProjectile>(), (int)(dmg * player.meleeDamageMult), item.knockBack * (swingAnim == 2 ? 2.5f : 1), player.whoAmI, swingAnim + ((int)(item.useTime * player.meleeSpeed) << 2), mouseDir);
+			SoundEngine.PlaySound(soundToPlay, player.position);
+			Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem),player.position, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.BeamSwordProjectile>(), (int)(dmg * player.GetDamage(DamageClass.Melee).Multiplicative), Item.knockBack * (swingAnim == 2 ? 2.5f : 1), player.whoAmI, swingAnim + ((int)(Item.useTime * player.GetTotalAttackSpeed(DamageClass.Melee)) << 2), mouseDir);
 			++swingAnim;
 			if (swingAnim == 3)
 			{
@@ -154,7 +154,7 @@ namespace Acceleration.Items.Weapons.Melee
 				if (hyperTimer == 7)
 				{
 					// play sfx
-					Main.PlaySound(Acceleration.swordHyperSound, player.position);
+					SoundEngine.PlaySound(Acceleration.swordHyperSound, player.position);
 					player.velocity = new Vector2(45, 0).RotatedBy(AccelerationHelper.GetMouseRotation(player));
 					// give us some i frames
 					player.immune = true;
@@ -174,19 +174,19 @@ namespace Acceleration.Items.Weapons.Melee
 					for (int i = 0; i < 5; ++i)
 					{
 						bool updown = Main.rand.NextBool();
-						Dust.NewDust(particlePos, 20, 20, DustID.TopazBolt, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
+						Dust.NewDust(particlePos, 20, 20, DustID.GemTopaz, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
 						updown = Main.rand.NextBool();
-						Dust.NewDust(particlePos, 20, 20, DustID.SapphireBolt, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
+						Dust.NewDust(particlePos, 20, 20, DustID.GemSapphire, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
 						updown = Main.rand.NextBool();
-						Dust.NewDust(particlePos, 20, 20, DustID.RubyBolt, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
+						Dust.NewDust(particlePos, 20, 20, DustID.GemRuby, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
 						updown = Main.rand.NextBool();
-						Dust.NewDust(particlePos, 20, 20, DustID.EmeraldBolt, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
+						Dust.NewDust(particlePos, 20, 20, DustID.GemEmerald, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
 						updown = Main.rand.NextBool();
-						Dust.NewDust(particlePos, 20, 20, DustID.AmethystBolt, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
+						Dust.NewDust(particlePos, 20, 20, DustID.GemAmethyst, updown ? particleSpeed.X : invertPSpeed.X, updown ? particleSpeed.Y : invertPSpeed.Y);
 						particlePos += player.velocity / 5.0f;
 					}
 					// spawn the hurty
-					Projectile.NewProjectile(player.position + player.velocity / 2, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.SwordHitbox>(), (int)(item.damage * 4 * player.meleeDamageMult), item.knockBack, player.whoAmI, 0, 4);
+					Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem),player.position + player.velocity / 2, new Vector2(0, 0), ModContent.ProjectileType<Projectiles.SwordHitbox>(), (int)(Item.damage * 4 * player.GetTotalDamage(DamageClass.Melee).Multiplicative), Item.knockBack, player.whoAmI, 0, 4);
 				}
 
 			}

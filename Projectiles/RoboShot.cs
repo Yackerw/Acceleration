@@ -20,20 +20,20 @@ namespace Acceleration.Projectiles
 
 		public override void SetStaticDefaults()
 		{
-			Main.projFrames[projectile.type] = 1;
+			Main.projFrames[Projectile.type] = 1;
 		}
 		public override void SetDefaults()
 		{
-			projectile.width = 32;
-			projectile.height = 32;
-			//projectile.alpha = 50;
-			projectile.timeLeft = 600;
-			projectile.penetrate = -1;
-			projectile.hostile = true;
-			projectile.magic = true;
-			projectile.tileCollide = true;
-			projectile.ignoreWater = true;
-			projectile.light = 0.6f;
+			Projectile.width = 32;
+			Projectile.height = 32;
+			//Projectile.alpha = 50;
+			Projectile.timeLeft = 600;
+			Projectile.penetrate = -1;
+			Projectile.hostile = true;
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.tileCollide = true;
+			Projectile.ignoreWater = true;
+			Projectile.light = 0.6f;
 		}
 
 		public override void AI()
@@ -43,7 +43,7 @@ namespace Acceleration.Projectiles
 			{
 				Dust dust;
 				// You need to set position depending on what you are doing. You may need to subtract width/2 and height/2 as well to center the spawn rectangle.
-				Vector2 position = projectile.position - new Vector2(15, 15);
+				Vector2 position = Projectile.position - new Vector2(15, 15);
 				dust = Main.dust[Terraria.Dust.NewDust(position, 30, 30, 43, 0f, 0f, 0, new Color(255, 255, 0), 0.4069768f)];
 			}
 
@@ -51,7 +51,7 @@ namespace Acceleration.Projectiles
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			Vector2 position = projectile.position - new Vector2(15, 15);
+			Vector2 position = Projectile.position - new Vector2(15, 15);
 			for (int i = 0; i < 20; ++i)
 			{
 				Dust dust = Main.dust[Terraria.Dust.NewDust(position, 30, 30, 43, 0f, 0f, 0, new Color(255, 255, 0), 0.4069768f)];
@@ -59,18 +59,18 @@ namespace Acceleration.Projectiles
 			return true;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone);
 			return true;
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
-			spriteBatch.End();
-			spriteBatch.Begin();
-			base.PostDraw(spriteBatch, lightColor);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin();
+			base.PostDraw(lightColor);
 		}
 	}
 }

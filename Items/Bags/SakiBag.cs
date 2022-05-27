@@ -20,12 +20,12 @@ namespace Acceleration.Items.Bags
 
 		public override void SetDefaults()
 		{
-			item.maxStack = 999;
-			item.consumable = true;
-			item.width = 24;
-			item.height = 24;
-			item.rare = ItemRarityID.Green;
-			item.expert = true;
+			Item.maxStack = 999;
+			Item.consumable = true;
+			Item.width = 24;
+			Item.height = 24;
+			Item.rare = ItemRarityID.Green;
+			Item.expert = true;
 		}
 
 		public override bool CanRightClick()
@@ -35,22 +35,22 @@ namespace Acceleration.Items.Bags
 
 		public override void OpenBossBag(Player player)
 		{
-			player.TryGettingDevArmor();
+			player.TryGettingDevArmor(player.GetSource_DropAsItem());
 			// TODO
 			// player.QuickSpawnItem
 			if (Main.rand.Next(0, 3) <= 1)
 			{
-				player.QuickSpawnItem(ModContent.ItemType<Maracca>(), 30);
+				player.QuickSpawnItem(player.GetSource_DropAsItem(), ModContent.ItemType<Maracca>(), 30);
 			}
 			if (Main.rand.Next(0, 3) <= 1)
 			{
-				player.QuickSpawnItem(ModContent.ItemType<Items.Weapons.Melee.Tambourine>(), 1);
+				player.QuickSpawnItem(player.GetSource_DropAsItem(), ModContent.ItemType<Items.Weapons.Melee.Tambourine>(), 1);
 			}
 			if (Main.rand.Next(0, 3) <= 1)
 			{
-				player.QuickSpawnItem(ModContent.ItemType<Items.Weapons.Magic.PowerBell>(), 1);
+				player.QuickSpawnItem(player.GetSource_DropAsItem(), ModContent.ItemType<Items.Weapons.Magic.PowerBell>(), 1);
 			}
-			player.QuickSpawnItem(ModContent.ItemType<Items.Accessories.Pudding>());
+			player.QuickSpawnItem(player.GetSource_DropAsItem(), ModContent.ItemType<Items.Accessories.Pudding>());
 		}
 
 		public override int BossBagNPC => ModContent.NPCType<Saki>();

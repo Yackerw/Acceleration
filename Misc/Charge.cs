@@ -78,7 +78,7 @@ namespace Acceleration.Misc
 		{
 			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone);
 			Charge charge = firstCharge;
-			Texture2D tex = ModContent.GetTexture("Acceleration/Misc/Charge");
+			Texture2D tex = ModContent.Request<Texture2D>("Acceleration/Misc/Charge").Value;
 			while (charge != null)
 			{
 				AccelerationHelper.DrawSpriteCached(tex, charge.position, 0, 40, Color.White, 0, new Vector2(1,1));

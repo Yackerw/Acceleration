@@ -17,7 +17,7 @@ namespace Acceleration.Invasions
 
 		static public void StartInvasion()
 		{
-			Main.NewText("The sky is accelerating...", 15, 140, 255, true);
+			Main.NewText("The sky is accelerating...", 15, 140, 255);
 			Main.invasionType = (int)AccelerateWorld.Invasions.Saki;
 			Main.invasionProgress = 0;
 			Main.invasionProgressMax = 100;

@@ -41,9 +41,8 @@ namespace Acceleration.Invasions
 			}
 		}
 
-		public override void NPCLoot(NPC npc)
+		public override void OnKill(NPC npc)
 		{
-			base.NPCLoot(npc);
 			int[] npcs = null;
 			if (Main.invasionType == (int)AccelerateWorld.Invasions.Saki)
 			{
@@ -63,11 +62,11 @@ namespace Acceleration.Invasions
 						// if we're saki invasion, and saki hasn't been defeated yet, spawn her
 						if (Main.invasionType == (int)AccelerateWorld.Invasions.Saki && !AccelerateWorld.sakiDefeated)
 						{
-							NPC.NewNPC((int)Main.rightWorld / 2, (int)Main.topWorld + 800, ModContent.NPCType<NPCs.Bosses.Saki>());
+							NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)Main.rightWorld / 2, (int)Main.topWorld + 800, ModContent.NPCType<NPCs.Bosses.Saki>());
 							Main.NewText("A girl descends from the sky...");
 						}
 						Main.invasionType = 0;
-						Main.NewText("The sky is decelerating...", 12, 140, 255, true);
+						Main.NewText("The sky is decelerating...", 12, 140, 255);
 					}
 					return;
 				}

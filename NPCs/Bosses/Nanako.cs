@@ -12,13 +12,12 @@ using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using Acceleration.Projectiles.Saki;
 using Acceleration.Items.Bags;
-using Terraria.GameContent.ItemDropRules;
 using Mathj;
 
 namespace Acceleration.NPCs.Bosses
 {
 	[AutoloadBossHead]
-	class Saki : ModNPC
+	class Nanako : ModNPC
 	{
 
 		const int AITimer = 0;
@@ -30,15 +29,22 @@ namespace Acceleration.NPCs.Bosses
 
 		Vector2 targetPosition;
 		Vector2 spawnPoint;
+
+		Vector2[] bitPositions = new Vector2[7];
+		int[] bitStates = new int[7];
+		int[] bitSprites = new int[7];
+		int[] bitTimers = new int[7];
+		float[] bitRotations = new float[7];
+
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Saki");
+			DisplayName.SetDefault("Nanako");
 			NPCID.Sets.MustAlwaysDraw[NPC.type] = true;
 		}
 
 		public override void SetDefaults()
 		{
-			NPC.lifeMax = 2700;
+			NPC.lifeMax = 4000;
 			NPC.damage = 15;
 			NPC.defense = 6;
 			NPC.knockBackResist = 0f;
@@ -50,7 +56,7 @@ namespace Acceleration.NPCs.Bosses
 			NPC.noTileCollide = true;
 			NPC.boss = true;
 			NPC.npcSlots = 50;
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/MigratoryBirdFromNorth");
+			Music = SoundLoader.GetSoundSlot(Mod, "Sounds/Music/MigratoryBirdFromNorth");
 			SceneEffectPriority = SceneEffectPriority.BossLow;
 			NPC.ai[AINextState] = 1;
 			NPC.value = Item.buyPrice(0, 6, 50, 0);
@@ -59,27 +65,45 @@ namespace Acceleration.NPCs.Bosses
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
-			NPC.lifeMax = 2700 + 400 + (800 * numPlayers);
+			NPC.lifeMax = 4000 + 800 + (1400 * numPlayers);
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(targetPosition.X);
 			writer.Write(targetPosition.Y);
+			for (int i = 0; i < 7; ++i)
+			{
+				writer.Write(bitPositions[i].X);
+				writer.Write(bitPositions[i].Y);
+				writer.Write((byte)bitStates[i]);
+				writer.Write((byte)bitSprites[i]);
+				writer.Write(bitTimers[i]);
+			}
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			targetPosition = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+			for (int i = 0; i < 7; ++i)
+			{
+				bitPositions[i] = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+				bitStates[i] = reader.ReadByte();
+				bitSprites[i] = reader.ReadByte();
+				bitTimers[i] = reader.ReadInt32();
+			}
 		}
 
-		void IncrementFrameCounter(int frameLength)
+		void IncrementFrameCounter(int frameStartLoop, int frameLength)
 		{
 			// storing frames in a strange way...
 			int Y = (int)NPC.frameCounter / 100;
 			int X = (int)NPC.frameCounter - (Y * 100);
 			++X;
-			X = X % frameLength;
+			if (X >= frameLength)
+			{
+				X = frameStartLoop;
+			}
 			NPC.frameCounter = X + (Y * 100);
 		}
 
@@ -116,7 +140,7 @@ namespace Acceleration.NPCs.Bosses
 			{
 				if (NPC.ai[AIState] != 200)
 				{
-					Main.NewText("Saki has defeated all players!", Color.Green);
+					Main.NewText("Nanako has defeated all players!", Color.Green);
 					NPC.ai[AIState] = 200;
 				}
 			}
@@ -164,44 +188,41 @@ namespace Acceleration.NPCs.Bosses
 						}
 						if (generalCounter % 3 == 0)
 						{
-							IncrementFrameCounter(4);
+							IncrementFrameCounter(0, 4);
 						}
-					} else
+					}
+					else
 					{
-						NPC.ai[AIState] = 1;
+						NPC.ai[AIState] = 50;
 					}
 					break;
 				case 1:
 					// prepare to fly to a specific spot, and set up our next state
 					if (NPC.life > NPC.lifeMax / 2)
 					{
-						NPC.ai[AINextState] = Main.rand.Next(0, 4);
-					} else
+						// nanako is largely passive, so she spends most of her time just waffling about
+						NPC.ai[AINextState] = Main.rand.Next(0, 10);
+					}
+					else
 					{
 						// BIG BANG ATTACK
-						NPC.ai[AINextState] = Main.rand.Next(0, 5);
+						NPC.ai[AINextState] = Main.rand.Next(0, 15);
 					}
 					switch (NPC.ai[AINextState])
 					{
 						case 1:
-							// maraccas
+						case 2:
+						case 3:
+							// charging attack	
 							NPC.ai[AINextState] = 3;
 							break;
-						case 2:
-							// semi-circular shots
-							NPC.ai[AINextState] = 4;
-							break;
-						case 4:
-							// big bang bell
-							NPC.ai[AINextState] = 5;
-							break;
 						default:
+							// fly somewhere new
 							NPC.ai[AINextState] = 1;
 							break;
 					}
 					// set us to fly
 					NPC.ai[AIState] = 2;
-					//NPC.frameCounter = 200;
 					// set our position
 					targetPosition = new Vector2(Main.rand.NextFloat(-300, 300), Main.rand.NextFloat(-300, 300));
 					// ensure it stays around the spawn point enough...and don't go beneath the player (unless they're above our spawn point)
@@ -224,7 +245,8 @@ namespace Acceleration.NPCs.Bosses
 					if (targDiff.X > 0)
 					{
 						NPC.spriteDirection = 1;
-					} else
+					}
+					else
 					{
 						NPC.spriteDirection = -1;
 					}
@@ -238,7 +260,8 @@ namespace Acceleration.NPCs.Bosses
 						{
 							ChangeSetKeepFrame(100);
 						}
-					} else
+					}
+					else
 					{
 						if (NPC.spriteDirection == 1)
 						{
@@ -253,7 +276,7 @@ namespace Acceleration.NPCs.Bosses
 					newPosToMove.Normalize();
 					if (generalCounter % 3 == 0)
 					{
-						IncrementFrameCounter(4);
+						IncrementFrameCounter(0, 4);
 					}
 
 					// spawn a projectile every now and then
@@ -267,7 +290,7 @@ namespace Acceleration.NPCs.Bosses
 									Vector2 tambSpeed = targDiff;
 									tambSpeed.Normalize();
 									tambSpeed *= 1.5f;
-									Projectile.NewProjectile(NPC.GetSource_FromThis(),NPC.position, tambSpeed, ModContent.ProjectileType<SakiTambourine>(), 15, 1.0f);
+									Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.position, tambSpeed, ModContent.ProjectileType<SakiTambourine>(), 15, 1.0f);
 									break;
 								default:
 									// this is dumb why is ai0 not working
@@ -280,96 +303,35 @@ namespace Acceleration.NPCs.Bosses
 					if (Matht.DotProduct(posToMove, newPosToMove) <= 0)
 					{
 						NPC.ai[AIState] = NPC.ai[AINextState];
-						if (NPC.ai[AIState] == 1) {
+						if (NPC.ai[AIState] == 1)
+						{
 							NPC.ai[AINextState] = 2;
 							NPC.ai[AITimer] = 0;
-						} else if (NPC.ai[AIState] == 3 || NPC.ai[AIState] == 4)
-						{
-							NPC.ai[AITimer] = 160;
 						}
 						else
 						{
 							NPC.ai[AINextState] = 0;
+							NPC.ai[AITimer] = 0;
 						}
 					}
 
 					break;
 				case 3:
-					NPC.frameCounter = Math.Min(((160 - (int)NPC.ai[AITimer]) / 5), 11);
-					ChangeSetKeepFrame(500);
-					--NPC.ai[AITimer];
-					if (Main.netMode != NetmodeID.MultiplayerClient)
-					{
-						if (NPC.ai[AITimer] <= 135 && NPC.ai[AITimer] >= 125)
-						{
-							// spawn maraccas in random directions
-							Projectile mar = Main.projectile[Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.position, new Vector2(Main.rand.NextFloat(-6.0f, 6.0f), Main.rand.NextFloat(-6.0f, 0.0f)), ModContent.ProjectileType<SakiMaracca>(), 13, 3.0f, Main.myPlayer, Main.rand.Next(0, 2))];
-							//mar.ai[0] = Main.rand.Next(0, 2);
-						}
-					}
-					if (NPC.ai[AITimer] <= 0)
-					{
-						NPC.ai[AIState] = 1;
-					}
-					break;
-				case 4:
-					NPC.frameCounter = Math.Min(((160 - (int)NPC.ai[AITimer]) / 5), 11);
-					ChangeSetKeepFrame(500);
-					--NPC.ai[AITimer];
-					if (Main.netMode != NetmodeID.MultiplayerClient)
-					{
-						if (NPC.ai[AITimer] <= 135 && NPC.ai[AITimer] >= 115)
-						{
-							// pellets in a rotational pattern...
-							if (NPC.ai[AITimer] % 2 == 1)
-							{
-								float rotationalAdditive = (NPC.ai[AITimer] - 125) * 1.7f * Matht.Deg2Rad;
-								for (int i = 0; i < 5; ++i)
-								{
-									float rotationalBase = i * 72 * Matht.Deg2Rad;
-									Projectile proj = Main.projectile[Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.position, new Vector2(1, 0).RotatedBy(rotationalBase + rotationalAdditive), ModContent.ProjectileType<SakiPellet>(), 13, 3.0f, Main.myPlayer, 0, 0)];
-									// minus a little for blue
-									proj = Main.projectile[Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.position, new Vector2(1, 0).RotatedBy(rotationalBase + rotationalAdditive - (3 * Matht.Deg2Rad)), ModContent.ProjectileType<SakiPellet>(), 13, 3.0f, Main.myPlayer, 1, 1)];
-								}
-							}
-						}
-					}
-					if (NPC.ai[AITimer] <= 0)
-					{
-						NPC.ai[AIState] = 1;
-					}
-					break;
-				case 5:
-					// do a little prep work for big bang bell
-					NPC.ai[AIState] = 6;
-					NPC.ai[AITimer] = 120;
-					if (Main.netMode != NetmodeID.MultiplayerClient)
-					{
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center - new Vector2(0, 170), Vector2.Zero, ModContent.ProjectileType<SakiBigBangBell>(), 20, 1.0f, 255, target.whoAmI, target.whoAmI);
-					}
-					SoundEngine.PlaySound(Acceleration.hyperSound, NPC.position);
-					break;
-				case 6:
-					// animate
-					--NPC.ai[AITimer];
-					if (NPC.ai[AITimer] > 20)
-					{
-						NPC.frameCounter = Math.Min(2, 24 - (NPC.ai[AITimer] / 5));
-					} else
-					{
-						NPC.frameCounter = 3 + Math.Min(2, 4 - (NPC.ai[AITimer] / 5));
-					}
 					ChangeSetKeepFrame(700);
-					// done
-					if (NPC.ai[AITimer] <= 0)
+					if (NPC.ai[AITimer] == 0)
 					{
-						NPC.ai[AIState] = 1;
+						SetFrameManually(0);
 					}
+					if (NPC.ai[AITimer] % 4 == 0)
+					{
+						IncrementFrameCounter(2, 8);
+					}
+					++NPC.ai[AITimer];
 					break;
 				case 100:
 					if (generalCounter % 2 == 0)
 					{
-						IncrementFrameCounter(2);
+						IncrementFrameCounter(0, 2);
 					}
 					--NPC.ai[AITimer];
 					if (NPC.ai[AITimer] <= 0)
@@ -388,9 +350,31 @@ namespace Acceleration.NPCs.Bosses
 						SoundEngine.PlaySound(Acceleration.bossDeathSound, NPC.position);
 					}
 					break;
+				case 50:
+					// spawn bits
+					float bitRotation = 0;
+					if (NPC.ai[AITimer] == 0)
+						SoundEngine.PlaySound(Acceleration.hyperSound, NPC.position);
+					ChangeSetKeepFrame(600);
+					if (NPC.ai[AITimer] % 4 == 0 && NPC.ai[AITimer] != 0)
+					{
+						IncrementFrameCounter(2, 4);
+					}
+					if (NPC.ai[AITimer] % 6 == 0)
+					{
+						bitPositions[(int)NPC.ai[AITimer] / 6] = new Vector2(0, 24.0f).RotatedBy((NPC.ai[AITimer] / 6) * (float)Math.PI / 3.5f) + NPC.Center;
+						bitRotation += (float)Math.PI / 3.5f;
+					}
+					if (NPC.ai[AITimer] >= 41)
+					{
+						NPC.ai[AIState] = 1;
+						NPC.ai[AITimer] = 0;
+					}
+					++NPC.ai[AITimer];
+					break;
 				case 200:
 					// simply leave
-					IncrementFrameCounter(8);
+					IncrementFrameCounter(0, 8);
 					ChangeSetKeepFrame(0);
 					NPC.velocity.Y -= 0.25f;
 					NPC.velocity.Y = Math.Max(-8.0f, NPC.velocity.Y);
@@ -401,7 +385,53 @@ namespace Acceleration.NPCs.Bosses
 					break;
 			}
 
+			// update bit AI
+			for (int i = 0; i < 7; ++i)
+			{
+				UpdateBitAI(i);
+			}
+
 			++generalCounter;
+		}
+
+		void UpdateBitAI(int bit)
+		{
+			switch (bitStates[bit])
+			{
+				case 0:
+				case 1:
+					{
+						// just circle around nanako
+						float radius = (bitTimers[bit] / 40.0f) * (float)Math.PI;
+						if (bitStates[bit] == 0)
+						{
+							bitPositions[bit] += new Vector2(0, 3.0f).RotatedBy(radius);
+						} else
+						{
+							bitPositions[bit] -= new Vector2(0, 3.0f).RotatedBy(radius);
+						}
+						// TODO: spawn projectiles
+						++bitTimers[bit];
+						if (bitTimers[bit] > 80)
+						{
+							int nextRand = Main.rand.Next(0, 4);
+							if (nextRand == 4)
+							{
+								// return to nanako
+								//bitStates[bit] = 2;
+							} else if (nextRand < 2)
+							{
+								bitTimers[bit] = 0;
+								bitStates[bit] = 0;
+							} else
+							{
+								bitTimers[bit] = 0;
+								bitStates[bit] = 1;
+							}
+						}
+					}
+					break;
+			}
 		}
 
 		public override bool? CanBeHitByItem(Player player, Item item)
@@ -435,22 +465,14 @@ namespace Acceleration.NPCs.Bosses
 			return base.CheckDead();
 		}
 
-		public override void ModifyNPCLoot(NPCLoot npcLoot)
-		{
-			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Items.Weapons.Ranged.Maracca>(), 3, 30, 50));
-			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Items.Weapons.Melee.Tambourine>(), 3, 1, 1));
-			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Items.Weapons.Magic.PowerBell>(), 3, 1, 1));
-			npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<SakiBag>()));
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 position, Color drawColor)
 		{
 			// since bosses use a lot of sprites, this is a custom system set up that spans both the X and Y axis. 100 = go down 1 on the Y axis, 1 = go right 1 on the X axis
 			int Y = (int)NPC.frameCounter / 100;
 			int X = (int)NPC.frameCounter - (Y * 100);
 			Rectangle frame = new Rectangle(X * 66, Y * 66, 64, 64);
 
-			AccelerationHelper.DrawSpriteRect(ModContent.Request<Texture2D>("Acceleration/NPCs/Bosses/SakiSheet").Value, NPC.Center, frame, drawColor, 0, Vector2.One, spriteBatch, NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+			AccelerationHelper.DrawSpriteRect(ModContent.Request<Texture2D>("Acceleration/NPCs/Bosses/NanakoSheet").Value, NPC.Center, frame, drawColor, 0, Vector2.One, spriteBatch, NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
 
 			// draw a little circle that closes in on her before she goes "pop"
 			if (NPC.ai[AIState] == 100)
@@ -464,6 +486,12 @@ namespace Acceleration.NPCs.Bosses
 					spriteBatch.End();
 					spriteBatch.Begin();
 				}
+			}
+
+			// draw bits
+			for (int i = 0; i < 7; ++i)
+			{
+				AccelerationHelper.DrawSprite("Acceleration/Projectiles/Nanako/NanakoBit", bitPositions[i], bitSprites[i], 32, Color.White, bitRotations[i], Vector2.One, spriteBatch);
 			}
 
 			return false;
