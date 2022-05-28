@@ -56,7 +56,7 @@ namespace Acceleration.NPCs.Bosses
 			NPC.noTileCollide = true;
 			NPC.boss = true;
 			NPC.npcSlots = 50;
-			Music = SoundLoader.GetSoundSlot(Mod, "Sounds/Music/MigratoryBirdFromNorth");
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/MigratoryBirdFromNorth");
 			SceneEffectPriority = SceneEffectPriority.BossLow;
 			NPC.ai[AINextState] = 1;
 			NPC.value = Item.buyPrice(0, 6, 50, 0);
@@ -279,27 +279,6 @@ namespace Acceleration.NPCs.Bosses
 						IncrementFrameCounter(0, 4);
 					}
 
-					// spawn a projectile every now and then
-					if (Main.netMode != NetmodeID.MultiplayerClient)
-					{
-						if (generalCounter % 45 == 0)
-						{
-							switch (Main.rand.Next(0, 3))
-							{
-								case 0:
-									Vector2 tambSpeed = targDiff;
-									tambSpeed.Normalize();
-									tambSpeed *= 1.5f;
-									Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.position, tambSpeed, ModContent.ProjectileType<SakiTambourine>(), 15, 1.0f);
-									break;
-								default:
-									// this is dumb why is ai0 not working
-									Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.position, new Vector2(0, 6).RotatedByRandom(360 * Matht.Deg2Rad), ModContent.ProjectileType<SakiOrb>(), 15, 1.0f, Main.myPlayer, NPC.whoAmI, target.whoAmI);
-									break;
-							}
-						}
-					}
-
 					if (Matht.DotProduct(posToMove, newPosToMove) <= 0)
 					{
 						NPC.ai[AIState] = NPC.ai[AINextState];
@@ -321,12 +300,23 @@ namespace Acceleration.NPCs.Bosses
 					if (NPC.ai[AITimer] == 0)
 					{
 						SetFrameManually(0);
+						for (int i = 0; i < 4; ++i)
+						{
+							bitStates[i] = 3;
+							bitTimers[i] = 0;
+							bitSprites[i] = 3;
+						}
 					}
 					if (NPC.ai[AITimer] % 4 == 0)
 					{
 						IncrementFrameCounter(2, 8);
 					}
 					++NPC.ai[AITimer];
+					// done
+					if (NPC.ai[AITimer] >= 240)
+					{
+						NPC.ai[AIState] = 1;
+					}
 					break;
 				case 100:
 					if (generalCounter % 2 == 0)
@@ -415,10 +405,10 @@ namespace Acceleration.NPCs.Bosses
 						if (bitTimers[bit] > 80)
 						{
 							int nextRand = Main.rand.Next(0, 4);
-							if (nextRand == 4)
+							if (nextRand == 0)
 							{
 								// return to nanako
-								//bitStates[bit] = 2;
+								bitStates[bit] = 2;
 							} else if (nextRand < 2)
 							{
 								bitTimers[bit] = 0;
@@ -429,6 +419,58 @@ namespace Acceleration.NPCs.Bosses
 								bitStates[bit] = 1;
 							}
 						}
+						// randomly fire off projectiles
+						if (Main.rand.Next(0, 60) == 0)
+						{
+							Projectile.NewProjectile(NPC.GetSource_FromThis(), bitPositions[bit], new Vector2(0, 4).RotatedByRandom(MathF.PI * 2), ModContent.ProjectileType<Projectiles.Nanako.NanakoBitProjectile>(), 45, 1.0f, Main.myPlayer);
+						}
+					}
+					break;
+				case 2:
+					{
+						// target nanako
+						Vector2 targetPos = NPC.position + new Vector2(0, 24.0f).RotatedBy(bit * (float)Math.PI / 3.5f);
+						Vector2 targAngle = targetPos - bitPositions[bit];
+						targAngle.Normalize();
+						targAngle *= 7;
+						bitPositions[bit] += targAngle;
+						targAngle.Normalize();
+						Vector2 dotUse = targetPos - bitPositions[bit];
+						dotUse.Normalize();
+						if (Matht.DotProduct(targAngle, dotUse) < 0)
+						{
+							bitStates[bit] = 0;
+						}
+					}
+					break;
+				case 3:
+					{
+						// target a player
+						Vector2 targetPos = Main.player[NPC.target].position;
+						Vector2 targAngleVec = targetPos - bitPositions[bit];
+						float angle = MathF.Atan2(targAngleVec.Y, targAngleVec.X);
+						bitRotations[bit] = angle;
+						targAngleVec.Normalize();
+						targAngleVec *= 6.0f;
+						bitPositions[bit] += targAngleVec;
+						// animate
+						if (bitTimers[bit] % 4 == 0)
+						{
+							bitSprites[bit] += 1;
+							if (bitSprites[bit] >= 6)
+							{
+								bitSprites[bit] = 3;
+							}
+						}
+						// TODO: hitbox
+						if (bitTimers[bit] >= 240)
+						{
+							bitStates[bit] = 0;
+							bitTimers[bit] = 0;
+							bitSprites[bit] = 0;
+							bitRotations[bit] = 0;
+						}
+						++bitTimers[bit];
 					}
 					break;
 			}
