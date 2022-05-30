@@ -28,7 +28,7 @@ namespace Acceleration.Projectiles.Saki
 			Projectile.height = 32;
 			//Projectile.alpha = 50;
 			Projectile.timeLeft = 600;
-			Projectile.penetrate = 1;
+			Projectile.penetrate = -1;
 			Projectile.hostile = true;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = true;
@@ -38,43 +38,75 @@ namespace Acceleration.Projectiles.Saki
 
 		public override void AI()
 		{
-			// just apply light gravity
-			Projectile.velocity.Y += 0.25f;
-			Projectile.velocity.Y = Math.Min(Projectile.velocity.Y, 7.0f);
-			if (Projectile.timeLeft % 6 == 0)
+			if (Projectile.timeLeft > 3)
 			{
-				if (Projectile.ai[0] == 0)
+				// just apply light gravity
+				Projectile.velocity.Y += 0.25f;
+				Projectile.velocity.Y = Math.Min(Projectile.velocity.Y, 7.0f);
+				if (Projectile.timeLeft % 6 == 0)
 				{
-					Projectile.frame = (Projectile.frame + 1) % 6;
-				} else
-				{
-					Projectile.frame = (Projectile.frame - 1) % 6;
-					if (Projectile.frame < 0)
+					if (Projectile.ai[0] == 0)
 					{
-						Projectile.frame = 5;
+						Projectile.frame = (Projectile.frame + 1) % 6;
+					}
+					else
+					{
+						Projectile.frame = (Projectile.frame - 1) % 6;
+						if (Projectile.frame < 0)
+						{
+							Projectile.frame = 5;
+						}
 					}
 				}
+			} else if (Projectile.owner == Main.myPlayer)
+			{
+				// become BOM
+				Projectile.tileCollide = false;
+				Projectile.alpha = 255;
+				Projectile.position = Projectile.Center;
+				Projectile.width = 128;
+				Projectile.height = 128;
+				Projectile.Center = Projectile.position;
+			}
+			if (Projectile.timeLeft == 3)
+			{
+				for (int i = 0; i < 10; ++i)
+				{
+					Dust.NewDust(Projectile.Center, 64, 32, DustID.GemTopaz, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
+					Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, 61);
+				}
+				SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
 			}
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
 			base.PostDraw(lightColor);
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
-			AccelerationHelper.DrawSprite("Acceleration/Projectiles/Saki/Maracca_Emiss", Projectile.Center, Projectile.frame, 32, Color.White, 0, new Vector2(1, 1), Main.spriteBatch);
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin();
-		}
-		public override void Kill(int timeLeft)
-		{
-			Vector2 position = Projectile.position - new Vector2(15, 15);
-			for (int i = 0; i < 10; ++i)
+			if (Projectile.timeLeft > 3)
 			{
-				Dust.NewDust(Projectile.position, 64, 32, DustID.GemTopaz, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(0, 6));
-				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.position, Vector2.Zero, 61);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
+				AccelerationHelper.DrawSprite("Acceleration/Projectiles/Saki/Maracca_Emiss", Projectile.Center, Projectile.frame, 32, Color.White, 0, new Vector2(1, 1), Main.spriteBatch);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin();
 			}
-			SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			if (Projectile.timeLeft > 4)
+			{
+				Projectile.timeLeft = 4;
+			}
+			return false;
+		}
+
+		public override void OnHitPlayer(Player target, int damage, bool crit)
+		{
+			if (Projectile.timeLeft > 4)
+			{
+				Projectile.timeLeft = 4;
+			}
 		}
 	}
 }

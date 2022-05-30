@@ -39,7 +39,7 @@ namespace Acceleration.NPCs.Bosses
 		public override void SetDefaults()
 		{
 			NPC.lifeMax = 2700;
-			NPC.damage = 15;
+			NPC.damage = -1;
 			NPC.defense = 6;
 			NPC.knockBackResist = 0f;
 			NPC.aiStyle = -1;
@@ -93,11 +93,12 @@ namespace Acceleration.NPCs.Bosses
 		void SetFrameManually(int frame)
 		{
 			int Y = (int)NPC.frameCounter / 100;
-			NPC.frameCounter = Y + frame;
+			NPC.frameCounter = (Y * 100) + frame;
 		}
 
 		public override void AI()
 		{
+			NPC.DiscourageDespawn(100);
 			NPC.netUpdate = true;
 			if (spawnPoint.Y == 0)
 			{
@@ -112,7 +113,7 @@ namespace Acceleration.NPCs.Bosses
 				target = Main.player[NPC.target];
 			}
 			// leave if all targets dead/too far away
-			if (target.dead || Matht.Magnitude(target.position - NPC.position) > 4000 && NPC.ai[AIState] != 0)
+			if (target.dead || Matht.Magnitude(target.position - NPC.position) > 8000 && NPC.ai[AIState] != 0)
 			{
 				if (NPC.ai[AIState] != 200)
 				{
@@ -212,6 +213,12 @@ namespace Acceleration.NPCs.Bosses
 						targetPosition = new Vector2(Main.rand.NextFloat(-300, 300), Main.rand.NextFloat(-300, 300));
 					}
 					targetPosition += NPC.position;
+					SetFrameManually(0);
+					// if player is too far away, charge back to them
+					if (Matht.Magnitude(target.position - NPC.position) >= 1300)
+					{
+						NPC.ai[AIState] = 0;
+					}
 					break;
 				case 2:
 					// travel to target position, unless we already there

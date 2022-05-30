@@ -35,6 +35,10 @@ namespace Acceleration.NPCs.Bosses
 		int[] bitSprites = new int[7];
 		int[] bitTimers = new int[7];
 		float[] bitRotations = new float[7];
+		Projectile[] bitDashProjs = new Projectile[7];
+		Projectile[] bitLasers1 = new Projectile[50];
+		Projectile[] bitLasers2 = new Projectile[50];
+		Projectile[] bitLasers3 = new Projectile[50];
 
 		public override void SetStaticDefaults()
 		{
@@ -45,7 +49,7 @@ namespace Acceleration.NPCs.Bosses
 		public override void SetDefaults()
 		{
 			NPC.lifeMax = 4000;
-			NPC.damage = 15;
+			NPC.damage = -1;
 			NPC.defense = 6;
 			NPC.knockBackResist = 0f;
 			NPC.aiStyle = -1;
@@ -56,13 +60,22 @@ namespace Acceleration.NPCs.Bosses
 			NPC.noTileCollide = true;
 			NPC.boss = true;
 			NPC.npcSlots = 50;
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/MigratoryBirdFromNorth");
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/LinearLight");
 			SceneEffectPriority = SceneEffectPriority.BossLow;
 			NPC.ai[AINextState] = 1;
 			NPC.value = Item.buyPrice(0, 6, 50, 0);
 			NPC.netAlways = true;
+			for (int i = 0; i < 7; ++i)
+			{
+				bitStates[i] = 0;
+				bitSprites[i] = 0;
+				bitRotations[i] = 0;
+				bitTimers[i] = 0;
+				bitPositions[i] = Vector2.Zero;
+			}
 		}
 
+		
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
 		{
 			NPC.lifeMax = 4000 + 800 + (1400 * numPlayers);
@@ -117,11 +130,12 @@ namespace Acceleration.NPCs.Bosses
 		void SetFrameManually(int frame)
 		{
 			int Y = (int)NPC.frameCounter / 100;
-			NPC.frameCounter = Y + frame;
+			NPC.frameCounter = (Y * 100) + frame;
 		}
 
 		public override void AI()
 		{
+			NPC.DiscourageDespawn(100);
 			NPC.netUpdate = true;
 			if (spawnPoint.Y == 0)
 			{
@@ -194,6 +208,7 @@ namespace Acceleration.NPCs.Bosses
 					else
 					{
 						NPC.ai[AIState] = 50;
+						NPC.ai[AITimer] = 0;
 					}
 					break;
 				case 1:
@@ -206,7 +221,7 @@ namespace Acceleration.NPCs.Bosses
 					else
 					{
 						// BIG BANG ATTACK
-						NPC.ai[AINextState] = Main.rand.Next(0, 15);
+						NPC.ai[AINextState] = Main.rand.Next(0, 16);
 					}
 					switch (NPC.ai[AINextState])
 					{
@@ -216,9 +231,24 @@ namespace Acceleration.NPCs.Bosses
 							// charging attack	
 							NPC.ai[AINextState] = 3;
 							break;
+						case 4:
+						case 5:
+							// spinning attack
+							NPC.ai[AINextState] = 4;
+							break;
+						case 6:
+							// super spinning attack
+							NPC.ai[AINextState] = 5;
+							break;
 						default:
+							// perform her "hyper" under the right circumstances
+							if (NPC.life < NPC.lifeMax / 2 && NPC.ai[AINextState] == 7)
+							{
+								NPC.ai[AINextState] = 6;
+								break;
+							}
 							// fly somewhere new
-							NPC.ai[AINextState] = 1;
+							NPC.ai[AINextState] = 6;
 							break;
 					}
 					// set us to fly
@@ -233,6 +263,12 @@ namespace Acceleration.NPCs.Bosses
 						targetPosition = new Vector2(Main.rand.NextFloat(-300, 300), Main.rand.NextFloat(-300, 300));
 					}
 					targetPosition += NPC.position;
+					SetFrameManually(0);
+					// if player is too far away, charge back to them
+					if (Matht.Magnitude(target.position - NPC.position) >= 1300)
+					{
+						NPC.ai[AIState] = 0;
+					}
 					break;
 				case 2:
 					// travel to target position, unless we already there
@@ -254,22 +290,22 @@ namespace Acceleration.NPCs.Bosses
 					{
 						if (NPC.spriteDirection == 1)
 						{
-							ChangeSetKeepFrame(200);
+							ChangeSetKeepFrame(100);
 						}
 						else
 						{
-							ChangeSetKeepFrame(100);
+							ChangeSetKeepFrame(200);
 						}
 					}
 					else
 					{
 						if (NPC.spriteDirection == 1)
 						{
-							ChangeSetKeepFrame(100);
+							ChangeSetKeepFrame(200);
 						}
 						else
 						{
-							ChangeSetKeepFrame(200);
+							ChangeSetKeepFrame(100);
 						}
 					}
 					posToMove.Normalize();
@@ -297,6 +333,7 @@ namespace Acceleration.NPCs.Bosses
 					break;
 				case 3:
 					ChangeSetKeepFrame(700);
+					// set our bits to actually dash
 					if (NPC.ai[AITimer] == 0)
 					{
 						SetFrameManually(0);
@@ -305,6 +342,7 @@ namespace Acceleration.NPCs.Bosses
 							bitStates[i] = 3;
 							bitTimers[i] = 0;
 							bitSprites[i] = 3;
+							bitDashProjs[i] = Main.projectile[Projectile.NewProjectile(NPC.GetSource_FromThis(), bitPositions[i], Vector2.Zero, ModContent.ProjectileType<Projectiles.Nanako.NanakoBitDash>(), 50, 1, Main.myPlayer)];
 						}
 					}
 					if (NPC.ai[AITimer] % 4 == 0)
@@ -316,6 +354,125 @@ namespace Acceleration.NPCs.Bosses
 					if (NPC.ai[AITimer] >= 240)
 					{
 						NPC.ai[AIState] = 1;
+					}
+					break;
+				case 4:
+					{
+						ChangeSetKeepFrame(700);
+						// set bits to circle us
+						if (NPC.ai[AITimer] == 0)
+						{
+							SetFrameManually(0);
+							for (int i = 0; i < 7; ++i)
+							{
+								bitStates[i] = 4;
+								bitTimers[i] = 0;
+								bitSprites[i] = 0;
+								bitRotations[i] = 0;
+							}
+						}
+						if (NPC.ai[AITimer] % 4 == 0)
+						{
+							IncrementFrameCounter(2, 8);
+						}
+						++NPC.ai[AITimer];
+						if (NPC.ai[AITimer] >= 400)
+						{
+							for (int i = 0; i < 7; ++i)
+							{
+								bitStates[i] = 0;
+								bitTimers[i] = 0;
+								bitSprites[i] = 0;
+								bitRotations[i] = 0;
+							}
+							NPC.ai[AIState] = 1;
+						}
+					}
+					break;
+				case 5:
+					ChangeSetKeepFrame(700);
+					// set our bits to return to us
+					if (NPC.ai[AITimer] == 0)
+					{
+						SetFrameManually(0);
+						for (int i = 0; i < 7; ++i)
+						{
+							bitStates[i] = 6;
+							bitTimers[i] = 0;
+							bitSprites[i] = 0;
+							bitDashProjs[i] = Main.projectile[Projectile.NewProjectile(NPC.GetSource_FromThis(), bitPositions[i], Vector2.Zero, ModContent.ProjectileType<Projectiles.Nanako.NanakoBitDash>(), 50, 1, Main.myPlayer)];
+						}
+						NPC.ai[AITimer] += 1;
+					}
+					if (generalCounter % 4 == 0)
+					{
+						IncrementFrameCounter(2, 8);
+					}
+					bool bitsInPosition = true;
+					for (int i = 0; i < 7; ++i)
+					{
+						if (bitStates[i] != 7 && bitStates[i] != 8)
+						{
+							bitsInPosition = false;
+						}
+					}
+					if (bitsInPosition)
+					{
+						if (NPC.ai[AITimer] == 1)
+						{
+							// play laser sound
+							SoundEngine.PlaySound(Acceleration.beamRifleHyperSound, NPC.position);
+						}
+						++NPC.ai[AITimer];
+						// tell the bits to start blasting
+						for (int i = 0; i < 7; ++i)
+						{
+							bitStates[i] = 8;
+						}
+						// done
+						if (NPC.ai[AITimer] >= 400)
+						{
+							NPC.ai[AIState] = 1;
+							for (int i = 0; i < 7; ++i)
+							{
+								bitStates[i] = 0;
+								bitTimers[i] = 0;
+								bitSprites[i] = 0;
+								bitRotations[i] = 0;
+							}
+						}
+					}
+					break;
+				case 6:
+					{
+						ChangeSetKeepFrame(700);
+						// set our bits to fire their laser
+						if (NPC.ai[AITimer] == 0)
+						{
+							SetFrameManually(0);
+							for (int i = 0; i < 7; ++i)
+							{
+								bitStates[i] = 9;
+								bitTimers[i] = 20 * i;
+								bitSprites[i] = 0;
+							}
+						}
+						if (NPC.ai[AITimer] % 4 == 0)
+						{
+							IncrementFrameCounter(2, 8);
+						}
+						++NPC.ai[AITimer];
+						// done
+						if (NPC.ai[AITimer] >= 260)
+						{
+							NPC.ai[AIState] = 1;
+							for (int i = 0; i < 7; ++i)
+							{
+								bitStates[i] = 0;
+								bitSprites[i] = 0;
+								bitTimers[i] = 0;
+							}
+						}
 					}
 					break;
 				case 100:
@@ -342,7 +499,6 @@ namespace Acceleration.NPCs.Bosses
 					break;
 				case 50:
 					// spawn bits
-					float bitRotation = 0;
 					if (NPC.ai[AITimer] == 0)
 						SoundEngine.PlaySound(Acceleration.hyperSound, NPC.position);
 					ChangeSetKeepFrame(600);
@@ -352,8 +508,11 @@ namespace Acceleration.NPCs.Bosses
 					}
 					if (NPC.ai[AITimer] % 6 == 0)
 					{
-						bitPositions[(int)NPC.ai[AITimer] / 6] = new Vector2(0, 24.0f).RotatedBy((NPC.ai[AITimer] / 6) * (float)Math.PI / 3.5f) + NPC.Center;
-						bitRotation += (float)Math.PI / 3.5f;
+						int currBit = (int)NPC.ai[AITimer] / 6;
+						bitPositions[currBit] = (new Vector2(0, 24.0f).RotatedBy((NPC.ai[AITimer] / 6) * (float)Math.PI / 3.5f)) + NPC.Center;
+						bitRotations[currBit] = 0;
+						bitStates[currBit] = 0;
+						bitTimers[currBit] = 0;
 					}
 					if (NPC.ai[AITimer] >= 41)
 					{
@@ -400,7 +559,7 @@ namespace Acceleration.NPCs.Bosses
 						{
 							bitPositions[bit] -= new Vector2(0, 3.0f).RotatedBy(radius);
 						}
-						// TODO: spawn projectiles
+						// end it
 						++bitTimers[bit];
 						if (bitTimers[bit] > 80)
 						{
@@ -420,16 +579,16 @@ namespace Acceleration.NPCs.Bosses
 							}
 						}
 						// randomly fire off projectiles
-						if (Main.rand.Next(0, 60) == 0)
+						if (Main.rand.Next(0, 60) == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 						{
-							Projectile.NewProjectile(NPC.GetSource_FromThis(), bitPositions[bit], new Vector2(0, 4).RotatedByRandom(MathF.PI * 2), ModContent.ProjectileType<Projectiles.Nanako.NanakoBitProjectile>(), 45, 1.0f, Main.myPlayer);
+							Projectile.NewProjectile(NPC.GetSource_FromThis(), bitPositions[bit], new Vector2(0, 4).RotatedByRandom(MathF.PI * 2), ModContent.ProjectileType<Projectiles.Nanako.NanakoBitProjectile>(), 30, 1.0f, Main.myPlayer);
 						}
 					}
 					break;
 				case 2:
 					{
 						// target nanako
-						Vector2 targetPos = NPC.position + new Vector2(0, 24.0f).RotatedBy(bit * (float)Math.PI / 3.5f);
+						Vector2 targetPos = NPC.Center + new Vector2(0, 24.0f).RotatedBy(bit * (float)Math.PI / 3.5f);
 						Vector2 targAngle = targetPos - bitPositions[bit];
 						targAngle.Normalize();
 						targAngle *= 7;
@@ -462,13 +621,195 @@ namespace Acceleration.NPCs.Bosses
 								bitSprites[bit] = 3;
 							}
 						}
-						// TODO: hitbox
+						// move our hitbox
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+							bitDashProjs[bit].Center = bitPositions[bit];
+						// done
 						if (bitTimers[bit] >= 240)
 						{
 							bitStates[bit] = 0;
 							bitTimers[bit] = 0;
 							bitSprites[bit] = 0;
 							bitRotations[bit] = 0;
+						}
+						++bitTimers[bit];
+					}
+					break;
+				case 4:
+					{
+						// target nanako
+						Vector2 targetPos = NPC.Center + new Vector2(0, 24.0f).RotatedBy(bit * (float)Math.PI / 3.5f);
+						Vector2 targAngle = targetPos - bitPositions[bit];
+						targAngle.Normalize();
+						targAngle *= 7;
+						bitPositions[bit] += targAngle;
+						targAngle.Normalize();
+						Vector2 dotUse = targetPos - bitPositions[bit];
+						dotUse.Normalize();
+						if (Matht.DotProduct(targAngle, dotUse) < 0)
+						{
+							bitStates[bit] = 5;
+							bitRotations[bit] = Main.rand.NextFloat(0, MathF.PI * 2);
+						}
+					}
+					break;
+				case 5:
+					{
+						++bitTimers[bit];
+						// open up
+						if (bitTimers[bit] <= 8)
+						{
+							if (bitTimers[bit] % 4 == 0)
+							{
+								++bitSprites[bit];
+							}
+						} else
+						{
+							// spin around
+							bitRotations[bit] += 0.07f;
+							// fire a shot
+							if (bitTimers[bit] % 8 == 0)
+							{
+								int projType;
+								if (bit % 2 == 0)
+								{
+									projType = ModContent.ProjectileType<Projectiles.Nanako.NanakoBitProjectile>();
+								} else
+								{
+									projType = ModContent.ProjectileType<Projectiles.Nanako.NanakoRoundShot>();
+								}
+								if (Main.netMode != NetmodeID.MultiplayerClient)
+									Projectile.NewProjectile(NPC.GetSource_FromThis(), bitPositions[bit], new Vector2(0, 7.0f).RotatedBy(bitRotations[bit]), projType, 35, 1, Main.myPlayer);
+
+							}
+
+						}
+					}
+					break;
+				case 6:
+					{
+						// target nanako
+						Vector2 targetPos = NPC.Center + new Vector2(0, 24.0f).RotatedBy(bit * (float)Math.PI / 3.5f);
+						Vector2 targAngle = targetPos - bitPositions[bit];
+						targAngle.Normalize();
+						targAngle *= 7;
+						bitPositions[bit] += targAngle;
+						targAngle.Normalize();
+						Vector2 dotUse = targetPos - bitPositions[bit];
+						dotUse.Normalize();
+						if (Matht.DotProduct(targAngle, dotUse) < 0)
+						{
+							bitStates[bit] = 7;
+							// rotate appropriately
+							Vector2 targetRotation = bitPositions[bit] - NPC.Center;
+							bitRotations[bit] = MathF.Atan2(targetRotation.Y, targetRotation.X);
+						}
+					}
+					break;
+					// sorry, no case 7! they do nothing!
+				case 8:
+					{
+						++bitTimers[bit];
+						// open up
+						if (bitTimers[bit] <= 8)
+						{
+							if (bitTimers[bit] % 4 == 0)
+							{
+								++bitSprites[bit];
+							}
+						}
+						else
+						{
+							// spin
+							bitRotations[bit] += 0.03f;
+							// don't try to manipulate projectiles if we're a client, server will handle it
+							if (Main.netMode == NetmodeID.MultiplayerClient)
+								break;
+							// shoot lasers if we're 0, 2, or 5
+							if (bit == 2 || bit == 0 || bit == 5)
+							{
+								Projectile[] bitLaser = null;
+								if (bit == 0)
+								{
+									bitLaser = bitLasers1;
+								}
+								if (bit == 2)
+								{
+									bitLaser = bitLasers2;
+								}
+								if (bit == 5)
+								{
+									bitLaser = bitLasers3;
+								}
+								if (bitTimers[bit] == 9)
+								{
+									// summon our laser
+									bitLaser = AccelerationHelper.SummonLaser(ModContent.ProjectileType<Projectiles.Nanako.NanakoBitLaser>(),
+										NPC.GetSource_FromThis(),
+										bitRotations[bit],
+										bitPositions[bit],
+										35,
+										1,
+										40,
+										Main.myPlayer,
+										true);
+									switch (bit)
+									{
+										case 0:
+											bitLasers1 = bitLaser;
+											break;
+										case 2:
+											bitLasers2 = bitLaser;
+											break;
+										case 5:
+											bitLasers3 = bitLaser;
+											break;
+									}
+								}
+								// position the laser
+								AccelerationHelper.UpdateLaser(bitLaser, bitPositions[bit] + new Vector2(20, 0).RotatedBy(bitRotations[bit]) - new Vector2(20, 20), bitRotations[bit], 40);
+							} else
+							{
+								// just summon some random projectiles
+								if (Main.rand.Next(0, 30) == 0)
+								{
+									Projectile.NewProjectile(NPC.GetSource_FromThis(), bitPositions[bit], new Vector2(0, 4).RotatedByRandom(MathF.PI * 2), ModContent.ProjectileType<Projectiles.Nanako.NanakoBitProjectile>(), 30, 1.0f, Main.myPlayer);
+								}
+							}
+						}
+					}
+					break;
+				case 9:
+					{
+						// face target
+						if (bitTimers[bit] <= 120)
+						{
+							Vector2 bitAngle = Main.player[NPC.target].position - bitPositions[bit];
+							bitRotations[bit] = MathF.Atan2(bitAngle.Y, bitAngle.X);
+						}
+						// schut
+						if (bitTimers[bit] > 120)
+						{
+							if (bitTimers[bit] >= 128)
+							{
+								bitSprites[bit] = 2;
+							} else if (bitTimers[bit] >= 124)
+							{
+								bitSprites[bit] = 1;
+							}
+							if (bitTimers[bit] == 140)
+							{
+								SoundEngine.PlaySound(Acceleration.beamRifleHyperSound, bitPositions[bit]);
+								AccelerationHelper.SummonLaser(ModContent.ProjectileType<Projectiles.Nanako.NanakoHyperLaser>(),
+									NPC.GetSource_FromThis(),
+									bitRotations[bit],
+									(bitPositions[bit] + new Vector2(20, 0).RotatedBy(bitRotations[bit])),
+									35,
+									1,
+									40,
+									Main.myPlayer,
+									false);
+							}
 						}
 						++bitTimers[bit];
 					}
@@ -498,6 +839,8 @@ namespace Acceleration.NPCs.Bosses
 					NPC.life = 1;
 					NPC.active = true;
 					NPC.dontTakeDamage = true;
+					ChangeSetKeepFrame(900);
+					SetFrameManually(0);
 				}
 				return false;
 			}

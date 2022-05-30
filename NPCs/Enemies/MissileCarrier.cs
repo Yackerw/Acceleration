@@ -296,11 +296,11 @@ namespace Acceleration.NPCs.Enemies
 			// spawn our GOONS too
 			launcherBit0 = NPC.NewNPC(NPC.GetSource_FromThis(), tileX, tileY, ModContent.NPCType<MissileCarrierPiece>(), 0, 0, 0, 0, retValue);
 			// top front
-			launcherBit1 = NPC.NewNPC(NPC.GetSource_FromThis(), tileY, ModContent.NPCType<MissileCarrierPiece>(), 0, 0, 8, 1, retValue);
+			launcherBit1 = NPC.NewNPC(NPC.GetSource_FromThis(), tileX, tileY, ModContent.NPCType<MissileCarrierPiece>(), 0, 0, 8, 1, retValue);
 			// bottom back
-			launcherBit2 = NPC.NewNPC(NPC.GetSource_FromThis(), tileY, ModContent.NPCType<MissileCarrierPiece>(), 0, 1, 16, 0, retValue);
+			launcherBit2 = NPC.NewNPC(NPC.GetSource_FromThis(), tileX, tileY, ModContent.NPCType<MissileCarrierPiece>(), 0, 1, 16, 0, retValue);
 			// bottom front
-			launcherBit3 = NPC.NewNPC(NPC.GetSource_FromThis(), tileY, ModContent.NPCType<MissileCarrierPiece>(), 0, 1, 24, 1, retValue);
+			launcherBit3 = NPC.NewNPC(NPC.GetSource_FromThis(), tileX, tileY, ModContent.NPCType<MissileCarrierPiece>(), 0, 1, 24, 1, retValue);
 			Main.npc[retValue].ai[launchersAlive] = 4;
 			Main.npc[retValue].ai[waitTimer] = 300;
 			return retValue;

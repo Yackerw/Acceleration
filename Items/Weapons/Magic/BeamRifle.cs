@@ -161,7 +161,6 @@ namespace Acceleration.Items.Weapons.Magic
 				// upon release, fire either a normal shot or charge shot depending on how long we've charged
 				if (!ap.rightClick && player == Main.LocalPlayer)
 				{
-					Main.NewText(chargeTime);
 					if (player.CheckMana(player.GetManaCost(Item), true))
 					{
 						float shotAngle = (float)Math.Atan2(Main.MouseWorld.Y - player.Center.Y, Main.MouseWorld.X - player.Center.X);
