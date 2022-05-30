@@ -92,7 +92,7 @@ namespace Acceleration
 			{
 				if (continueMovement)
 				{
-					Vector2 moveAmnt = Collision.TileCollision(spawnPos, spawnIncrement, scale, scale, false, false, 0);
+					Vector2 moveAmnt = Collision.TileCollision(spawnPos, spawnIncrement, scale, scale, true, true, 0);
 					spawnPos += moveAmnt;
 					if (moveAmnt.X != spawnIncrement.X || moveAmnt.Y != spawnIncrement.Y)
 					{
@@ -131,7 +131,7 @@ namespace Acceleration
 				// find next position
 				if (continueMovement)
 				{
-					Vector2 moveAmnt = Collision.TileCollision(position, spawnIncrement, scale, scale, false, false, 0);
+					Vector2 moveAmnt = Collision.TileCollision(position, spawnIncrement, scale, scale, true, true, 0);
 					position += moveAmnt;
 					if (moveAmnt.X != spawnIncrement.X || moveAmnt.Y != spawnIncrement.Y)
 					{
