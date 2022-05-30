@@ -46,7 +46,7 @@ namespace Acceleration.Projectiles.Saki
 			base.PostDraw(lightColor);
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
-			AccelerationHelper.DrawSprite("Acceleration/Projectiles/Tambourine_Emiss", Projectile.Center, 0, 48, Color.White, Projectile.rotation, new Vector2(1, 1), Main.spriteBatch);
+			AccelerationHelper.DrawSprite("Acceleration/Projectiles/Saki/Tambourine_Emiss", Projectile.Center, 0, 48, Color.White, Projectile.rotation, new Vector2(1, 1), Main.spriteBatch);
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin();
 		}

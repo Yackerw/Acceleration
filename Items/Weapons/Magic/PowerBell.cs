@@ -102,7 +102,7 @@ namespace Acceleration.Items.Weapons.Magic
 				// actually fire the projectile
 				if (hyperTimer == 60)
 				{
-					Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem), player.Center - new Vector2(0, 160), Vector2.Zero, ModContent.ProjectileType<Projectiles.Weapons.Magic.FriendlyBigBangBell>(), (int)(Item.damage * player.GetTotalDamage(DamageClass.Magic).Multiplicative), Item.knockBack * 0.5f, player.whoAmI);
+					Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem), player.Center - new Vector2(0, 160), Vector2.Zero, ModContent.ProjectileType<Projectiles.Weapons.Magic.FriendlyBigBangBell>(), (int)(Item.damage * player.GetTotalDamage(DamageClass.Magic).Multiplicative / 3), Item.knockBack * 0.5f, player.whoAmI);
 				}
 			}
 

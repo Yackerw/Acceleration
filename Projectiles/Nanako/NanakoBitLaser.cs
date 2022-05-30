@@ -33,7 +33,7 @@ namespace Acceleration.Projectiles.Nanako
 			Projectile.alpha = 50;
 			Projectile.timeLeft = 400;
 			Projectile.penetrate = -1;
-			Projectile.hostile = true;
+			Projectile.hostile = false;
 			Projectile.friendly = false;
 			Projectile.tileCollide = false;
 			Projectile.ignoreWater = true;
@@ -43,6 +43,10 @@ namespace Acceleration.Projectiles.Nanako
 
 		public override void AI()
 		{
+			if (Projectile.timeLeft < 370)
+			{
+				Projectile.hostile = true;
+			}
 			Projectile.netUpdate = true;
 			fluctuationTimer += 1;
 			// packed normal
@@ -105,7 +109,13 @@ namespace Acceleration.Projectiles.Nanako
 				{
 					sprite += Projectile.frame;
 				}
-				AccelerationHelper.DrawSpriteCached(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center, sprite, 40, new Color(255, 0, 255, 255 - Projectile.alpha), Projectile.rotation, new Vector2(Projectile.scale, Projectile.scale), Main.spriteBatch);
+				if (Projectile.timeLeft < 370)
+				{
+					AccelerationHelper.DrawSpriteCached(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center, sprite, 40, new Color(255, 0, 255, 255 - Projectile.alpha), Projectile.rotation, new Vector2(Projectile.scale, Projectile.scale), Main.spriteBatch);
+				} else
+				{
+					AccelerationHelper.DrawSpriteCached(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center, sprite, 40, new Color(255, 0, 255, 255 - Projectile.alpha), Projectile.rotation, new Vector2(Projectile.scale, 0.25f), Main.spriteBatch);
+				}
 			}
 			else
 			{

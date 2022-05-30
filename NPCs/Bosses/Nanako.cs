@@ -722,9 +722,9 @@ namespace Acceleration.NPCs.Bosses
 						else
 						{
 							// spin
-							bitRotations[bit] += 0.03f;
-							// don't try to manipulate projectiles if we're a client, server will handle it
-							if (Main.netMode == NetmodeID.MultiplayerClient)
+							bitRotations[bit] += 0.022f;
+							// don't try to manipulate projectiles if we're a client, server will handle it, and also cease if nanako is dead/leaving
+							if (Main.netMode == NetmodeID.MultiplayerClient || NPC.ai[AIState] != 5)
 								break;
 							// shoot lasers if we're 0, 2, or 5
 							if (bit == 2 || bit == 0 || bit == 5)
@@ -772,7 +772,7 @@ namespace Acceleration.NPCs.Bosses
 							} else
 							{
 								// just summon some random projectiles
-								if (Main.rand.Next(0, 30) == 0)
+								if (Main.rand.Next(0, 50) == 0)
 								{
 									Projectile.NewProjectile(NPC.GetSource_FromThis(), bitPositions[bit], new Vector2(0, 4).RotatedByRandom(MathF.PI * 2), ModContent.ProjectileType<Projectiles.Nanako.NanakoBitProjectile>(), 30, 1.0f, Main.myPlayer);
 								}
@@ -798,7 +798,7 @@ namespace Acceleration.NPCs.Bosses
 							{
 								bitSprites[bit] = 1;
 							}
-							if (bitTimers[bit] == 140)
+							if (bitTimers[bit] == 128)
 							{
 								SoundEngine.PlaySound(Acceleration.beamRifleHyperSound, bitPositions[bit]);
 								AccelerationHelper.SummonLaser(ModContent.ProjectileType<Projectiles.Nanako.NanakoHyperLaser>(),
