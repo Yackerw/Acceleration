@@ -248,7 +248,7 @@ namespace Acceleration.NPCs.Bosses
 								break;
 							}
 							// fly somewhere new
-							NPC.ai[AINextState] = 6;
+							NPC.ai[AINextState] = 1;
 							break;
 					}
 					// set us to fly
@@ -456,6 +456,7 @@ namespace Acceleration.NPCs.Bosses
 								bitTimers[i] = 20 * i;
 								bitSprites[i] = 0;
 							}
+							SoundEngine.PlaySound(Acceleration.hyperSound, NPC.position);
 						}
 						if (NPC.ai[AITimer] % 4 == 0)
 						{
