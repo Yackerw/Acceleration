@@ -103,7 +103,7 @@ namespace Acceleration.Projectiles.Weapons.Ranged
 			{
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
-				AccelerationHelper.DrawSprite("Acceleration/Projectiles/Saki/Maracca_Emiss", Projectile.Center, Projectile.frame, 32, Color.White, 0, new Vector2(1, 1), Main.spriteBatch);
+				AccelerationHelper.DrawSprite("Acceleration/Projectiles/Saki/Maracca_Emiss", Projectile.Center + new Vector2(16, 0), Projectile.frame, 32, Color.White, 0, new Vector2(1, 1), Main.spriteBatch);
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin();
 			}

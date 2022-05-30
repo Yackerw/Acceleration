@@ -69,7 +69,7 @@ namespace Acceleration.Projectiles
             Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
             for (int i = 0; i < 8; i++)
             {
-                AccelerationHelper.DrawSprite("Acceleration/Projectiles/Tambourine_Emiss", rotpos[i], 0, 48, new Color(255 - ((8 - i) * 35), 255 - ((8 - i) * 35), 255 - ((8 - i) * 35)), rotations[i], new Vector2(1,1), Main.spriteBatch);
+                AccelerationHelper.DrawSprite("Acceleration/Projectiles/Saki/Tambourine_Emiss", rotpos[i], 0, 48, new Color(255 - ((8 - i) * 35), 255 - ((8 - i) * 35), 255 - ((8 - i) * 35)), rotations[i], new Vector2(1,1), Main.spriteBatch);
             }
             Main.spriteBatch.End();
             Main.spriteBatch.Begin();

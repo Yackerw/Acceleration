@@ -102,6 +102,7 @@ namespace Acceleration.Items.Weapons.Magic
 			Item.UseSound = Acceleration.BeamRifleSound;
 			Item.shoot = ModContent.ProjectileType<Projectiles.Beam>();
 			Item.shootSpeed = 10f;
+			Item.autoReuse = true;
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -133,10 +134,20 @@ namespace Acceleration.Items.Weapons.Magic
 			}
 		}
 
+		public override bool AltFunctionUse(Player player)
+		{
+			return true;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.altFunctionUse != 2 || charging;
+		}
+
 		public override void HoldItem(Player player)
 		{
 			AcceleratePlayer ap = player.GetModPlayer<AcceleratePlayer>();
-			if (ap.rightClick && !ap.prevRightClick && player.reuseDelay <= 0)
+			if (ap.rightClick && !ap.prevRightClick && player.reuseDelay <= 0 && player.altFunctionUse == 2)
 			{
 				charging = true;
 				chargeTime = 0;
