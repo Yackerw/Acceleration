@@ -81,7 +81,7 @@ namespace Acceleration
 			return closest;
 		}
 
-		public static Projectile[] SummonLaser(int projType, IEntitySource source, float angle, Vector2 spawnPos, int damage, int knockback, int scale, int owner, bool spawnAll50)
+		public static Projectile[] SummonLaser(int projType, IEntitySource source, float angle, Vector2 spawnPos, int damage, float knockback, int scale, int owner, bool spawnAll50)
 		{
 			Vector2 spawnIncrement = new Vector2(scale, 0).RotatedBy(angle);
 			Projectile[] retValue = new Projectile[50];

@@ -60,7 +60,7 @@ namespace Acceleration.Items.Weapons.Magic
 				proj = Main.projectile[Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem), player.position, new Vector2(1, 0).RotatedBy(shotAngle - 2 * Mathj.Matht.Deg2Rad), projType, (int)(Item.damage * player.GetTotalDamage(DamageClass.Magic).Multiplicative), Item.knockBack, player.whoAmI, 1)];
 				proj = Main.projectile[Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem), player.position, new Vector2(1, 0).RotatedBy(shotAngle + 15 * Mathj.Matht.Deg2Rad), projType, (int)(Item.damage * player.GetTotalDamage(DamageClass.Magic).Multiplicative), Item.knockBack, player.whoAmI, 1)];
 				proj = Main.projectile[Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem), player.position, new Vector2(1, 0).RotatedBy(shotAngle - 19 * Mathj.Matht.Deg2Rad), projType, (int)(Item.damage * player.GetTotalDamage(DamageClass.Magic).Multiplicative), Item.knockBack, player.whoAmI, 1)];
-				SoundEngine.PlaySound(Item.UseSound, player.position);
+				SoundEngine.PlaySound((SoundStyle)Item.UseSound, player.position);
 				return false;
 			}
 			if (hyper)

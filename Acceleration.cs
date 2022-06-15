@@ -28,19 +28,19 @@ namespace Acceleration
 		public HeatUI heat;
 		public UserInterface UI;
 
-		public static LegacySoundStyle dashSound;
-		public static LegacySoundStyle RRSound;
-		public static LegacySoundStyle BeamRifleSound;
-		public static LegacySoundStyle ChargeInitialSound;
-		public static LegacySoundStyle ChargeShotSound;
-		public static LegacySoundStyle MissileLaunchSound;
-		public static LegacySoundStyle hyperSound;
-		public static LegacySoundStyle beamRifleHyperSound;
-		public static LegacySoundStyle tambourineSound;
-		public static LegacySoundStyle sword2Sound;
-		public static LegacySoundStyle sword3Sound;
-		public static LegacySoundStyle swordHyperSound;
-		public static LegacySoundStyle bossDeathSound;
+		public static SoundStyle dashSound;
+		public static SoundStyle RRSound;
+		public static SoundStyle BeamRifleSound;
+		public static SoundStyle ChargeInitialSound;
+		public static SoundStyle ChargeShotSound;
+		public static SoundStyle MissileLaunchSound;
+		public static SoundStyle hyperSound;
+		public static SoundStyle beamRifleHyperSound;
+		public static SoundStyle tambourineSound;
+		public static SoundStyle sword2Sound;
+		public static SoundStyle sword3Sound;
+		public static SoundStyle swordHyperSound;
+		public static SoundStyle bossDeathSound;
 		public ModKeybind hyperKey;
 
 		public static Acceleration thisMod;
@@ -61,19 +61,20 @@ namespace Acceleration
 				UI = new UserInterface();
 				UI.SetState(heat);
 				heat.visible = true;
-				dashSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/air01");
-				RRSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/power36");
-				BeamRifleSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/BeamRifle");
-				ChargeInitialSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/Charge");
-				ChargeShotSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/ChargeShot");
-				MissileLaunchSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/Burst00");
-				hyperSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/HyperUse");
-				beamRifleHyperSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/gun11_r");
-				tambourineSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/Tambourine");
-				sword2Sound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/sword2");
-				sword3Sound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/sword3");
-				swordHyperSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/crash16_c");
-				bossDeathSound = SoundLoader.GetLegacySoundSlot(this, "Sounds/Custom/don11");
+				dashSound = new SoundStyle("Acceleration/Sounds/Custom/air01");
+				RRSound = new SoundStyle("Acceleration/Sounds/Custom/power36");
+				BeamRifleSound = new SoundStyle("Acceleration/Sounds/Custom/BeamRifle");
+				ChargeInitialSound = new SoundStyle("Acceleration/Sounds/Custom/Charge");
+				ChargeShotSound = new SoundStyle("Acceleration/Sounds/Custom/ChargeShot");
+				MissileLaunchSound = new SoundStyle("Acceleration/Sounds/Custom/Burst00");
+				hyperSound = new SoundStyle("Acceleration/Sounds/Custom/HyperUse");
+				beamRifleHyperSound = new SoundStyle("Acceleration/Sounds/Custom/gun11_r");
+				tambourineSound = new SoundStyle("Acceleration/Sounds/Custom/Tambourine");
+				sword2Sound = new SoundStyle("Acceleration/Sounds/Custom/sword2");
+				sword3Sound = new SoundStyle("Acceleration/Sounds/Custom/sword3");
+				swordHyperSound = new SoundStyle("Acceleration/Sounds/Custom/crash16_c");
+				bossDeathSound = new SoundStyle("Acceleration/Sounds/Custom/don11");
+				
 				// load our shaders
 				//Ref<Effect> projectileShader = new Ref<Effect>(GetEffect("Effects/RainbowRing"));
 

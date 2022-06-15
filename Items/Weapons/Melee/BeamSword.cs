@@ -87,7 +87,7 @@ namespace Acceleration.Items.Weapons.Melee
 			{
 				dmg *= 1.333f;
 			}
-			Terraria.Audio.LegacySoundStyle soundToPlay;
+			SoundStyle soundToPlay;
 			switch (swingAnim)
 			{
 				case 1:

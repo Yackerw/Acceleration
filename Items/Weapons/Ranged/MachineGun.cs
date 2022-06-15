@@ -37,7 +37,7 @@ namespace Acceleration.Items.Weapons.Ranged
 			Item.useAmmo = AmmoID.Bullet;
 		}
 
-		public override bool CanConsumeAmmo(Player player)
+		public override bool CanConsumeAmmo(Item ammo, Player player)
 		{
 			return Main.rand.NextFloat() >= 0.2f;
 		}
@@ -93,15 +93,19 @@ namespace Acceleration.Items.Weapons.Ranged
 			Vector2 sp = velocity.RotatedByRandom(15.0f * Matht.Deg2Rad);
 
 			int projToFire = 0;
-			float speed = 8.0f;
-			bool canShoot = false;
+			float speed = 16.0f;
 			int dmg = Item.damage;
 			float kBack = 0;
 			int ammoID;
-			player.PickAmmo(Item, ref projToFire, ref speed, ref canShoot, ref dmg, ref kBack, out ammoID, true);
+			player.PickAmmo(Item, out projToFire, out speed, out dmg, out kBack, out ammoID, true);
+			speed *= 2.0f;
+			if (projToFire == ProjectileID.BulletHighVelocity)
+			{
+				speed *= 1.5f;
+			}
 			float angle = (float)Math.Atan2(sp.Y, sp.X);
 			// spawn boolet
-			int proj = Projectile.NewProjectile(player.GetSource_ItemUse(Item) ,position, new Vector2(speed, 0).RotatedBy(angle), ModContent.ProjectileType<Projectiles.SuguriBullet>(), dmg, kBack, player.whoAmI, projToFire);
+			int proj = Projectile.NewProjectile(player.GetSource_ItemUse(Item), position, new Vector2(speed, 0).RotatedBy(angle), ModContent.ProjectileType<Projectiles.SuguriBullet>(), dmg, kBack, player.whoAmI, projToFire);
 			Projectile realProj = Main.projectile[proj];
 			if (projToFire == ProjectileID.MeteorShot)
 			{
